@@ -1,139 +1,155 @@
 # =============================================================================
-# qc_datamet
-# Configuración general del sistema
+# QC_DATAMET v1.0
+# settings.yaml
+#
+# Configuración global del sistema.
+# Este archivo contiene únicamente parámetros generales de la plataforma.
 # =============================================================================
 
+# =============================================================================
+# PROYECTO
+# =============================================================================
 
-application:
+project:
 
   name: "qc_datamet"
 
   version: "1.0.0"
 
-  author: "TC3 FAP ARQQUI POMA ROBERTO CARLOS"
-
   description: >
-    Sistema de control de calidad de observaciones meteorológicas
-    aeronáuticas.
+    Plataforma profesional para el Control de Calidad de
+    Observaciones Meteorológicas Aeronáuticas.
 
+  organization: "Dirección de Meteorología Aeronáutica y Espacial"
+
+  institution: "Fuerza Aérea del Perú"
+
+  author: "TC3 FAP Roberto Carlos Arqqui Poma"
+
+  license: "MIT"
 
 # =============================================================================
-# SISTEMA DE ARCHIVOS
+# SISTEMA
+# =============================================================================
+
+system:
+
+  language: "es"
+
+  timezone: "UTC"
+
+  encoding: "utf-8"
+
+  locale: "es_PE"
+
+  datetime_format: "%Y-%m-%d %H:%M:%S"
+
+  date_format: "%Y-%m-%d"
+
+# =============================================================================
+# ESTRUCTURA DEL PROYECTO
 # =============================================================================
 
 paths:
 
-  project_root: "."
+  assets: "./assets"
 
-  data:
+  config: "./config"
 
-    raw_excel: "./data/raw_excel"
+  data: "./data"
 
-    raw_csv: "./data/raw_csv"
+  docs: "./docs"
 
-    raw_bufr: "./data/raw_bufr"
+  logs: "./logs"
 
-    raw_metar: "./data/raw_metar"
+  reports: "./reports"
 
-    cache: "./data/cache"
+  src: "./src"
 
-    parquet: "./data/parquet"
-
-    consolidated: "./data/consolidated"
-
-    processed: "./data/processed"
-
-    final: "./data/final"
-
-
-  reports:
-
-    root: "./reports"
-
-
-  logs:
-
-    root: "./logs"
-
-
+  tests: "./tests"
 
 # =============================================================================
-# INPUTS
+# DATOS
+# =============================================================================
+
+data:
+
+  raw:
+
+    excel: "./data/raw/excel"
+
+    csv: "./data/raw/csv"
+
+    metar: "./data/raw/metar"
+
+    bufr: "./data/raw/bufr"
+
+  staging: "./data/staging"
+
+  processed: "./data/processed"
+
+  consolidated: "./data/consolidated"
+
+  final: "./data/final"
+
+  quarantine:
+
+    files: "./data/quarantine/files"
+
+    records: "./data/quarantine/records"
+
+  parquet:
+
+    root: "./data/parquet"
+
+    cache: "./data/parquet/cache"
+
+    daily: "./data/parquet/daily"
+
+    monthly: "./data/parquet/monthly"
+
+    yearly: "./data/parquet/yearly"
+
+# =============================================================================
+# FORMATOS DE ENTRADA
 # =============================================================================
 
 input:
 
+  excel:
 
-  accepted_formats:
+    enabled: true
 
-    excel:
+    extensions:
 
-      enabled: true
+      - ".xlsx"
+      - ".xls"
+      - ".xlsm"
+      - ".xlsb"
 
-      extensions:
+  csv:
 
-        - ".xlsx"
+    enabled: true
 
-        - ".xls"
+    extensions:
 
-        - ".xlsm"
+      - ".csv"
 
-        - ".xlsb"
+  metar:
 
+    enabled: true
 
-    csv:
+    extensions:
 
-      enabled: true
+      - ".txt"
 
-      extensions:
+  bufr:
 
-        - ".csv"
+    enabled: false
 
+    extensions:
 
-    bufr:
-
-      enabled: false
-
-
-
-# =============================================================================
-# PIPELINE
-# =============================================================================
-
-pipeline:
-
-
-  resume_previous_execution: true
-
-
-  stages:
-
-
-    import:
-
-      enabled: true
-
-
-    preprocessing:
-
-      enabled: true
-
-
-    qc:
-
-      enabled: true
-
-
-    reports:
-
-      enabled: true
-
-
-    export:
-
-      enabled: true
-
-
+      - ".bufr"
 
 # =============================================================================
 # LOGGING
@@ -141,59 +157,70 @@ pipeline:
 
 logging:
 
+  enabled: true
 
   level: "INFO"
 
+  console: true
 
-  files:
+  file: true
 
+  directory: "./logs"
 
-    pipeline: "./logs/pipeline.log"
+  filename: "qc_datamet.log"
 
-    import: "./logs/import.log"
+  rotation: "daily"
 
-    qc: "./logs/qc.log"
-
-    errors: "./logs/errors.log"
-
-
+  retention_days: 30
 
 # =============================================================================
-# REPORTES
+# EJECUCIÓN
 # =============================================================================
 
-reports:
+execution:
 
+  stop_on_error: true
 
-  format:
-
-    - pdf
-
-    - csv
-
-    - xlsx
-
-
-  include_graphics: true
-
-
-  include_statistics: true
-
-
-# =============================================================================
-# PROCESAMIENTO
-# =============================================================================
-
-processing:
-
-
-  timezone: "UTC"
-
-
-  encoding: "utf-8"
-
-
-  dataframe_engine: "pandas"
-
+  overwrite_outputs: true
 
   save_intermediate_files: true
+
+  resume_previous_execution: true
+
+# =============================================================================
+# PANDAS
+# =============================================================================
+
+pandas:
+
+  nullable_dtypes: true
+
+  copy_on_write: false
+
+# =============================================================================
+# EXPORTACIÓN
+# =============================================================================
+
+export:
+
+  default_csv_encoding: "utf-8"
+
+  default_csv_separator: ","
+
+  parquet_compression: "snappy"
+
+# =============================================================================
+# DESARROLLO
+# =============================================================================
+
+development:
+
+  debug: false
+
+  verbose: false
+
+  profiling: false
+
+# =============================================================================
+# FIN
+# =============================================================================
