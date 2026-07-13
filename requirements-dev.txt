@@ -1,0 +1,17 @@
+# =============================================================================
+# QC_DATAMET Development Requirements
+# =============================================================================
+
+-r requirements.txt
+
+pytest>=8.3
+pytest-cov>=6.0
+
+black>=25.1
+ruff>=0.9
+mypy>=1.15
+
+pre-commit>=4.1
+
+mkdocs>=1.6
+mkdocs-material>=9.6

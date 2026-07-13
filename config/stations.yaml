@@ -1,0 +1,579 @@
+stations:
+- codigo: SPLC
+  unidad: GRUP4
+  alias: La Joya
+  nombre_aerodromo: Aeródromo de Grupo Aereo N°4 - "La Joya"
+  estado: Activo
+  pais: Perú
+  departamento: Arequipa
+  provincia: Islay
+  distrito: Mollendo
+  administracion: Grupo Aereo N°4
+  uso: Privado / Militar
+  latitud: 16°47'29.16"S
+  longitud: 071°53'11.97"W
+  elevacion: 1186.0
+  xy: -16.7914,-71.8867
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPRM
+  unidad: AGSRA
+  alias: San Ramon
+  nombre_aerodromo: Aerodromo de Base Aerea de San Ramon
+  estado: Activo
+  pais: Perú
+  departamento: Junin
+  provincia: Chanchamayo
+  distrito: San Ramon
+  administracion: Agrupamiento Aereo San Ramon
+  uso: Privado / Militar
+  latitud: 11°07'42.00"S
+  longitud: 075°21'02.00"W
+  elevacion: 835.5
+  xy: -11.1283,-75.3506
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPVR
+  unidad: GRUP2
+  alias: Vitor
+  nombre_aerodromo: Aeródromo de Grupo Aereo N°2 - "Vitor"
+  estado: Activo
+  pais: Perú
+  departamento: Arequipa
+  provincia: Arequipa
+  distrito: La Joya
+  administracion: Grupo Aereo N°2
+  uso: Privado / Militar
+  latitud: 16°25'40.00"S
+  longitud: 071°50'15.00"W
+  elevacion: 1560.5
+  xy: -16.4278,-71.8375
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPHI
+  unidad: GRUP6
+  alias: Chiclayo
+  nombre_aerodromo: Aeropuerto Capitan FAP Jose Abelardo Quiñonez Gonzales
+  estado: Activo
+  pais: Perú
+  departamento: Lambayeque
+  provincia: Chiclayo
+  distrito: Chiclayo
+  administracion: Grupo Aereo N°6
+  uso: Publico
+  latitud: 06°47'13.92"S
+  longitud: 079°49'41.16"W
+  elevacion: 30.0
+  xy: -6.7872,-79.8281
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPID
+  unidad: GRU42
+  alias: Bergerie
+  nombre_aerodromo: Aerodromo Teniente FAP Bergerie
+  estado: Activo
+  pais: Perú
+  departamento: Loreto
+  provincia: Maynas
+  distrito: Iquitos
+  administracion: Grupo Aereo N°42
+  uso: Privado / Militar
+  latitud: 03°44'32.10"S
+  longitud: 073°15'37.20"W
+  elevacion: 88.0
+  xy: -3.7423,-73.2603
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPSO
+  unidad: GRU51
+  alias: Pisco
+  nombre_aerodromo: Aeropuerto Capitán FAP Renán Elías Olivera
+  estado: Activo
+  pais: Perú
+  departamento: Ica
+  provincia: Pisco
+  distrito: San Andrés
+  administracion: Grupo Aereo N°51
+  uso: Publico
+  latitud: 13°44'41.28"S
+  longitud: 076°13'13.48"W
+  elevacion: 12.0
+  xy: -13.7448,-76.2204
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPMF
+  unidad: CAVRAEM
+  alias: Mazamari
+  nombre_aerodromo: Aeropuerto Mayor PNP Nancy Flores Páucar
+  estado: Activo
+  pais: Perú
+  departamento: Junin
+  provincia: Satipo
+  distrito: Mazamari
+  administracion: Componente Aereo VRAEM
+  uso: Publico
+  latitud: 11°19'32.00"S
+  longitud: 074°32'09.00"W
+  elevacion: 664.0
+  xy: -11.3256,-74.5358
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPUR
+  unidad: GRUP7
+  alias: Piura
+  nombre_aerodromo: Aeropuerto Capitán FAP Guillermo Concha Iberico
+  estado: Activo
+  pais: Perú
+  departamento: Piura
+  provincia: Piura
+  distrito: Castilla
+  administracion: Grupo Aereo N°7
+  uso: Publico
+  latitud: 05°12'21.00"S
+  longitud: 080°36'59.00"W
+  elevacion: 35.0
+  xy: -5.2058,-80.6164
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPTU
+  unidad: AGMAL
+  alias: Puerto Maldonado
+  nombre_aerodromo: Aeropuerto Padre Aldamiz
+  estado: Activo
+  pais: Perú
+  departamento: Madre de Dios
+  provincia: Tambopata
+  distrito: Tambopata
+  administracion: Agrupamiento Aereo de Puerto Maldonado
+  uso: Publico
+  latitud: 12°36'50.00"S
+  longitud: 069°13'43.00"W
+  elevacion: 201.0
+  xy: -12.6139,-69.2286
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPTP
+  unidad: GRU11
+  alias: El Pato
+  nombre_aerodromo: Aeródromo de Grupo Aereo N°11 - "El Pato"
+  estado: Activo
+  pais: Perú
+  departamento: Piura
+  provincia: Talara
+  distrito: Pariñas
+  administracion: Grupo Aereo N°11
+  uso: Privado / Militar
+  latitud: 04°33'03.56"S
+  longitud: 081°13'25.80"W
+  elevacion: 90.0
+  xy: -4.551,-81.2238
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPEV
+  unidad: DIRMA
+  alias: El Valor
+  nombre_aerodromo: Helipuerto de Estacion N°7 - El Valor
+  estado: Inactivo
+  pais: Perú
+  departamento: Amazonas
+  provincia: Uctubamba
+  distrito: El Milagro
+  administracion: Direccion de Meteorologia Aeronautica y Espacial
+  uso: Privado / Civil
+  latitud: 05°40'23.02"S
+  longitud: 078°38'39.73"W
+  elevacion: 443.0
+  xy: -5.6731,-78.6444
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPHR
+  unidad: CAVRAEM
+  alias: Pichari
+  nombre_aerodromo: Helipuerto de CE-VRAEM - "Fuerte Pichari"
+  estado: Activo
+  pais: Perú
+  departamento: Cusco
+  provincia: La Convencion
+  distrito: Pichari
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: 12°31'24.50"S
+  longitud: 073°49'50.00"W
+  elevacion: 586.0
+  xy: -12.5235,-73.8306
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPLP
+  unidad: ALAR6
+  alias: Las Palmas
+  nombre_aerodromo: Base Aerea de Las Palmas - "Las Palmas"
+  estado: Activo
+  pais: Perú
+  departamento: Lima
+  provincia: Lima
+  distrito: Santiago de Surco
+  administracion: Ala Aerea N°6
+  uso: Privado / Militar
+  latitud: 12°09'36.45"S
+  longitud: 076°59'55.60"W
+  elevacion: 77.0
+  xy: -12.1601,-76.9988
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPVS
+  unidad: DIRMA
+  alias: La Vista
+  nombre_aerodromo: Helipuerto de Estacion N°5 - La Vista
+  estado: Inactivo
+  pais: Perú
+  departamento: Loreto
+  provincia: Datem del Marañon
+  distrito: Manseriche
+  administracion: Direccion de Meteorologia Aeronautica y Espacial
+  uso: Privado / Civil
+  latitud: null
+  longitud: null
+  elevacion: 278.0
+  xy: -4.64965,-77.50579
+  tipo_estacion: .nan
+  ema: null
+- codigo: FAQK
+  unidad: CAVRAEM
+  alias: Quillabamba
+  nombre_aerodromo: Helipuerto de 33° Brigada de Infantería EP
+  estado: Inactivo
+  pais: Perú
+  departamento: Cusco
+  provincia: La Convencion
+  distrito: Santa Ana
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: null
+  longitud: null
+  elevacion: 1052.0
+  xy: -12.86197,-72.70046
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPVD
+  unidad: CAVRAEM
+  alias: Valle Esmeralda
+  nombre_aerodromo: Helipuerto BCT EP- N°324 - "Valle Esmeralda"
+  estado: Activo
+  pais: Perú
+  departamento: Junin
+  provincia: Satipo
+  distrito: Rio Tambo
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: 12°07'35.64"S
+  longitud: 074°04'34.27"W
+  elevacion: 565.0
+  xy: -12.1266,-74.0762
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPST
+  unidad: AGRAT
+  alias: Tarapoto
+  nombre_aerodromo: Aeropuerto Cadete FAP Guillermo del Castillo Paredes
+  estado: Activo
+  pais: Perú
+  departamento: San Martin
+  provincia: San Martin
+  distrito: Tarapoto
+  administracion: Agrupamiento Aereo de Tarapoto
+  uso: Publico
+  latitud: 06°30'32.00"S
+  longitud: 076°22'24.00"W
+  elevacion: 264.0
+  xy: -6.5089,-76.3733
+  tipo_estacion: .nan
+  ema: null
+- codigo: FANK
+  unidad: CAVRAEM
+  alias: Cielo Punku
+  nombre_aerodromo: Helipuerto de BCT DINOES "Cielo Punku"
+  estado: Inactivo
+  pais: Perú
+  departamento: Cusco
+  provincia: La Convencion
+  distrito: Kimbiri
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: null
+  longitud: null
+  elevacion: 2118.0
+  xy: -12.8001,-73.5025
+  tipo_estacion: .nan
+  ema: null
+- codigo: FAMQ
+  unidad: CAVRAEM
+  alias: Pampas
+  nombre_aerodromo: Helipuerto del BCT Mariscal Cáceres N°43
+  estado: Inactivo
+  pais: Perú
+  departamento: Huancavelica
+  provincia: Tayacaja
+  distrito: Pampas
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: null
+  longitud: null
+  elevacion: 3272.0
+  xy: -12.396313,-74.866113
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPPQ
+  unidad: CAVRAEM
+  alias: Alto Anapati
+  nombre_aerodromo: Helipuerto de BCT EP-N°312 - "Alto Anapati"
+  estado: Activo
+  pais: Perú
+  departamento: Junin
+  provincia: Satipo
+  distrito: Pangoa
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: 11°40'21.79"S
+  longitud: 074°18'32.44"W
+  elevacion: 855.0
+  xy: -11.6727,-74.309
+  tipo_estacion: .nan
+  ema: null
+- codigo: FAQI
+  unidad: CAVRAEM
+  alias: Quiteni
+  nombre_aerodromo: Helipuerto de Base de Control Fluvial MGP de Quiteni
+  estado: Inactivo
+  pais: Perú
+  departamento: Junin
+  provincia: Satipo
+  distrito: Rio Tambo
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: null
+  longitud: null
+  elevacion: 380.0
+  xy: -11.673463,-74.014007
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPBC
+  unidad: GRU42
+  alias: Caballococha
+  nombre_aerodromo: Aeródromo de Caballococha
+  estado: Activo
+  pais: Perú
+  departamento: Loreto
+  provincia: Mariscal Ramon Castilla
+  distrito: Ramon Castilla
+  administracion: Grupo Aereo N°42
+  uso: Publico
+  latitud: 03°55'00.57"S
+  longitud: 070°30'29.47"W
+  elevacion: 10.0
+  xy: -3.9168,-70.5082
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPEE
+  unidad: GRU42
+  alias: El Estrecho
+  nombre_aerodromo: Aeródromo de El Estrecho
+  estado: Activo
+  pais: Perú
+  departamento: Loreto
+  provincia: Maynas
+  distrito: Putumayo
+  administracion: Grupo Aereo N°42
+  uso: Publico
+  latitud: 02°27'14.15"S
+  longitud: 072°40'14.58"W
+  elevacion: 132.0
+  xy: -2.4539,-72.6707
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPDN
+  unidad: GRU42
+  alias: Angamos
+  nombre_aerodromo: Aeródromo de Colonia Angamos
+  estado: Activo
+  pais: Perú
+  departamento: Loreto
+  provincia: Requena
+  distrito: Yaquerana
+  administracion: Grupo Aereo N°42
+  uso: Publico
+  latitud: 05°08'14.00"S
+  longitud: 072°52'04.00"W
+  elevacion: 130.0
+  xy: -5.1372,-72.8678
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPQM
+  unidad: GRU42
+  alias: San Lorenzo
+  nombre_aerodromo: Aeródromo de San Lorenzo
+  estado: Activo
+  pais: Perú
+  departamento: Loreto
+  provincia: Datem del Marañon
+  distrito: Barranca
+  administracion: Grupo Aereo N°42
+  uso: Publico
+  latitud: 04°49'27.00"S
+  longitud: 076°33'37.00"W
+  elevacion: 132.0
+  xy: -4.8242,-76.5603
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPCL
+  unidad: ALAR4
+  alias: Pucallpa
+  nombre_aerodromo: Aeropuerto Capitán FAP David Abensur Rengifo
+  estado: Activo
+  pais: Perú
+  departamento: Ucayali
+  provincia: Coronel Portillo
+  distrito: Yarinacocha
+  administracion: Ala Aerea N°4
+  uso: Publico
+  latitud: 08°22'40.59"S
+  longitud: 074°34'27.48"W
+  elevacion: 157.0
+  xy: -8.3779,-74.5743
+  tipo_estacion: .nan
+  ema: null
+- codigo: FATO
+  unidad: CAVRAEM
+  alias: Itariato
+  nombre_aerodromo: Helipuerto BCT EP- N°333 - "Itariato"
+  estado: Inactivo
+  pais: Perú
+  departamento: null
+  provincia: null
+  distrito: null
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: null
+  longitud: null
+  elevacion: 0.0
+  xy: -12.546663,-73.138925
+  tipo_estacion: .nan
+  ema: null
+- codigo: FASV
+  unidad: GRU42
+  alias: Soplin Vargas
+  nombre_aerodromo: Punto de Observacion - Soplin Vargas
+  estado: Activo
+  pais: Perú
+  departamento: Loreto
+  provincia: Maynas
+  distrito: Teniente Manuel Clavero
+  administracion: Grupo Aereo N°42
+  uso: '---'
+  latitud: 00°22'24.18"S
+  longitud: 074°40'32.02"W
+  elevacion: 198.0
+  xy: -0.3734,-74.6756
+  tipo_estacion: .nan
+  ema: null
+- codigo: FAMP
+  unidad: DIRMA
+  alias: Machu Picchu
+  nombre_aerodromo: Estacion Cientifica Antartica Machu Picchu
+  estado: Activo
+  pais: Perú
+  departamento: Isla Rey Jorge
+  provincia: Isla Rey Jorge
+  distrito: Isla Rey Jorge
+  administracion: Direccion de Meteorologia Aeronautica y Espacial
+  uso: Privado / Civil
+  latitud: null
+  longitud: null
+  elevacion: 0.0
+  xy: -62.093366, -58.472822
+  tipo_estacion: .nan
+  ema: null
+- codigo: FAUM
+  unidad: CAVRAEM
+  alias: Union Mantaro
+  nombre_aerodromo: Helipuerto de BCT EP-N°42 - "Union Mantaro"
+  estado: Inactivo
+  pais: Perú
+  departamento: Ayacucho
+  provincia: Huanta
+  distrito: Llochegua
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: null
+  longitud: null
+  elevacion: 540.0
+  xy: -12.285015, -74.090941
+  tipo_estacion: .nan
+  ema: null
+- codigo: SPQU
+  unidad: ALAR3
+  alias: Arequipa
+  nombre_aerodromo: Aeropuerto Alfredo Rodriguez Ballon
+  estado: Activo
+  pais: Perú
+  departamento: Arequipa
+  provincia: Arequipa
+  distrito: Cerro Colorado
+  administracion: Ala Aerea N°3
+  uso: Publico
+  latitud: 16°20'26.20"S
+  longitud: 071°34'14.85"W
+  elevacion: 2560.5
+  xy: -16.3406,-71.5708
+  tipo_estacion: .nan
+  ema: null
+- codigo: FASR
+  unidad: GRU42
+  alias: Santa Rosa
+  nombre_aerodromo: Santa Rosa de Yavari
+  estado: Activo
+  pais: Perú
+  departamento: Loreto
+  provincia: Mariscal Ramón Castilla
+  distrito: Yavari
+  administracion: Grupo Aereo N°42
+  uso: Privado / Militar
+  latitud: 04°14'33"S
+  longitud: 69°57'05"W
+  elevacion: 70.0
+  xy: -4.2425,-69.9514
+  tipo_estacion: .nan
+  ema: EMFAP-0001
+- codigo: FABA
+  unidad: CAVRAE
+  alias: Boca Anapati
+  nombre_aerodromo: Base de Control Fluvial Boca Anapati
+  estado: Activo
+  pais: Perú
+  departamento: Junín
+  provincia: Satipo
+  distrito: Mazamari
+  administracion: Componente Aereo VRAEM
+  uso: Privado / Militar
+  latitud: 11°55'40.88"S
+  longitud: 73°59'11.66"W
+  elevacion: 466.0
+  xy: -11.928,-73.9866
+  tipo_estacion: .nan
+  ema: null
+- codigo: FAES
+  unidad: ESOFA
+  alias: Esofa
+  nombre_aerodromo: Escuela de Suboficiales de la FAP
+  estado: Activo
+  pais: Perú
+  departamento: Lima
+  provincia: Lima
+  distrito: Santiago de Surco
+  administracion: Escuela de Suboficiales de la FAP
+  uso: Privado / Militar
+  latitud: 12°09'16.50"S
+  longitud: 77°00'24.17"W
+  elevacion: 64.0
+  xy: -12.1546,-77.0067
+  tipo_estacion: .nan
+  ema: null

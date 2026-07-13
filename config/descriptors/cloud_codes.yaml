@@ -1,0 +1,10 @@
+cloud_amount:
+  SKC: {oktas: 0, description: Sky Clear}
+  CLR: {oktas: 0, description: Clear}
+  FEW: {oktas: '1-2', description: Few Clouds}
+  SCT: {oktas: '3-4', description: Scattered Clouds}
+  BKN: {oktas: '5-7', description: Broken Clouds}
+  OVC: {oktas: 8, description: Overcast}
+  NSC: {description: No Significant Clouds}
+  NCD: {description: No Cloud Detected}
+  VV: {description: Vertical Visibility}

@@ -1,0 +1,542 @@
+# =============================================================================
+# qc_datamet
+# REGLAS DE CONTROL DE CALIDAD METEOROLÓGICO
+#
+# Basado en criterios:
+# - OMM/WMO Quality Control
+# - OACI Anexo 3
+# - Manual de procedimientos meteorológicos aeronáuticos
+#
+# Los rangos físicos están en data_dictionary.yaml
+# =============================================================================
+
+
+qc:
+
+
+  # ===========================================================================
+  # CONFIGURACIÓN GENERAL
+  # ===========================================================================
+
+  general:
+
+
+    enabled: true
+
+
+    generate_flags: true
+
+
+    preserve_original_value: true
+
+
+    create_qc_columns: true
+
+
+
+    qc_flag_system:
+
+
+      GOOD: 0
+
+      SUSPECT: 1
+
+      ERROR: 2
+
+      MISSING: 9
+
+
+
+  # ===========================================================================
+  # CONTROL DE FECHA Y HORA
+  # ===========================================================================
+
+  datetime:
+
+
+    enabled: true
+
+
+    checks:
+
+
+      invalid_date:
+
+
+        enabled: true
+
+        flag: ERROR
+
+
+
+      invalid_time:
+
+
+        enabled: true
+
+        flag: ERROR
+
+
+
+      future_datetime:
+
+
+        enabled: true
+
+        allowed: false
+
+        flag: ERROR
+
+
+
+      duplicated_datetime:
+
+
+        enabled: true
+
+        key:
+
+
+          - station_id
+
+          - datetime_utc
+
+
+        flag: ERROR
+
+
+
+  # ===========================================================================
+  # DATOS FALTANTES
+  # ===========================================================================
+
+  missing:
+
+
+    enabled: true
+
+
+    checks:
+
+
+      null_values:
+
+
+        enabled: true
+
+
+        flag: MISSING
+
+
+
+      expected_observations:
+
+
+        enabled: true
+
+
+        observations_per_day: 14
+
+
+        expected_hours_utc:
+
+
+          - 0
+
+          - 11
+
+          - 12
+
+          - 13
+
+          - 14
+
+          - 15
+
+          - 16
+
+          - 17
+
+          - 18
+
+          - 19
+
+          - 20
+
+          - 21
+
+          - 22
+
+          - 23
+
+
+
+  # ===========================================================================
+  # RANGOS FÍSICOS
+  #
+  # Complementa data_dictionary.yaml
+  # ===========================================================================
+
+  range:
+
+
+    enabled: true
+
+
+    action:
+
+
+      below_minimum:
+
+        flag: ERROR
+
+
+      above_maximum:
+
+        flag: ERROR
+
+
+
+  # ===========================================================================
+  # TEMPERATURA
+  # ===========================================================================
+
+  temperature:
+
+
+    enabled: true
+
+
+    variables:
+
+
+      - air_temp_c
+
+      - dewpoint_temp_c
+
+      - wet_bulb_temp_c
+
+
+
+    checks:
+
+
+      range:
+
+        enabled: true
+
+
+
+      persistence:
+
+
+        enabled: true
+
+
+        consecutive_values: 6
+
+
+        flag: SUSPECT
+
+
+
+      climatology:
+
+
+        enabled: true
+
+
+        method:
+
+          - percentile
+
+          - standard_deviation
+
+
+
+  # ===========================================================================
+  # PRESIÓN
+  # ===========================================================================
+
+  pressure:
+
+
+    enabled: true
+
+
+    variables:
+
+
+      - qnh_hpa
+
+      - qfe_hpa
+
+
+
+    checks:
+
+
+      range:
+
+        enabled: true
+
+
+
+      temporal_change:
+
+
+        enabled: true
+
+
+        max_change_hpa_hour: 10
+
+
+
+  # ===========================================================================
+  # VIENTO
+  # ===========================================================================
+
+  wind:
+
+
+    enabled: true
+
+
+    variables:
+
+
+      - wind_dir
+
+      - wind_speed_kt
+
+      - wind_gust_kt
+
+
+
+    checks:
+
+
+      direction:
+
+
+        range:
+
+          enabled: true
+
+
+
+        allowed_range:
+
+          min: 0
+
+          max: 360
+
+
+
+      speed:
+
+
+        range:
+
+          enabled: true
+
+
+
+      gust:
+
+
+        enabled: true
+
+
+
+      consistency:
+
+
+        gust_greater_than_speed:
+
+
+          enabled: true
+
+
+          minimum_difference: 0
+
+
+          flag: ERROR
+
+
+
+  # ===========================================================================
+  # VISIBILIDAD
+  # ===========================================================================
+
+  visibility:
+
+
+    enabled: true
+
+
+    variables:
+
+
+      - visibility_m
+
+
+      - visibility_min_1_m
+
+
+      - visibility_min_2_m
+
+
+
+    checks:
+
+
+      range:
+
+        enabled: true
+
+
+
+  # ===========================================================================
+  # NUBOSIDAD
+  # ===========================================================================
+
+  clouds:
+
+
+    enabled: true
+
+
+    checks:
+
+
+      amount:
+
+        valid_range:
+
+          min: 0
+
+          max: 8
+
+
+
+      height:
+
+        minimum:
+
+          value: 0
+
+
+
+  # ===========================================================================
+  # CONSISTENCIA ENTRE VARIABLES
+  # ===========================================================================
+
+  consistency:
+
+
+    enabled: true
+
+
+    checks:
+
+
+      dewpoint_temperature:
+
+
+        rule:
+
+          "dewpoint_temp_c <= air_temp_c"
+
+
+        flag: ERROR
+
+
+
+      gust_speed:
+
+
+        rule:
+
+          "wind_gust_kt >= wind_speed_kt"
+
+
+        flag: ERROR
+
+
+
+      qnh_qfe:
+
+
+        enabled: true
+
+
+  # ===========================================================================
+  # CLIMATOLOGÍA
+  # ===========================================================================
+
+  climatology:
+
+
+    enabled: true
+
+
+    methods:
+
+
+      percentile:
+
+
+        lower: 1
+
+        upper: 99
+
+
+
+      z_score:
+
+
+        threshold: 4
+
+
+
+      rolling_statistics:
+
+
+        window_days: 30
+
+
+
+  # ===========================================================================
+  # CORRECCIÓN AUTOMÁTICA
+  # ===========================================================================
+
+  auto_correction:
+
+
+    enabled: true
+
+
+    allowed:
+
+
+      trim_spaces: true
+
+
+      normalize_decimal_separator: true
+
+
+      convert_units: true
+
+
+      fix_known_typing_errors: true
+
+
+
+    forbidden:
+
+
+      modify_extreme_values: true
+
+
+      invent_missing_values: true

@@ -1,0 +1,6 @@
+weather:
+  precipitation: {DZ: Drizzle, RA: Rain, SN: Snow, SG: Snow Grains, IC: Ice Crystals, PL: Ice Pellets, GR: Hail, GS: Small Hail, UP: Unknown Precipitation}
+  obscuration: {FG: Fog, BR: Mist, HZ: Haze, FU: Smoke, DU: Dust, SA: Sand, VA: Volcanic Ash}
+  other: {PO: Dust Devils, SQ: Squall, FC: Funnel Cloud, SS: Sandstorm, DS: Duststorm}
+  descriptors: {MI: Shallow, BC: Patches, PR: Partial, DR: Low Drifting, BL: Blowing, SH: Showers, TS: Thunderstorm, FZ: Freezing}
+  intensity: {'-': Light, '': Moderate, '+': Heavy}

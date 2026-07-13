@@ -1,0 +1,3 @@
+visibility:
+  CAVOK: {description: Ceiling And Visibility OK}
+  NDV: {description: No Directional Variation}

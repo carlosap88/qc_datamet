@@ -1,0 +1,8 @@
+units:
+  temperature: '°C'
+  dew_point: '°C'
+  pressure: hPa
+  visibility: m
+  wind_speed: kt
+  precipitation: mm
+  cloud_height: ft

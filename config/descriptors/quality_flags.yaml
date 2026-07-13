@@ -1,0 +1,11 @@
+flags:
+  OK: {description: Observation accepted}
+  CORRECTED: {description: Automatically corrected}
+  MISSING: {description: Missing value}
+  DUPLICATE: {description: Duplicate observation}
+  OUT_OF_RANGE: {description: Physical range exceeded}
+  TEMPORAL: {description: Temporal inconsistency}
+  CONSISTENCY: {description: Physical inconsistency}
+  CLIMATOLOGY: {description: Climatological anomaly}
+  STATISTICAL: {description: Statistical anomaly}
+  METADATA: {description: Metadata inconsistency}

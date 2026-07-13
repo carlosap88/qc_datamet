@@ -1,0 +1,12 @@
+includes:
+  - missing_values.yaml
+  - report_types.yaml
+  - cloud_codes.yaml
+  - cloud_types.yaml
+  - weather_codes.yaml
+  - trend_codes.yaml
+  - visibility_codes.yaml
+  - wind_codes.yaml
+  - quality_flags.yaml
+  - severity_levels.yaml
+  - units_reference.yaml

@@ -1,0 +1,152 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# =============================================================================
+# PROJECT
+# =============================================================================
+
+[project]
+name = "qc_datamet"
+version = "1.0.0"
+description = "Professional platform for quality control of aeronautical meteorological observations."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.12"
+
+authors = [
+    { name = "Roberto Carlos Arqqui Poma" }
+]
+
+keywords = [
+    "meteorology",
+    "aviation",
+    "quality-control",
+    "meteorological-data",
+    "metar",
+    "icao",
+    "wmo",
+    "climatology",
+    "python"
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+
+    "License :: OSI Approved :: MIT License",
+
+    "Operating System :: OS Independent"
+]
+
+dependencies = [
+    "pandas>=2.2",
+    "numpy>=2.0",
+    "PyYAML>=6.0",
+    "openpyxl>=3.1",
+    "pyarrow>=18.0",
+    "matplotlib>=3.10",
+    "scipy>=1.15",
+    "reportlab>=4.2"
+]
+
+# =============================================================================
+# OPTIONAL DEPENDENCIES
+# =============================================================================
+
+[project.optional-dependencies]
+
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=6.0",
+    "black>=25.0",
+    "ruff>=0.8",
+    "mypy>=1.14"
+]
+
+docs = [
+    "mkdocs",
+    "mkdocs-material"
+]
+
+# =============================================================================
+# URLS
+# =============================================================================
+
+[project.urls]
+
+Homepage = "https://github.com/<usuario>/qc_datamet"
+Repository = "https://github.com/<usuario>/qc_datamet"
+Documentation = "https://github.com/<usuario>/qc_datamet/tree/main/docs"
+Issues = "https://github.com/<usuario>/qc_datamet/issues"
+
+# =============================================================================
+# SETUPTOOLS
+# =============================================================================
+
+[tool.setuptools]
+
+include-package-data = true
+
+# =============================================================================
+# BLACK
+# =============================================================================
+
+[tool.black]
+
+line-length = 88
+target-version = ["py312"]
+
+# =============================================================================
+# RUFF
+# =============================================================================
+
+[tool.ruff]
+
+line-length = 88
+target-version = "py312"
+
+# =============================================================================
+# PYTEST
+# =============================================================================
+
+[tool.pytest.ini_options]
+
+testpaths = [
+    "tests"
+]
+
+python_files = [
+    "test_*.py"
+]
+
+python_classes = [
+    "Test*"
+]
+
+python_functions = [
+    "test_*"
+]
+
+# =============================================================================
+# COVERAGE
+# =============================================================================
+
+[tool.coverage.run]
+
+source = [
+    "src"
+]
+
+omit = [
+    "tests/*"
+]

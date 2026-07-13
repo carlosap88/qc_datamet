@@ -1,0 +1,537 @@
+# =============================================================================
+# DATA DICTIONARY — meteo_qc
+# Descripción de variables meteorológicas aeronáuticas
+# =============================================================================
+
+station_id:
+  description: Station ICAO or institutional identifier
+  description_es: Identificador OACI o Cod FAP
+  unit: null
+  type: string
+  aliases:
+    - Identificador OACI o Cod FAP
+
+report_status:
+  description: Aviation report status
+  description_es: Estado del producto de aviación
+  unit: null
+  type: category
+  valid_values:
+    - routine
+    - special
+    - corrected
+    - missing
+  aliases:
+    - Estado del producto de aviación
+    - Estado del producto de aviación (rutinario, especial, corregido, no disponible)
+
+# -----------------------------------------------------------------------------
+# TIEMPO / DATETIME
+# -----------------------------------------------------------------------------
+
+year:
+  description: Observation year UTC
+  description_es: Año de observación UTC
+  unit: year
+  type: int16
+  aliases:
+    - Año
+
+month:
+  description: Observation month UTC
+  description_es: Mes de observación UTC
+  unit: month
+  type: int8
+  valid_min: 1
+  valid_max: 12
+  aliases:
+    - Mes
+
+day:
+  description: Observation day UTC
+  description_es: Día de observación UTC
+  unit: day
+  type: int8
+  valid_min: 1
+  valid_max: 31
+  aliases:
+    - Dia
+
+hour_utc:
+  description: Observation hour UTC
+  description_es: Hora de observación UTC
+  unit: hour
+  type: int8
+  valid_min: 0
+  valid_max: 23
+  aliases:
+    - Hora (UTC)
+
+minute:
+  description: Observation minute UTC
+  description_es: Minuto de observación UTC
+  unit: minute
+  type: int8
+  valid_min: 0
+  valid_max: 59
+  aliases:
+    - Minuto
+
+datetime_utc:
+  description: Consolidated UTC datetime (built internally from year, month, day, hour_utc, minute)
+  description_es: Fecha y hora UTC consolidada (construida internamente)
+  unit: datetime
+  type: datetime64
+  computed: true
+  source_fields:
+    - year
+    - month
+    - day
+    - hour_utc
+    - minute
+
+# -----------------------------------------------------------------------------
+# VIENTO / WIND
+# -----------------------------------------------------------------------------
+
+wind_dir:
+  description: Wind direction
+  description_es: Dirección del viento
+  unit: degree
+  type: float32
+  valid_min: 0
+  valid_max: 360
+  aliases:
+    - Dirección del viento
+
+wind_dir_ccw_extreme:
+  description: Extreme counterclockwise wind direction
+  description_es: Dirección extrema antihoraria del viento
+  unit: degree
+  type: float32
+  valid_min: 0
+  valid_max: 360
+  aliases:
+    - Dirección extrema antihoraria del viento
+
+wind_dir_cw_extreme:
+  description: Extreme clockwise wind direction
+  description_es: Dirección extrema horaria del viento
+  unit: degree
+  type: float32
+  valid_min: 0
+  valid_max: 360
+  aliases:
+    - Dirección extrema horaria del viento
+
+wind_speed_kt:
+  description: Wind speed
+  description_es: Velocidad del viento
+  unit: knot
+  type: float32
+  valid_min: 0
+  valid_max: 150
+  aliases:
+    - Velocidad del viento (nudos)
+
+wind_gust_kt:
+  description: Wind gust speed
+  description_es: Velocidad de ráfagas de viento
+  unit: knot
+  type: float32
+  valid_min: 0
+  valid_max: 200
+  aliases:
+    - Velocidad del viento. Rafagas (nudos)
+
+# -----------------------------------------------------------------------------
+# TEMPERATURA / TEMPERATURE
+# -----------------------------------------------------------------------------
+
+air_temp_c:
+  description: Air temperature
+  description_es: Temperatura del aire
+  unit: celsius
+  type: float32
+  valid_min: -90
+  valid_max: 60
+  aliases:
+    - Temperatura del aire
+
+wet_bulb_temp_c:
+  description: Wet bulb temperature
+  description_es: Temperatura de bulbo húmedo
+  unit: celsius
+  type: float32
+  valid_min: -90
+  valid_max: 60
+  aliases:
+    - Temperatura Bulbo humedo
+
+dewpoint_temp_c:
+  description: Dew point temperature
+  description_es: Temperatura de rocío
+  unit: celsius
+  type: float32
+  valid_min: -100
+  valid_max: 50
+  aliases:
+    - Temperatura de rocio
+
+max_temp_c:
+  description: Maximum air temperature
+  description_es: Temperatura máxima del aire
+  unit: celsius
+  type: float32
+  aliases:
+    - Temperatura Maxima
+
+min_temp_c:
+  description: Minimum air temperature
+  description_es: Temperatura mínima del aire
+  unit: celsius
+  type: float32
+  aliases:
+    - Temperatura Minima
+
+# -----------------------------------------------------------------------------
+# PRESIÓN / PRESSURE
+# -----------------------------------------------------------------------------
+
+qnh_hpa:
+  description: Sea level pressure QNH
+  description_es: Presión a nivel medio del mar (QNH)
+  unit: hPa
+  type: float32
+  valid_min: 870
+  valid_max: 1085
+  aliases:
+    - Presion a nivel medio del mar (QNH)
+
+qfe_hpa:
+  description: Station pressure QFE
+  description_es: Presión a nivel de la estación (QFE)
+  unit: hPa
+  type: float32
+  valid_min: 500
+  valid_max: 1085
+  aliases:
+    - Presion a nivel de la estacion (QFE)
+
+# -----------------------------------------------------------------------------
+# VISIBILIDAD / VISIBILITY
+# -----------------------------------------------------------------------------
+
+visibility_m:
+  description: Prevailing visibility
+  description_es: Visibilidad reinante
+  unit: meter
+  type: float32
+  valid_min: 0
+  valid_max: 100000
+  aliases:
+    - Visibilidad reinante
+
+visibility_min_1_m:
+  description: First minimum horizontal visibility
+  description_es: Primera visibilidad mínima horizontal
+  unit: meter
+  type: float32
+  valid_min: 0
+  valid_max: 100000
+  aliases:
+    - 1° Visibilidad minima horizontal
+
+visibility_min_1_dir:
+  description: Direction of first minimum visibility
+  description_es: Dirección de la primera visibilidad mínima
+  unit: degree
+  type: float32
+  valid_min: 0
+  valid_max: 360
+  aliases:
+    - 1° Direccion de la visibilidad horizontal minima observada
+
+visibility_min_2_m:
+  description: Second minimum horizontal visibility
+  description_es: Segunda visibilidad mínima horizontal
+  unit: meter
+  type: float32
+  valid_min: 0
+  valid_max: 100000
+  aliases:
+    - 2° Visibilidad minima horizontal
+
+visibility_min_2_dir:
+  description: Direction of second minimum visibility
+  description_es: Dirección de la segunda visibilidad mínima
+  unit: degree
+  type: float32
+  valid_min: 0
+  valid_max: 360
+  aliases:
+    - 2° Direccion de la visibilidad horizontal minima observada
+
+# -----------------------------------------------------------------------------
+# TIEMPO PRESENTE / PRESENT WEATHER
+# -----------------------------------------------------------------------------
+
+present_weather_1:
+  description: First significant present weather
+  description_es: Primer tiempo presente significativo
+  unit: code
+  type: string
+  aliases:
+    - 1 Tiempo presente significativo
+
+present_weather_2:
+  description: Second significant present weather
+  description_es: Segundo tiempo presente significativo
+  unit: code
+  type: string
+  aliases:
+    - 2 Tiempo presente significativo
+
+present_weather_3:
+  description: Third significant present weather
+  description_es: Tercer tiempo presente significativo
+  unit: code
+  type: string
+  aliases:
+    - 3 Tiempo presente significativo
+
+# -----------------------------------------------------------------------------
+# NUBES / CLOUDS
+# -----------------------------------------------------------------------------
+
+cloud_amount_1:
+  description: First cloud layer amount
+  description_es: Cantidad de nubes — primera capa
+  unit: oktas
+  type: string
+  aliases:
+    - 1° Cantidad de nubes
+
+cloud_base_1_ft:
+  description: First cloud layer base height
+  description_es: Altura de la base — primera capa de nubes
+  unit: feet
+  type: float32
+  valid_min: 0
+  aliases:
+    - 1° Altura de la base de la nube (pies)
+
+cloud_type_1:
+  description: First cloud layer type
+  description_es: Tipo de nube — primera capa
+  unit: code
+  type: string
+  aliases:
+    - 1° Tipo de nube
+
+cloud_amount_2:
+  description: Second cloud layer amount
+  description_es: Cantidad de nubes — segunda capa
+  unit: oktas
+  type: string
+  aliases:
+    - 2° Cantidad de nubes
+
+cloud_base_2_ft:
+  description: Second cloud layer base height
+  description_es: Altura de la base — segunda capa de nubes
+  unit: feet
+  type: float32
+  valid_min: 0
+  aliases:
+    - 2° Altura de la base de la nube (pies)
+
+cloud_type_2:
+  description: Second cloud layer type
+  description_es: Tipo de nube — segunda capa
+  unit: code
+  type: string
+  aliases:
+    - 2° Tipo de nube
+
+cloud_amount_3:
+  description: Third cloud layer amount
+  description_es: Cantidad de nubes — tercera capa
+  unit: oktas
+  type: string
+  aliases:
+    - 3° Cantidad de nubes
+
+cloud_base_3_ft:
+  description: Third cloud layer base height
+  description_es: Altura de la base — tercera capa de nubes
+  unit: feet
+  type: float32
+  valid_min: 0
+  aliases:
+    - 3° Altura de la base de la nube (pies)
+
+cloud_type_3:
+  description: Third cloud layer type
+  description_es: Tipo de nube — tercera capa
+  unit: code
+  type: string
+  aliases:
+    - 3° Tipo de nube
+
+# -----------------------------------------------------------------------------
+# PRECIPITACIÓN Y HUMEDAD / PRECIPITATION & HUMIDITY
+# -----------------------------------------------------------------------------
+
+precipitation_mm:
+  description: Accumulated precipitation
+  description_es: Precipitación acumulada
+  unit: millimeter
+  type: float32
+  valid_min: 0
+  aliases:
+    - Precipitacion Acumulada
+
+relative_humidity:
+  description: Relative humidity
+  description_es: Humedad relativa
+  unit: percent
+  type: float32
+  valid_min: 0
+  valid_max: 100
+  aliases:
+    - Humedad relativa (%)
+
+# -----------------------------------------------------------------------------
+# METADATA DE ESTACIÓN / STATION METADATA
+# -----------------------------------------------------------------------------
+
+country:
+  description: Country
+  description_es: País
+  unit: null
+  type: string
+  aliases:
+    - Pais
+
+department:
+  description: Administrative department
+  description_es: Departamento administrativo
+  unit: null
+  type: string
+  aliases:
+    - Departamento
+
+province:
+  description: Province
+  description_es: Provincia
+  unit: null
+  type: string
+  aliases:
+    - Provincia
+
+district:
+  description: District
+  description_es: Distrito
+  unit: null
+  type: string
+  aliases:
+    - Distrito
+
+latitude:
+  description: Station latitude
+  description_es: Latitud de la estación
+  unit: degree
+  type: float64
+  valid_min: -90
+  valid_max: 90
+  aliases:
+    - Latitud
+
+longitude:
+  description: Station longitude
+  description_es: Longitud de la estación
+  unit: degree
+  type: float64
+  valid_min: -180
+  valid_max: 180
+  aliases:
+    - Longitud
+
+elevation_m:
+  description: Station elevation
+  description_es: Elevación de la estación
+  unit: meter
+  type: float32
+  aliases:
+    - Elevacion
+
+location:
+  description: Locality name
+  description_es: Nombre de la localidad
+  unit: null
+  type: string
+  aliases:
+    - Lugar
+
+aerodrome_name:
+  description: Aerodrome name
+  description_es: Nombre del aeródromo
+  unit: null
+  type: string
+  aliases:
+    - Nombre del Aeródromo
+
+station_type:
+  description: Station type
+  description_es: Tipo de estación
+  unit: null
+  type: category
+  aliases:
+    - Tipo de Estacion
+
+meteorological_office:
+  description: Meteorological office
+  description_es: Oficina meteorológica
+  unit: null
+  type: string
+  aliases:
+    - Oficina Meteorologica
+
+observer:
+  description: Observer name or identifier
+  description_es: Nombre o identificador del observador
+  unit: null
+  type: string
+  aliases:
+    - Observador
+
+# -----------------------------------------------------------------------------
+# OTROS / OTHER
+# -----------------------------------------------------------------------------
+
+metar:
+  description: Raw METAR aeronautical meteorological report (full text string)
+  description_es: Reporte meteorológico aeronáutico de rutina (texto completo)
+  unit: null
+  type: string
+  example: "SPIM 151200Z 18005KT 9999 FEW020 25/18 Q1013"
+  aliases:
+    - METAR
+    - Reporte METAR
+
+remarks:
+  description: Additional remarks
+  description_es: Observaciones adicionales
+  unit: null
+  type: string
+  aliases:
+    - Remarks
+
+source_file:
+  description: Original source filename
+  description_es: Nombre del archivo fuente original
+  unit: null
+  type: string
+  aliases:
+    - ARCHIVO_ORIGEN

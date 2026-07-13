@@ -1,0 +1,330 @@
+# =============================================================================
+# excel_schema.yaml
+# Estructura física REAL de archivos Excel históricos meteorológicos
+# =============================================================================
+
+excel_structure:
+
+  header_row: 0
+
+  # IMPORTANTE:
+  # Pandas NO conserva columnas vacías del header.
+  # La columna visual AM vacía NO debe incluirse.
+  total_columns_expected: 51
+
+  columns:
+
+    A:
+      original_name: "Identificador OACI o Cod FAP"
+      standard_name: station_id
+      required: true
+      expected_type: string
+
+    B:
+      original_name: "Estado del producto de aviación (rutinario, especial, corregido, no disponible)"
+      standard_name: report_status
+      required: true
+      expected_type: string
+
+    C:
+      original_name: "Año"
+      standard_name: year
+      required: true
+      expected_type: integer
+
+    D:
+      original_name: "Mes"
+      standard_name: month
+      required: true
+      expected_type: integer
+
+    E:
+      original_name: "Dia"
+      standard_name: day
+      required: true
+      expected_type: integer
+
+    F:
+      original_name: "Hora (UTC)"
+      standard_name: hour_utc
+      required: true
+      expected_type: integer
+
+    G:
+      original_name: "Minuto"
+      standard_name: minute
+      required: true
+      expected_type: integer
+
+    H:
+      original_name: "Dirección del viento"
+      standard_name: wind_dir
+      required: false
+      expected_type: float
+
+    I:
+      original_name: "Dirección extrema antihoraria del viento"
+      standard_name: wind_dir_ccw_extreme
+      required: false
+      expected_type: float
+
+    J:
+      original_name: "Dirección extrema horaria del viento"
+      standard_name: wind_dir_cw_extreme
+      required: false
+      expected_type: float
+
+    K:
+      original_name: "Velocidad del viento (nudos)"
+      standard_name: wind_speed_kt
+      required: false
+      expected_type: float
+
+    L:
+      original_name: "Velocidad del viento. Rafagas (nudos)"
+      standard_name: wind_gust_kt
+      required: false
+      expected_type: float
+
+    M:
+      original_name: "Temperatura del aire"
+      standard_name: air_temp_c
+      required: false
+      expected_type: float
+
+    N:
+      original_name: "Temperatura Bulbo humedo"
+      standard_name: wet_bulb_temp_c
+      required: false
+      expected_type: float
+
+    O:
+      original_name: "Temperatura de rocio"
+      standard_name: dewpoint_temp_c
+      required: false
+      expected_type: float
+
+    P:
+      original_name: "Presion a nivel medio del mar (QNH)"
+      standard_name: qnh_hpa
+      required: false
+      expected_type: float
+
+    Q:
+      original_name: "Presion a nivel de la estacion (QFE)"
+      standard_name: qfe_hpa
+      required: false
+      expected_type: float
+
+    R:
+      original_name: "Visibilidad reinante"
+      standard_name: visibility_m
+      required: false
+      expected_type: float
+
+    S:
+      original_name: "1° Visibilidad minima horizontal"
+      standard_name: visibility_min_1_m
+      required: false
+      expected_type: float
+
+    T:
+      original_name: "1° Direccion de la visibilidad horizontal minima observada"
+      standard_name: visibility_min_1_dir
+      required: false
+      expected_type: float
+
+    U:
+      original_name: "2° Visibilidad minima horizontal"
+      standard_name: visibility_min_2_m
+      required: false
+      expected_type: float
+
+    V:
+      original_name: "2° Direccion de la visibilidad horizontal minima observada"
+      standard_name: visibility_min_2_dir
+      required: false
+      expected_type: float
+
+    W:
+      original_name: "1 Tiempo presente significativo"
+      standard_name: present_weather_1
+      required: false
+      expected_type: string
+
+    X:
+      original_name: "2 Tiempo presente significativo"
+      standard_name: present_weather_2
+      required: false
+      expected_type: string
+
+    Y:
+      original_name: "3 Tiempo presente significativo"
+      standard_name: present_weather_3
+      required: false
+      expected_type: string
+
+    Z:
+      original_name: "1° Cantidad de nubes"
+      standard_name: cloud_amount_1
+      required: false
+      expected_type: string
+      aliases:
+        - "1°  Cantidad de nubes"
+    AA:
+      original_name: "1° Altura de la base de la nube (pies)"
+      standard_name: cloud_base_1_ft
+      required: false
+      expected_type: float
+
+    AB:
+      original_name: "1° Tipo de nube"
+      standard_name: cloud_type_1
+      required: false
+      expected_type: string
+
+    AC:
+      original_name: "2° Cantidad de nubes"
+      standard_name: cloud_amount_2
+      required: false
+      expected_type: string
+      aliases:
+        - "2°  Cantidad de nubes"
+    AD:
+      original_name: "2° Altura de la base de la nube (pies)"
+      standard_name: cloud_base_2_ft
+      required: false
+      expected_type: float
+
+    AE:
+      original_name: "2° Tipo de nube"
+      standard_name: cloud_type_2
+      required: false
+      expected_type: string
+
+    AF:
+      original_name: "3° Cantidad de nubes"
+      standard_name: cloud_amount_3
+      required: false
+      expected_type: string
+      aliases:
+        - "3°  Cantidad de nubes"
+    AG:
+      original_name: "3° Altura de la base de la nube (pies)"
+      standard_name: cloud_base_3_ft
+      required: false
+      expected_type: float
+
+    AH:
+      original_name: "3° Tipo de nube"
+      standard_name: cloud_type_3
+      required: false
+      expected_type: string
+
+    AI:
+      original_name: "Temperatura Maxima"
+      standard_name: max_temp_c
+      required: false
+      expected_type: float
+
+    AJ:
+      original_name: "Temperatura Minima"
+      standard_name: min_temp_c
+      required: false
+      expected_type: float
+
+    AK:
+      original_name: "Precipitacion Acumulada"
+      standard_name: precipitation_mm
+      required: false
+      expected_type: float
+
+    AL:
+      original_name: "Humedad relativa (%)"
+      standard_name: relative_humidity
+      required: false
+      expected_type: float
+
+    AM:
+      original_name: "Pais"
+      standard_name: country
+      required: false
+      expected_type: string
+
+    AN:
+      original_name: "Departamento"
+      standard_name: department
+      required: false
+      expected_type: string
+
+    AO:
+      original_name: "Provincia"
+      standard_name: province
+      required: false
+      expected_type: string
+
+    AP:
+      original_name: "Distrito"
+      standard_name: district
+      required: false
+      expected_type: string
+
+    AQ:
+      original_name: "Latitud"
+      standard_name: latitude
+      required: false
+      expected_type: float
+
+    AR:
+      original_name: "Longitud"
+      standard_name: longitude
+      required: false
+      expected_type: float
+
+    AS:
+      original_name: "Elevacion"
+      standard_name: elevation_m
+      required: false
+      expected_type: float
+
+    AT:
+      original_name: "Lugar"
+      standard_name: location
+      required: false
+      expected_type: string
+
+    AU:
+      original_name: "Nombre del Aeródromo"
+      standard_name: aerodrome_name
+      required: false
+      expected_type: string
+
+    AV:
+      original_name: "Tipo de Estacion"
+      standard_name: station_type
+      required: false
+      expected_type: string
+
+    AW:
+      original_name: "Remarks"
+      standard_name: remarks
+      required: false
+      expected_type: string
+
+    AX:
+      original_name: "Reporte METAR"
+      standard_name: metar
+      required: false
+      expected_type: string
+
+    AY:
+      original_name: "Oficina Meteorologica"
+      standard_name: meteorological_office
+      required: false
+      expected_type: string
+
+    AZ:
+      original_name: "Observador"
+      standard_name: observer
+      required: false
+      expected_type: string

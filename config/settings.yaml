@@ -1,0 +1,199 @@
+# =============================================================================
+# qc_datamet
+# Configuración general del sistema
+# =============================================================================
+
+
+application:
+
+  name: "qc_datamet"
+
+  version: "1.0.0"
+
+  author: "TC3 FAP ARQQUI POMA ROBERTO CARLOS"
+
+  description: >
+    Sistema de control de calidad de observaciones meteorológicas
+    aeronáuticas.
+
+
+# =============================================================================
+# SISTEMA DE ARCHIVOS
+# =============================================================================
+
+paths:
+
+  project_root: "."
+
+  data:
+
+    raw_excel: "./data/raw_excel"
+
+    raw_csv: "./data/raw_csv"
+
+    raw_bufr: "./data/raw_bufr"
+
+    raw_metar: "./data/raw_metar"
+
+    cache: "./data/cache"
+
+    parquet: "./data/parquet"
+
+    consolidated: "./data/consolidated"
+
+    processed: "./data/processed"
+
+    final: "./data/final"
+
+
+  reports:
+
+    root: "./reports"
+
+
+  logs:
+
+    root: "./logs"
+
+
+
+# =============================================================================
+# INPUTS
+# =============================================================================
+
+input:
+
+
+  accepted_formats:
+
+    excel:
+
+      enabled: true
+
+      extensions:
+
+        - ".xlsx"
+
+        - ".xls"
+
+        - ".xlsm"
+
+        - ".xlsb"
+
+
+    csv:
+
+      enabled: true
+
+      extensions:
+
+        - ".csv"
+
+
+    bufr:
+
+      enabled: false
+
+
+
+# =============================================================================
+# PIPELINE
+# =============================================================================
+
+pipeline:
+
+
+  resume_previous_execution: true
+
+
+  stages:
+
+
+    import:
+
+      enabled: true
+
+
+    preprocessing:
+
+      enabled: true
+
+
+    qc:
+
+      enabled: true
+
+
+    reports:
+
+      enabled: true
+
+
+    export:
+
+      enabled: true
+
+
+
+# =============================================================================
+# LOGGING
+# =============================================================================
+
+logging:
+
+
+  level: "INFO"
+
+
+  files:
+
+
+    pipeline: "./logs/pipeline.log"
+
+    import: "./logs/import.log"
+
+    qc: "./logs/qc.log"
+
+    errors: "./logs/errors.log"
+
+
+
+# =============================================================================
+# REPORTES
+# =============================================================================
+
+reports:
+
+
+  format:
+
+    - pdf
+
+    - csv
+
+    - xlsx
+
+
+  include_graphics: true
+
+
+  include_statistics: true
+
+
+# =============================================================================
+# PROCESAMIENTO
+# =============================================================================
+
+processing:
+
+
+  timezone: "UTC"
+
+
+  encoding: "utf-8"
+
+
+  dataframe_engine: "pandas"
+
+
+  save_intermediate_files: true

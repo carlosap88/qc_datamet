@@ -1,0 +1,3 @@
+cloud_types:
+  CB: {description: Cumulonimbus}
+  TCU: {description: Towering Cumulus}

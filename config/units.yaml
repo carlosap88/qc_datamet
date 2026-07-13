@@ -1,0 +1,339 @@
+# =============================================================================
+# qc_datamet
+# CATÁLOGO DE UNIDADES Y CONVERSIONES
+#
+# Define unidades estándar utilizadas internamente por qc_datamet.
+# Las variables meteorológicas están descritas en data_dictionary.yaml
+# =============================================================================
+
+
+units
+
+
+  # ===========================================================================
+  # TEMPERATURA
+  # ===========================================================================
+
+  temperature
+
+
+    celsius
+
+      name Grados Celsius
+
+      symbol °C
+
+      standard true
+
+      dimension temperature
+
+
+
+    kelvin
+
+      name Kelvin
+
+      symbol K
+
+      standard false
+
+      conversion
+
+        formula x - 273.15
+
+
+
+    fahrenheit
+
+      name Grados Fahrenheit
+
+      symbol °F
+
+      standard false
+
+      conversion
+
+        formula (x - 32)  59
+
+
+
+  # ===========================================================================
+  # PRESIÓN ATMOSFÉRICA
+  # ===========================================================================
+
+  pressure
+
+
+    hpa
+
+      name Hectopascal
+
+      symbol hPa
+
+      standard true
+
+
+
+    pa
+
+      name Pascal
+
+      symbol Pa
+
+      standard false
+
+      conversion
+
+        formula x  100
+
+
+
+    mmhg
+
+      name Milímetros de mercurio
+
+      symbol mmHg
+
+      standard false
+
+      conversion
+
+        formula x  0.750061
+
+
+
+  # ===========================================================================
+  # VIENTO
+  # ===========================================================================
+
+  wind_speed
+
+
+    knot
+
+      name Nudo
+
+      symbol kt
+
+      standard true
+
+
+
+    meter_per_second
+
+      name Metro por segundo
+
+      symbol ms
+
+      standard false
+
+      conversion
+
+        formula x  1.94384
+
+
+
+    kilometer_per_hour
+
+      name Kilómetro por hora
+
+      symbol kmh
+
+      standard false
+
+      conversion
+
+        formula x  1.852
+
+
+
+  # ===========================================================================
+  # DIRECCIÓN
+  # ===========================================================================
+
+  direction
+
+
+    degree
+
+      name Grado angular
+
+      symbol °
+
+      standard true
+
+      range
+
+        min 0
+
+        max 360
+
+
+
+  # ===========================================================================
+  # DISTANCIA  VISIBILIDAD
+  # ===========================================================================
+
+  distance
+
+
+    meter
+
+      name Metro
+
+      symbol m
+
+      standard true
+
+
+
+    kilometer
+
+      name Kilómetro
+
+      symbol km
+
+      conversion
+
+        formula x  1000
+
+
+
+    nautical_mile
+
+      name Milla náutica
+
+      symbol NM
+
+      conversion
+
+        formula x  1852
+
+
+
+  # ===========================================================================
+  # ALTURA
+  # ===========================================================================
+
+  height
+
+
+    feet
+
+      name Pie
+
+      symbol ft
+
+      standard true
+
+
+
+    meter
+
+      name Metro
+
+      symbol m
+
+      conversion
+
+        formula x  0.3048
+
+
+
+  # ===========================================================================
+  # PRECIPITACIÓN
+  # ===========================================================================
+
+  precipitation
+
+
+    millimeter
+
+      name Milímetro
+
+      symbol mm
+
+      standard true
+
+
+
+  # ===========================================================================
+  # HUMEDAD
+  # ===========================================================================
+
+  humidity
+
+
+    percent
+
+      name Porcentaje
+
+      symbol %
+
+      standard true
+
+
+
+  # ===========================================================================
+  # COBERTURA NUBOSA
+  # ===========================================================================
+
+  cloud_cover
+
+
+    okta
+
+      name Octa
+
+      symbol okta
+
+      range
+
+        min 0
+
+        max 8
+
+
+
+  # ===========================================================================
+  # TIEMPO
+  # ===========================================================================
+
+  datetime
+
+
+    utc
+
+      name Tiempo Universal Coordinado
+
+      symbol UTC
+
+
+
+    year
+
+      symbol year
+
+
+
+    month
+
+      symbol month
+
+
+
+    day
+
+      symbol day
+
+
+
+    hour
+
+      symbol hour
+
+
+
+    minute
+
+      symbol minute

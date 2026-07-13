@@ -1,0 +1,4 @@
+trend:
+  NOSIG: {description: No Significant Change}
+  TEMPO: {description: Temporary Fluctuation}
+  BECMG: {description: Becoming}

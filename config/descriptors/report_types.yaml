@@ -1,0 +1,3 @@
+report_type:
+  METAR: {description: Routine Aviation Weather Report}
+  SPECI: {description: Special Aviation Weather Report}
