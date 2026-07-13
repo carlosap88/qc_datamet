@@ -1,0 +1,355 @@
+# =============================================================================
+# QC_DATAMET v1.0
+# pipeline.yaml
+#
+# Configuración del flujo de ejecución del pipeline.
+# =============================================================================
+
+pipeline:
+
+  name: "qc_datamet_pipeline"
+
+  version: "1.0.0"
+
+  enabled: true
+
+  execution_mode: "sequential"
+
+  resume_previous_execution: true
+
+  save_checkpoints: true
+
+  stop_on_critical_error: true
+
+  continue_on_warning: true
+
+  validate_stage_dependencies: true
+
+  checkpoint_format: "json"
+
+  checkpoint_directory: "./data/staging/checkpoints"
+
+# =============================================================================
+# STAGES
+# =============================================================================
+
+stages:
+
+  stage01_discovery:
+
+    enabled: true
+
+    order: 1
+
+    class_name: "Stage01Discovery"
+
+    module: "src.pipeline.stages.stage01_discovery"
+
+    description: >
+      Busca, identifica e inventaría todos los archivos de entrada.
+
+    requires: []
+
+    checkpoint: true
+
+
+  stage02_ingestion:
+
+    enabled: true
+
+    order: 2
+
+    class_name: "Stage02Ingestion"
+
+    module: "src.pipeline.stages.stage02_ingestion"
+
+    description: >
+      Lee los archivos identificados mediante el lector correspondiente.
+
+    requires:
+
+      - "stage01_discovery"
+
+    checkpoint: true
+
+
+  stage03_structure_validation:
+
+    enabled: true
+
+    order: 3
+
+    class_name: "Stage03StructureValidation"
+
+    module: "src.pipeline.stages.stage03_structure_validation"
+
+    description: >
+      Valida la estructura de cada archivo usando el esquema configurado.
+
+    requires:
+
+      - "stage02_ingestion"
+
+    checkpoint: true
+
+
+  stage04_consolidation:
+
+    enabled: true
+
+    order: 4
+
+    class_name: "Stage04Consolidation"
+
+    module: "src.pipeline.stages.stage04_consolidation"
+
+    description: >
+      Consolida los DataFrames válidos en un único dataset.
+
+    requires:
+
+      - "stage03_structure_validation"
+
+    checkpoint: true
+
+
+  stage05_preprocessing:
+
+    enabled: true
+
+    order: 5
+
+    class_name: "Stage05Preprocessing"
+
+    module: "src.pipeline.stages.stage05_preprocessing"
+
+    description: >
+      Normaliza columnas, tipos de datos, valores faltantes,
+      unidades, fechas y metadata.
+
+    requires:
+
+      - "stage04_consolidation"
+
+    checkpoint: true
+
+
+  stage06_prepared_data_export:
+
+    enabled: true
+
+    order: 6
+
+    class_name: "Stage06PreparedDataExport"
+
+    module: "src.pipeline.stages.stage06_prepared_data_export"
+
+    description: >
+      Exporta el dataset preparado antes del control de calidad.
+
+    requires:
+
+      - "stage05_preprocessing"
+
+    checkpoint: true
+
+
+  stage07_basic_quality_control:
+
+    enabled: false
+
+    order: 7
+
+    class_name: "Stage07BasicQualityControl"
+
+    module: "src.pipeline.stages.stage07_basic_quality_control"
+
+    description: >
+      Ejecuta los controles básicos de calidad.
+
+    requires:
+
+      - "stage06_prepared_data_export"
+
+    checkpoint: true
+
+
+  stage08_basic_qc_summary:
+
+    enabled: false
+
+    order: 8
+
+    class_name: "Stage08BasicQCSummary"
+
+    module: "src.pipeline.stages.stage08_basic_qc_summary"
+
+    description: >
+      Resume los resultados del control de calidad básico.
+
+    requires:
+
+      - "stage07_basic_quality_control"
+
+    checkpoint: true
+
+
+  stage09_meteorological_quality_control:
+
+    enabled: false
+
+    order: 9
+
+    class_name: "Stage09MeteorologicalQualityControl"
+
+    module: "src.pipeline.stages.stage09_meteorological_quality_control"
+
+    description: >
+      Ejecuta controles de consistencia meteorológica.
+
+    requires:
+
+      - "stage08_basic_qc_summary"
+
+    checkpoint: true
+
+
+  stage10_meteorological_qc_summary:
+
+    enabled: false
+
+    order: 10
+
+    class_name: "Stage10MeteorologicalQCSummary"
+
+    module: "src.pipeline.stages.stage10_meteorological_qc_summary"
+
+    description: >
+      Resume los resultados del control meteorológico.
+
+    requires:
+
+      - "stage09_meteorological_quality_control"
+
+    checkpoint: true
+
+
+  stage11_advanced_quality_control:
+
+    enabled: false
+
+    order: 11
+
+    class_name: "Stage11AdvancedQualityControl"
+
+    module: "src.pipeline.stages.stage11_advanced_quality_control"
+
+    description: >
+      Ejecuta controles climatológicos, estadísticos y espaciales.
+
+    requires:
+
+      - "stage10_meteorological_qc_summary"
+
+    checkpoint: true
+
+
+  stage12_final_quality_assessment:
+
+    enabled: false
+
+    order: 12
+
+    class_name: "Stage12FinalQualityAssessment"
+
+    module: "src.pipeline.stages.stage12_final_quality_assessment"
+
+    description: >
+      Consolida todos los flags y genera la evaluación final.
+
+    requires:
+
+      - "stage11_advanced_quality_control"
+
+    checkpoint: true
+
+
+  stage13_reporting:
+
+    enabled: false
+
+    order: 13
+
+    class_name: "Stage13Reporting"
+
+    module: "src.pipeline.stages.stage13_reporting"
+
+    description: >
+      Genera reportes técnicos, estadísticos y ejecutivos.
+
+    requires:
+
+      - "stage12_final_quality_assessment"
+
+    checkpoint: false
+
+
+  stage14_graphics:
+
+    enabled: false
+
+    order: 14
+
+    class_name: "Stage14Graphics"
+
+    module: "src.pipeline.stages.stage14_graphics"
+
+    description: >
+      Genera productos gráficos y visualizaciones.
+
+    requires:
+
+      - "stage12_final_quality_assessment"
+
+    checkpoint: false
+
+
+  stage15_final_export:
+
+    enabled: false
+
+    order: 15
+
+    class_name: "Stage15FinalExport"
+
+    module: "src.pipeline.stages.stage15_final_export"
+
+    description: >
+      Exporta los datasets y productos finales.
+
+    requires:
+
+      - "stage13_reporting"
+      - "stage14_graphics"
+
+    checkpoint: true
+
+
+  stage16_publication:
+
+    enabled: false
+
+    order: 16
+
+    class_name: "Stage16Publication"
+
+    module: "src.pipeline.stages.stage16_publication"
+
+    description: >
+      Organiza, verifica y publica los productos finales.
+
+    requires:
+
+      - "stage15_final_export"
+
+    checkpoint: true
