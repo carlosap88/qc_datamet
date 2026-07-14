@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import logging
+from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 from typing import Any
 
@@ -23,9 +24,15 @@ def get_logger(
     if getattr(logger, "_qc_datamet_configured", False):
         return logger
 
+    if not logging_config.get("enabled", True):
+        logger.disabled = True
+        logger._qc_datamet_configured = True  # type: ignore[attr-defined]
+        return logger
+
     level_name = str(logging_config.get("level", "INFO")).upper()
     level = getattr(logging, level_name, logging.INFO)
 
+    logger.disabled = False
     logger.setLevel(level)
     logger.propagate = False
 
@@ -54,10 +61,24 @@ def get_logger(
         log_filename = str(
             logging_config.get("filename", "qc_datamet.log")
         )
-        file_handler = logging.FileHandler(
-            log_directory / log_filename,
-            encoding="utf-8",
-        )
+        rotation = str(logging_config.get("rotation", "daily")).lower()
+        retention_days = int(logging_config.get("retention_days", 30))
+
+        if rotation == "daily":
+            file_handler: logging.Handler = TimedRotatingFileHandler(
+                log_directory / log_filename,
+                when="midnight",
+                interval=1,
+                backupCount=max(retention_days, 0),
+                encoding="utf-8",
+                utc=True,
+            )
+        else:
+            file_handler = logging.FileHandler(
+                log_directory / log_filename,
+                encoding="utf-8",
+            )
+
         file_handler.setLevel(level)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
