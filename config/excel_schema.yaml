@@ -1,330 +1,644 @@
 # =============================================================================
+# QC_DATAMET v1.0
 # excel_schema.yaml
-# Estructura física REAL de archivos Excel históricos meteorológicos
+#
+# Esquema físico de los archivos Excel de entrada.
+#
+# Este archivo describe exclusivamente:
+#   - la cantidad esperada de columnas;
+#   - los encabezados originales;
+#   - el orden de entrada;
+#   - los tipos de datos iniciales esperados;
+#   - las columnas obligatorias;
+#   - la posibilidad de valores nulos;
+#   - los aliases de encabezados aceptados.
+#
+# No define:
+#   - los nombres internos del DataFrame;
+#   - el orden final de las columnas;
+#   - las unidades normalizadas;
+#   - las reglas de control de calidad;
+#   - las columnas técnicas o de trazabilidad.
+#
+# La validación se ejecutará después de eliminar:
+#   - filas completamente vacías;
+#   - columnas completamente vacías.
 # =============================================================================
 
-excel_structure:
+schema:
+  name: "qc_datamet_excel_input"
+  version: "1.0.0"
 
+  description: >
+    Esquema oficial de entrada para archivos Excel de observaciones
+    meteorológicas aeronáuticas.
+
+  sheet_mode: "all"
   header_row: 0
+  expected_columns: 52
 
-  # IMPORTANTE:
-  # Pandas NO conserva columnas vacías del header.
-  # La columna visual AM vacía NO debe incluirse.
-  total_columns_expected: 51
+  allow_extra_columns: false
+  allow_missing_columns: false
+  allow_reordered_columns: false
+  allow_duplicate_headers: false
 
-  columns:
+  case_sensitive_headers: false
+  use_header_aliases: true
 
-    A:
-      original_name: "Identificador OACI o Cod FAP"
-      standard_name: station_id
-      required: true
-      expected_type: string
+# =============================================================================
+# COLUMNAS DE ENTRADA
+# =============================================================================
 
-    B:
-      original_name: "Estado del producto de aviación (rutinario, especial, corregido, no disponible)"
-      standard_name: report_status
-      required: true
-      expected_type: string
+columns:
 
-    C:
-      original_name: "Año"
-      standard_name: year
-      required: true
-      expected_type: integer
+  # ---------------------------------------------------------------------------
+  # IDENTIFICACIÓN DEL REPORTE
+  # ---------------------------------------------------------------------------
 
-    D:
-      original_name: "Mes"
-      standard_name: month
-      required: true
-      expected_type: integer
+  - position: 1
+    source_name: "Identificador OACI o Cod FAP"
+    expected_dtype: "string"
+    required: true
+    nullable: false
+    aliases:
+      - "Identificador OACI"
+      - "Código OACI"
+      - "Codigo OACI"
+      - "Cod OACI"
+      - "Código FAP"
+      - "Codigo FAP"
+      - "Cod FAP"
+      - "OACI"
+      - "ICAO"
 
-    E:
-      original_name: "Dia"
-      standard_name: day
-      required: true
-      expected_type: integer
+  - position: 2
+    source_name: "Estado del producto de aviación (rutinario, especial, corregido, no disponible)"
+    expected_dtype: "string"
+    required: true
+    nullable: false
+    aliases:
+      - "Estado del producto"
+      - "Estado producto"
+      - "Estado del reporte"
+      - "Tipo de reporte"
 
-    F:
-      original_name: "Hora (UTC)"
-      standard_name: hour_utc
-      required: true
-      expected_type: integer
+  # ---------------------------------------------------------------------------
+  # FECHA Y HORA
+  # ---------------------------------------------------------------------------
 
-    G:
-      original_name: "Minuto"
-      standard_name: minute
-      required: true
-      expected_type: integer
+  - position: 3
+    source_name: "Año"
+    expected_dtype: "integer"
+    required: true
+    nullable: false
+    aliases:
+      - "Ano"
+      - "AÑO"
+      - "YEAR"
+      - "Year"
 
-    H:
-      original_name: "Dirección del viento"
-      standard_name: wind_dir
-      required: false
-      expected_type: float
+  - position: 4
+    source_name: "Mes"
+    expected_dtype: "integer"
+    required: true
+    nullable: false
+    aliases:
+      - "MES"
+      - "Month"
 
-    I:
-      original_name: "Dirección extrema antihoraria del viento"
-      standard_name: wind_dir_ccw_extreme
-      required: false
-      expected_type: float
+  - position: 5
+    source_name: "Dia"
+    expected_dtype: "integer"
+    required: true
+    nullable: false
+    aliases:
+      - "Día"
+      - "DIA"
+      - "Day"
 
-    J:
-      original_name: "Dirección extrema horaria del viento"
-      standard_name: wind_dir_cw_extreme
-      required: false
-      expected_type: float
+  - position: 6
+    source_name: "Hora (UTC)"
+    expected_dtype: "integer"
+    required: true
+    nullable: false
+    aliases:
+      - "Hora UTC"
+      - "Hora"
+      - "Hour UTC"
 
-    K:
-      original_name: "Velocidad del viento (nudos)"
-      standard_name: wind_speed_kt
-      required: false
-      expected_type: float
+  - position: 7
+    source_name: "Minuto"
+    expected_dtype: "integer"
+    required: true
+    nullable: false
+    aliases:
+      - "MINUTO"
+      - "Minute"
 
-    L:
-      original_name: "Velocidad del viento. Rafagas (nudos)"
-      standard_name: wind_gust_kt
-      required: false
-      expected_type: float
+  # ---------------------------------------------------------------------------
+  # VIENTO
+  # ---------------------------------------------------------------------------
 
-    M:
-      original_name: "Temperatura del aire"
-      standard_name: air_temp_c
-      required: false
-      expected_type: float
+  - position: 8
+    source_name: "Dirección del viento"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Direccion del viento"
+      - "Dirección viento"
+      - "Direccion viento"
 
-    N:
-      original_name: "Temperatura Bulbo humedo"
-      standard_name: wet_bulb_temp_c
-      required: false
-      expected_type: float
+  - position: 9
+    source_name: "Dirección extrema antihoraria del viento"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Direccion extrema antihoraria del viento"
+      - "Dirección mínima del viento"
+      - "Direccion minima del viento"
 
-    O:
-      original_name: "Temperatura de rocio"
-      standard_name: dewpoint_temp_c
-      required: false
-      expected_type: float
+  - position: 10
+    source_name: "Dirección extrema horaria del viento"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Direccion extrema horaria del viento"
+      - "Dirección máxima del viento"
+      - "Direccion maxima del viento"
 
-    P:
-      original_name: "Presion a nivel medio del mar (QNH)"
-      standard_name: qnh_hpa
-      required: false
-      expected_type: float
+  - position: 11
+    source_name: "Velocidad del viento (nudos)"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Velocidad del viento"
+      - "Velocidad viento (nudos)"
+      - "Velocidad del viento (kt)"
+      - "Velocidad viento"
 
-    Q:
-      original_name: "Presion a nivel de la estacion (QFE)"
-      standard_name: qfe_hpa
-      required: false
-      expected_type: float
+  - position: 12
+    source_name: "Velocidad del viento. Rafagas (nudos)"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Velocidad del viento. Ráfagas (nudos)"
+      - "Velocidad del viento Rafagas (nudos)"
+      - "Velocidad del viento Ráfagas (nudos)"
+      - "Rafagas (nudos)"
+      - "Ráfagas (nudos)"
+      - "Racha (nudos)"
 
-    R:
-      original_name: "Visibilidad reinante"
-      standard_name: visibility_m
-      required: false
-      expected_type: float
+  # ---------------------------------------------------------------------------
+  # TEMPERATURA
+  # ---------------------------------------------------------------------------
 
-    S:
-      original_name: "1° Visibilidad minima horizontal"
-      standard_name: visibility_min_1_m
-      required: false
-      expected_type: float
+  - position: 13
+    source_name: "Temperatura del aire"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Temperatura aire"
+      - "Temperatura"
+      - "Temperatura del Aire"
 
-    T:
-      original_name: "1° Direccion de la visibilidad horizontal minima observada"
-      standard_name: visibility_min_1_dir
-      required: false
-      expected_type: float
+  - position: 14
+    source_name: "Temperatura Bulbo humedo"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Temperatura Bulbo humedo "
+      - "Temperatura Bulbo húmedo"
+      - "Temperatura de bulbo humedo"
+      - "Temperatura de bulbo húmedo"
 
-    U:
-      original_name: "2° Visibilidad minima horizontal"
-      standard_name: visibility_min_2_m
-      required: false
-      expected_type: float
+  - position: 15
+    source_name: "Temperatura de rocio"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Temperatura de rocio "
+      - "Temperatura de rocío"
+      - "Punto de rocio"
+      - "Punto de rocío"
 
-    V:
-      original_name: "2° Direccion de la visibilidad horizontal minima observada"
-      standard_name: visibility_min_2_dir
-      required: false
-      expected_type: float
+  # ---------------------------------------------------------------------------
+  # PRESIÓN
+  # ---------------------------------------------------------------------------
 
-    W:
-      original_name: "1 Tiempo presente significativo"
-      standard_name: present_weather_1
-      required: false
-      expected_type: string
+  - position: 16
+    source_name: "Presion a nivel medio del mar (QNH)"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Presión a nivel medio del mar (QNH)"
+      - "Presion a nivel del mar (QNH)"
+      - "Presión a nivel del mar (QNH)"
+      - "QNH"
 
-    X:
-      original_name: "2 Tiempo presente significativo"
-      standard_name: present_weather_2
-      required: false
-      expected_type: string
+  - position: 17
+    source_name: "Presion a nivel de la estacion (QFE)"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Presión a nivel de la estación (QFE)"
+      - "Presion a nivel de la estación (QFE)"
+      - "Presión a nivel de la estacion (QFE)"
+      - "QFE"
 
-    Y:
-      original_name: "3 Tiempo presente significativo"
-      standard_name: present_weather_3
-      required: false
-      expected_type: string
+  # ---------------------------------------------------------------------------
+  # VISIBILIDAD
+  # ---------------------------------------------------------------------------
 
-    Z:
-      original_name: "1° Cantidad de nubes"
-      standard_name: cloud_amount_1
-      required: false
-      expected_type: string
-      aliases:
-        - "1°  Cantidad de nubes"
-    AA:
-      original_name: "1° Altura de la base de la nube (pies)"
-      standard_name: cloud_base_1_ft
-      required: false
-      expected_type: float
+  - position: 18
+    source_name: "Visibilidad reinante"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Visibilidad predominante"
+      - "Visibilidad Reinante"
 
-    AB:
-      original_name: "1° Tipo de nube"
-      standard_name: cloud_type_1
-      required: false
-      expected_type: string
+  - position: 19
+    source_name: "1° Visibilidad minima horizontal"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "1° Visibilidad mínima horizontal"
+      - "1 Visibilidad minima horizontal"
+      - "Primera visibilidad minima horizontal"
+      - "Primera visibilidad mínima horizontal"
 
-    AC:
-      original_name: "2° Cantidad de nubes"
-      standard_name: cloud_amount_2
-      required: false
-      expected_type: string
-      aliases:
-        - "2°  Cantidad de nubes"
-    AD:
-      original_name: "2° Altura de la base de la nube (pies)"
-      standard_name: cloud_base_2_ft
-      required: false
-      expected_type: float
+  - position: 20
+    source_name: "1° Direccion de la visibilidad horizontal minima observada"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "1° Dirección de la visibilidad horizontal mínima observada"
+      - "1° Direccion de visibilidad minima"
+      - "1° Dirección de visibilidad mínima"
 
-    AE:
-      original_name: "2° Tipo de nube"
-      standard_name: cloud_type_2
-      required: false
-      expected_type: string
+  - position: 21
+    source_name: "2° Visibilidad minima horizontal"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "2° Visibilidad mínima horizontal"
+      - "2 Visibilidad minima horizontal"
+      - "Segunda visibilidad minima horizontal"
+      - "Segunda visibilidad mínima horizontal"
 
-    AF:
-      original_name: "3° Cantidad de nubes"
-      standard_name: cloud_amount_3
-      required: false
-      expected_type: string
-      aliases:
-        - "3°  Cantidad de nubes"
-    AG:
-      original_name: "3° Altura de la base de la nube (pies)"
-      standard_name: cloud_base_3_ft
-      required: false
-      expected_type: float
+  - position: 22
+    source_name: "2° Direccion de la visibilidad horizontal minima observada"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "2° Dirección de la visibilidad horizontal mínima observada"
+      - "2° Direccion de visibilidad minima"
+      - "2° Dirección de visibilidad mínima"
 
-    AH:
-      original_name: "3° Tipo de nube"
-      standard_name: cloud_type_3
-      required: false
-      expected_type: string
+  # ---------------------------------------------------------------------------
+  # TIEMPO PRESENTE
+  # ---------------------------------------------------------------------------
 
-    AI:
-      original_name: "Temperatura Maxima"
-      standard_name: max_temp_c
-      required: false
-      expected_type: float
+  - position: 23
+    source_name: "1 Tiempo presente significativo"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "1° Tiempo presente significativo"
+      - "Tiempo presente significativo 1"
+      - "Primer tiempo presente significativo"
 
-    AJ:
-      original_name: "Temperatura Minima"
-      standard_name: min_temp_c
-      required: false
-      expected_type: float
+  - position: 24
+    source_name: "2 Tiempo presente significativo"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "2° Tiempo presente significativo"
+      - "Tiempo presente significativo 2"
+      - "Segundo tiempo presente significativo"
 
-    AK:
-      original_name: "Precipitacion Acumulada"
-      standard_name: precipitation_mm
-      required: false
-      expected_type: float
+  - position: 25
+    source_name: "3 Tiempo presente significativo"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "3° Tiempo presente significativo"
+      - "Tiempo presente significativo 3"
+      - "Tercer tiempo presente significativo"
 
-    AL:
-      original_name: "Humedad relativa (%)"
-      standard_name: relative_humidity
-      required: false
-      expected_type: float
+  # ---------------------------------------------------------------------------
+  # PRIMERA CAPA DE NUBES
+  # ---------------------------------------------------------------------------
 
-    AM:
-      original_name: "Pais"
-      standard_name: country
-      required: false
-      expected_type: string
+  - position: 26
+    source_name: "1° Cantidad de nubes"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "1°  Cantidad de nubes"
+      - "1 Cantidad de nubes"
+      - "Cantidad de nubes 1"
+      - "Primera cantidad de nubes"
 
-    AN:
-      original_name: "Departamento"
-      standard_name: department
-      required: false
-      expected_type: string
+  - position: 27
+    source_name: "1° Altura de la base de la nube (pies)"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "1 Altura de la base de la nube (pies)"
+      - "Altura de la base de la nube 1 (pies)"
+      - "Primera altura de la base de la nube (pies)"
 
-    AO:
-      original_name: "Provincia"
-      standard_name: province
-      required: false
-      expected_type: string
+  - position: 28
+    source_name: "1° Tipo de nube"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "1 Tipo de nube"
+      - "Tipo de nube 1"
+      - "Primer tipo de nube"
 
-    AP:
-      original_name: "Distrito"
-      standard_name: district
-      required: false
-      expected_type: string
+  # ---------------------------------------------------------------------------
+  # SEGUNDA CAPA DE NUBES
+  # ---------------------------------------------------------------------------
 
-    AQ:
-      original_name: "Latitud"
-      standard_name: latitude
-      required: false
-      expected_type: float
+  - position: 29
+    source_name: "2° Cantidad de nubes"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "2°  Cantidad de nubes"
+      - "2 Cantidad de nubes"
+      - "Cantidad de nubes 2"
+      - "Segunda cantidad de nubes"
 
-    AR:
-      original_name: "Longitud"
-      standard_name: longitude
-      required: false
-      expected_type: float
+  - position: 30
+    source_name: "2° Altura de la base de la nube (pies)"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "2 Altura de la base de la nube (pies)"
+      - "Altura de la base de la nube 2 (pies)"
+      - "Segunda altura de la base de la nube (pies)"
 
-    AS:
-      original_name: "Elevacion"
-      standard_name: elevation_m
-      required: false
-      expected_type: float
+  - position: 31
+    source_name: "2° Tipo de nube"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "2 Tipo de nube"
+      - "Tipo de nube 2"
+      - "Segundo tipo de nube"
 
-    AT:
-      original_name: "Lugar"
-      standard_name: location
-      required: false
-      expected_type: string
+  # ---------------------------------------------------------------------------
+  # TERCERA CAPA DE NUBES
+  # ---------------------------------------------------------------------------
 
-    AU:
-      original_name: "Nombre del Aeródromo"
-      standard_name: aerodrome_name
-      required: false
-      expected_type: string
+  - position: 32
+    source_name: "3° Cantidad de nubes"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "3°  Cantidad de nubes"
+      - "3 Cantidad de nubes"
+      - "Cantidad de nubes 3"
+      - "Tercera cantidad de nubes"
 
-    AV:
-      original_name: "Tipo de Estacion"
-      standard_name: station_type
-      required: false
-      expected_type: string
+  - position: 33
+    source_name: "3° Altura de la base de la nube (pies)"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "3 Altura de la base de la nube (pies)"
+      - "Altura de la base de la nube 3 (pies)"
+      - "Tercera altura de la base de la nube (pies)"
 
-    AW:
-      original_name: "Remarks"
-      standard_name: remarks
-      required: false
-      expected_type: string
+  - position: 34
+    source_name: "3° Tipo de nube"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "3 Tipo de nube"
+      - "Tipo de nube 3"
+      - "Tercer tipo de nube"
 
-    AX:
-      original_name: "Reporte METAR"
-      standard_name: metar
-      required: false
-      expected_type: string
+  # ---------------------------------------------------------------------------
+  # VARIABLES COMPLEMENTARIAS
+  # ---------------------------------------------------------------------------
 
-    AY:
-      original_name: "Oficina Meteorologica"
-      standard_name: meteorological_office
-      required: false
-      expected_type: string
+  - position: 35
+    source_name: "Temperatura Maxima"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Temperatura Máxima"
+      - "Temperatura maxima"
+      - "Temperatura máxima"
 
-    AZ:
-      original_name: "Observador"
-      standard_name: observer
-      required: false
-      expected_type: string
+  - position: 36
+    source_name: "Temperatura Minima"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Temperatura Mínima"
+      - "Temperatura minima"
+      - "Temperatura mínima"
+
+  - position: 37
+    source_name: "Precipitacion Acumulada"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Precipitación Acumulada"
+      - "Precipitacion acumulada"
+      - "Precipitación acumulada"
+
+  - position: 38
+    source_name: "Humedad relativa (%)"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Humedad Relativa (%)"
+      - "Humedad relativa"
+      - "Humedad Relativa"
+
+  # ---------------------------------------------------------------------------
+  # UBICACIÓN Y METADATA DE LA ESTACIÓN
+  # ---------------------------------------------------------------------------
+
+  - position: 39
+    source_name: "Pais"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "País"
+      - "PAIS"
+      - "Country"
+
+  - position: 40
+    source_name: "Departamento"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "DEPARTAMENTO"
+      - "Region"
+      - "Región"
+
+  - position: 41
+    source_name: "Provincia"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "PROVINCIA"
+      - "Province"
+
+  - position: 42
+    source_name: "Distrito"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "DISTRITO"
+      - "District"
+
+  - position: 43
+    source_name: "Latitud"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "LATITUD"
+      - "Latitude"
+
+  - position: 44
+    source_name: "Longitud"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "LONGITUD"
+      - "Longitude"
+
+  - position: 45
+    source_name: "Elevacion"
+    expected_dtype: "number"
+    required: true
+    nullable: true
+    aliases:
+      - "Elevación"
+      - "Altitud"
+      - "Elevation"
+
+  - position: 46
+    source_name: "Lugar"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "Localidad"
+      - "Ubicación"
+      - "Ubicacion"
+      - "Location"
+
+  - position: 47
+    source_name: "Nombre del Aeródromo"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "Nombre del Aerodromo"
+      - "Aeródromo"
+      - "Aerodromo"
+      - "Nombre de Aeródromo"
+      - "Nombre de Aerodromo"
+
+  - position: 48
+    source_name: "Tipo de Estacion"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "Tipo de Estación"
+      - "Tipo Estacion"
+      - "Tipo Estación"
+
+  # ---------------------------------------------------------------------------
+  # INFORMACIÓN ADICIONAL
+  # ---------------------------------------------------------------------------
+
+  - position: 49
+    source_name: "Remarks"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "Observaciones"
+      - "Comentarios"
+      - "Remark"
+
+  - position: 50
+    source_name: "Reporte METAR"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "METAR"
+      - "Reporte"
+      - "METAR Report"
+
+  - position: 51
+    source_name: "Oficina Meteorologica"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "Oficina Meteorológica"
+      - "Oficina meteorologica"
+      - "Oficina meteorológica"
+
+  - position: 52
+    source_name: "Observador"
+    expected_dtype: "string"
+    required: true
+    nullable: true
+    aliases:
+      - "Observer"
+      - "Nombre del observador"
+
+# =============================================================================
+# FIN DEL ESQUEMA
+# =============================================================================

@@ -1,0 +1,1289 @@
+# =============================================================================
+# QC_DATAMET v1.0
+# canonical_schema.yaml
+#
+# Esquema Canónico Oficial
+#
+# Este archivo define la estructura final del dataset generado por
+# QC_DATAMET después de completar todo el pipeline de procesamiento.
+#
+# Responsabilidades
+# -----------------
+# • Definir el orden oficial de las columnas.
+# • Definir nombres internos estandarizados.
+# • Definir tipos de datos.
+# • Definir nulabilidad.
+# • Definir claves.
+# • Definir grupos de variables.
+# • Definir exportaciones.
+#
+# No contiene:
+#
+# • aliases
+# • nombres originales del Excel
+# • reglas QC
+# • límites físicos
+#
+# Estos elementos pertenecen a:
+#
+# excel_schema.yaml
+# data_dictionary.yaml
+# qc_rules.yaml
+#
+# =============================================================================
+
+canonical_schema:
+
+  name: "qc_datamet_canonical_schema"
+
+  version: "1.0.0"
+
+  project: "QC_DATAMET"
+
+  description: >
+    Esquema canónico oficial del dataset final utilizado por
+    QC_DATAMET.
+
+  references:
+
+    input_schema: "excel_schema.yaml"
+
+    data_dictionary: "data_dictionary.yaml"
+
+    qc_rules: "qc_rules.yaml"
+
+    stations: "stations.yaml"
+
+
+
+# =============================================================================
+# CONVENCIONES
+# =============================================================================
+
+conventions:
+
+  column_names: "snake_case"
+
+  encoding: "UTF-8"
+
+  timezone: "UTC"
+
+  indentation: 2
+
+  missing_values: "null"
+
+  datetime_format: "%Y-%m-%dT%H:%M:%SZ"
+
+  dataframe_engine: "pandas"
+
+
+
+# =============================================================================
+# VALIDACIÓN
+# =============================================================================
+
+validation:
+
+  allow_extra_columns: false
+
+  allow_missing_columns: false
+
+  enforce_column_order: true
+
+  enforce_column_types: true
+
+  enforce_primary_key: true
+
+  trim_text: true
+
+  normalize_empty_strings: true
+
+  remove_duplicate_records: false
+
+
+
+# =============================================================================
+# CLAVES
+# =============================================================================
+
+keys:
+
+  primary_key:
+
+    - record_id
+
+  natural_key:
+
+    - station_id
+
+    - datetime_utc
+
+  duplicate_detection:
+
+    - station_id
+
+    - datetime_utc
+
+
+
+# =============================================================================
+# GRUPOS DE COLUMNAS
+# =============================================================================
+
+column_groups:
+
+  - technical
+
+  - identification
+
+  - datetime
+
+  - report
+
+  - wind
+
+  - temperature
+
+  - pressure
+
+  - humidity
+
+  - precipitation
+
+  - visibility
+
+  - weather
+
+  - cloud_layer_1
+
+  - cloud_layer_2
+
+  - cloud_layer_3
+
+  - station_metadata
+
+  - provenance
+
+  - quality_control
+
+
+
+# =============================================================================
+# EXPORTACIONES
+# =============================================================================
+
+exports:
+
+  csv:
+
+    enabled: true
+
+    delimiter: ","
+
+    encoding: "UTF-8"
+
+    include_header: true
+
+    datetime_format: "%Y-%m-%dT%H:%M:%SZ"
+
+  parquet:
+
+    enabled: true
+
+    compression: "snappy"
+
+    preserve_nullable_types: true
+
+  database:
+
+    enabled: true
+
+    table: "meteorological_observations"
+
+    schema: "public"
+
+    batch_size: 5000
+
+
+
+# =============================================================================
+# COLUMNAS DEL DATASET FINAL
+# =============================================================================
+
+columns:
+
+  # ===========================================================================
+  # IDENTIFICACIÓN TÉCNICA
+  # ===========================================================================
+
+  - position: 1
+
+    name: "record_id"
+
+    dtype: "string"
+
+    nullable: false
+
+    group: "technical"
+
+    description: >
+      Identificador único generado por el pipeline para cada registro.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 2
+
+    name: "station_id"
+
+    dtype: "string"
+
+    nullable: false
+
+    group: "identification"
+
+    description: >
+      Identificador oficial OACI o institucional de la estación.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  # ===========================================================================
+  # FECHA Y HORA
+  # ===========================================================================
+
+  - position: 3
+
+    name: "datetime_utc"
+
+    dtype: "datetime64[ns, UTC]"
+
+    nullable: false
+
+    group: "datetime"
+
+    description: >
+      Fecha y hora UTC consolidada del registro.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 4
+
+    name: "date"
+
+    dtype: "date"
+
+    nullable: false
+
+    group: "datetime"
+
+    description: >
+      Fecha derivada de datetime_utc.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 5
+
+    name: "year"
+
+    dtype: "Int16"
+
+    nullable: false
+
+    group: "datetime"
+
+    description: >
+      Año UTC.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 6
+
+    name: "month"
+
+    dtype: "Int8"
+
+    nullable: false
+
+    group: "datetime"
+
+    description: >
+      Mes UTC.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 7
+
+    name: "day"
+
+    dtype: "Int8"
+
+    nullable: false
+
+    group: "datetime"
+
+    description: >
+      Día UTC.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 8
+
+    name: "hour_utc"
+
+    dtype: "Int8"
+
+    nullable: false
+
+    group: "datetime"
+
+    description: >
+      Hora UTC.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 9
+
+    name: "minute"
+
+    dtype: "Int8"
+
+    nullable: false
+
+    group: "datetime"
+
+    description: >
+      Minuto UTC.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 10
+
+    name: "climatological_year"
+
+    dtype: "Int16"
+
+    nullable: false
+
+    group: "datetime"
+
+    description: >
+      Año climatológico derivado automáticamente.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  # ===========================================================================
+  # METADATA DEL REPORTE
+  # ===========================================================================
+
+  - position: 11
+
+    name: "report_status"
+
+    dtype: "string"
+
+    nullable: false
+
+    group: "report"
+
+    description: >
+      Estado operacional del reporte meteorológico.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  # ===========================================================================
+  # VIENTO
+  # ===========================================================================
+
+  - position: 12
+
+    name: "wind_direction_deg"
+
+    dtype: "Float32"
+
+    nullable: true
+
+    group: "wind"
+
+    description: >
+      Dirección media del viento (grados verdaderos).
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 13
+
+    name: "wind_direction_ccw_deg"
+
+    dtype: "Float32"
+
+    nullable: true
+
+    group: "wind"
+
+    description: >
+      Dirección extrema antihoraria del viento.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 14
+
+    name: "wind_direction_cw_deg"
+
+    dtype: "Float32"
+
+    nullable: true
+
+    group: "wind"
+
+    description: >
+      Dirección extrema horaria del viento.
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 15
+
+    name: "wind_speed_kt"
+
+    dtype: "Float32"
+
+    nullable: true
+
+    group: "wind"
+
+    description: >
+      Velocidad media del viento (kt).
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 16
+
+    name: "wind_gust_kt"
+
+    dtype: "Float32"
+
+    nullable: true
+
+    group: "wind"
+
+    description: >
+      Velocidad máxima de ráfaga (kt).
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  # ===========================================================================
+  # TEMPERATURA
+  # ===========================================================================
+
+  - position: 17
+
+    name: "air_temperature_c"
+
+    dtype: "Float32"
+
+    nullable: true
+
+    group: "temperature"
+
+    description: >
+      Temperatura del aire (°C).
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 18
+
+    name: "wet_bulb_temperature_c"
+
+    dtype: "Float32"
+
+    nullable: true
+
+    group: "temperature"
+
+    description: >
+      Temperatura de bulbo húmedo (°C).
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 19
+
+    name: "dew_point_temperature_c"
+
+    dtype: "Float32"
+
+    nullable: true
+
+    group: "temperature"
+
+    description: >
+      Temperatura del punto de rocío (°C).
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+  - position: 20
+
+    name: "maximum_temperature_c"
+
+    dtype: "Float32"
+
+    nullable: true
+
+    group: "temperature"
+
+    description: >
+      Temperatura máxima del periodo (°C).
+
+    export:
+
+      csv: true
+
+      parquet: true
+
+      database: true
+
+
+        - position: 21
+    name: "minimum_temperature_c"
+    dtype: "Float32"
+    nullable: true
+    group: "temperature"
+    description: >
+      Temperatura mínima del periodo (°C).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # PRESIÓN
+  # ===========================================================================
+
+  - position: 22
+    name: "qnh_hpa"
+    dtype: "Float32"
+    nullable: true
+    group: "pressure"
+    description: >
+      Presión reducida al nivel medio del mar, QNH (hPa).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 23
+    name: "qfe_hpa"
+    dtype: "Float32"
+    nullable: true
+    group: "pressure"
+    description: >
+      Presión al nivel de referencia de la estación, QFE (hPa).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # HUMEDAD Y PRECIPITACIÓN
+  # ===========================================================================
+
+  - position: 24
+    name: "relative_humidity_pct"
+    dtype: "Float32"
+    nullable: true
+    group: "humidity"
+    description: >
+      Humedad relativa del aire (%).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 25
+    name: "accumulated_precipitation_mm"
+    dtype: "Float32"
+    nullable: true
+    group: "precipitation"
+    description: >
+      Precipitación acumulada durante el periodo de referencia (mm).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # VISIBILIDAD
+  # ===========================================================================
+
+  - position: 26
+    name: "prevailing_visibility_m"
+    dtype: "Float32"
+    nullable: true
+    group: "visibility"
+    description: >
+      Visibilidad horizontal reinante (m).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 27
+    name: "minimum_visibility_1_m"
+    dtype: "Float32"
+    nullable: true
+    group: "visibility"
+    description: >
+      Primera visibilidad horizontal mínima observada (m).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 28
+    name: "minimum_visibility_direction_1"
+    dtype: "string"
+    nullable: true
+    group: "visibility"
+    description: >
+      Dirección correspondiente a la primera visibilidad mínima.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 29
+    name: "minimum_visibility_2_m"
+    dtype: "Float32"
+    nullable: true
+    group: "visibility"
+    description: >
+      Segunda visibilidad horizontal mínima observada (m).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 30
+    name: "minimum_visibility_direction_2"
+    dtype: "string"
+    nullable: true
+    group: "visibility"
+    description: >
+      Dirección correspondiente a la segunda visibilidad mínima.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # TIEMPO PRESENTE
+  # ===========================================================================
+
+  - position: 31
+    name: "present_weather_1"
+    dtype: "string"
+    nullable: true
+    group: "weather"
+    description: >
+      Primer fenómeno de tiempo presente significativo.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 32
+    name: "present_weather_2"
+    dtype: "string"
+    nullable: true
+    group: "weather"
+    description: >
+      Segundo fenómeno de tiempo presente significativo.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 33
+    name: "present_weather_3"
+    dtype: "string"
+    nullable: true
+    group: "weather"
+    description: >
+      Tercer fenómeno de tiempo presente significativo.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # PRIMERA CAPA DE NUBES
+  # ===========================================================================
+
+  - position: 34
+    name: "cloud_amount_1"
+    dtype: "string"
+    nullable: true
+    group: "cloud_layer_1"
+    description: >
+      Cantidad de nubes de la primera capa.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 35
+    name: "cloud_base_height_1_ft"
+    dtype: "Float32"
+    nullable: true
+    group: "cloud_layer_1"
+    description: >
+      Altura de la base de la primera capa de nubes (ft).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 36
+    name: "cloud_type_1"
+    dtype: "string"
+    nullable: true
+    group: "cloud_layer_1"
+    description: >
+      Tipo de nube de la primera capa.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # SEGUNDA CAPA DE NUBES
+  # ===========================================================================
+
+  - position: 37
+    name: "cloud_amount_2"
+    dtype: "string"
+    nullable: true
+    group: "cloud_layer_2"
+    description: >
+      Cantidad de nubes de la segunda capa.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 38
+    name: "cloud_base_height_2_ft"
+    dtype: "Float32"
+    nullable: true
+    group: "cloud_layer_2"
+    description: >
+      Altura de la base de la segunda capa de nubes (ft).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 39
+    name: "cloud_type_2"
+    dtype: "string"
+    nullable: true
+    group: "cloud_layer_2"
+    description: >
+      Tipo de nube de la segunda capa.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # TERCERA CAPA DE NUBES
+  # ===========================================================================
+
+  - position: 40
+    name: "cloud_amount_3"
+    dtype: "string"
+    nullable: true
+    group: "cloud_layer_3"
+    description: >
+      Cantidad de nubes de la tercera capa.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+        - position: 41
+    name: "cloud_base_height_3_ft"
+    dtype: "Float32"
+    nullable: true
+    group: "cloud_layer_3"
+    description: >
+      Altura de la base de la tercera capa de nubes (ft).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 42
+    name: "cloud_type_3"
+    dtype: "string"
+    nullable: true
+    group: "cloud_layer_3"
+    description: >
+      Tipo de nube de la tercera capa.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # METADATOS DE LA ESTACIÓN
+  # ===========================================================================
+
+  - position: 43
+    name: "country"
+    dtype: "string"
+    nullable: true
+    group: "station_metadata"
+    description: >
+      País donde se ubica la estación.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 44
+    name: "department"
+    dtype: "string"
+    nullable: true
+    group: "station_metadata"
+    description: >
+      Departamento administrativo donde se ubica la estación.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 45
+    name: "province"
+    dtype: "string"
+    nullable: true
+    group: "station_metadata"
+    description: >
+      Provincia administrativa donde se ubica la estación.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 46
+    name: "district"
+    dtype: "string"
+    nullable: true
+    group: "station_metadata"
+    description: >
+      Distrito administrativo donde se ubica la estación.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 47
+    name: "latitude"
+    dtype: "Float64"
+    nullable: false
+    group: "station_metadata"
+    description: >
+      Latitud geográfica en grados decimales.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 48
+    name: "longitude"
+    dtype: "Float64"
+    nullable: false
+    group: "station_metadata"
+    description: >
+      Longitud geográfica en grados decimales.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 49
+    name: "elevation_m"
+    dtype: "Float32"
+    nullable: true
+    group: "station_metadata"
+    description: >
+      Elevación de la estación sobre el nivel medio del mar (m).
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 50
+    name: "location"
+    dtype: "string"
+    nullable: true
+    group: "station_metadata"
+    description: >
+      Nombre descriptivo de la localidad o instalación.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 51
+    name: "aerodrome_name"
+    dtype: "string"
+    nullable: false
+    group: "station_metadata"
+    description: >
+      Nombre oficial del aeródromo.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 52
+    name: "station_type"
+    dtype: "string"
+    nullable: false
+    group: "station_metadata"
+    description: >
+      Tipo de estación meteorológica.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 53
+    name: "meteorological_office"
+    dtype: "string"
+    nullable: true
+    group: "station_metadata"
+    description: >
+      Oficina meteorológica responsable de la observación o del reporte.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 54
+    name: "observer"
+    dtype: "string"
+    nullable: true
+    group: "station_metadata"
+    description: >
+      Nombre o identificador del observador meteorológico.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # CONTENIDO DEL REPORTE
+  # ===========================================================================
+
+  - position: 55
+    name: "remarks"
+    dtype: "string"
+    nullable: true
+    group: "report"
+    description: >
+      Observaciones o comentarios adicionales asociados al registro.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 56
+    name: "metar"
+    dtype: "string"
+    nullable: true
+    group: "report"
+    description: >
+      Texto completo del reporte METAR.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # TRAZABILIDAD
+  # ===========================================================================
+
+  - position: 57
+    name: "source_file"
+    dtype: "string"
+    nullable: false
+    group: "provenance"
+    description: >
+      Nombre del archivo fuente del cual proviene el registro.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 58
+    name: "source_sheet"
+    dtype: "string"
+    nullable: true
+    group: "provenance"
+    description: >
+      Nombre de la hoja Excel de origen.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 59
+    name: "source_row"
+    dtype: "Int32"
+    nullable: true
+    group: "provenance"
+    description: >
+      Número de fila original en el archivo fuente.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 60
+    name: "source_hash"
+    dtype: "string"
+    nullable: true
+    group: "provenance"
+    description: >
+      Hash SHA-256 del archivo fuente.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # CAMPOS TÉCNICOS
+  # ===========================================================================
+
+  - position: 61
+    name: "pipeline_run_id"
+    dtype: "string"
+    nullable: false
+    group: "technical"
+    description: >
+      Identificador único de la ejecución del pipeline.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 62
+    name: "processing_timestamp"
+    dtype: "datetime64[ns, UTC]"
+    nullable: false
+    group: "technical"
+    description: >
+      Fecha y hora UTC en que el registro fue procesado.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 63
+    name: "pipeline_version"
+    dtype: "string"
+    nullable: false
+    group: "technical"
+    description: >
+      Versión del pipeline utilizada durante el procesamiento.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 64
+    name: "dictionary_version"
+    dtype: "string"
+    nullable: false
+    group: "technical"
+    description: >
+      Versión del diccionario de datos utilizada.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  # ===========================================================================
+  # CONTROL DE CALIDAD
+  # ===========================================================================
+
+  - position: 65
+    name: "qc_status"
+    dtype: "string"
+    nullable: false
+    group: "quality_control"
+    description: >
+      Estado general del control de calidad del registro.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 66
+    name: "qc_flags"
+    dtype: "list[string]"
+    nullable: true
+    group: "quality_control"
+    description: >
+      Lista de flags generados durante el control de calidad.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+  - position: 67
+    name: "qc_score"
+    dtype: "Float32"
+    nullable: true
+    group: "quality_control"
+    description: >
+      Puntaje global de calidad asignado al registro.
+    export:
+      csv: true
+      parquet: true
+      database: true
+
+# =============================================================================
+# FIN DEL ARCHIVO
+# =============================================================================

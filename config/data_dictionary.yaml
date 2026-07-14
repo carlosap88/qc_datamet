@@ -1,537 +1,2760 @@
 # =============================================================================
-# DATA DICTIONARY — meteo_qc
-# Descripción de variables meteorológicas aeronáuticas
+# QC_DATAMET v1.0
+# data_dictionary.yaml
+#
+# Diccionario semántico de datos meteorológicos aeronáuticos.
+#
+# Responsabilidades:
+#   - mapear encabezados originales a nombres estandarizados;
+#   - documentar el significado de cada variable;
+#   - definir tipos de datos y unidades;
+#   - identificar categorías y grupos de variables;
+#   - servir como referencia para el pipeline, reportes y exportaciones.
+#
+# Las reglas y límites de control de calidad deben definirse en:
+#   config/qc_rules.yaml
 # =============================================================================
 
-station_id:
-  description: Station ICAO or institutional identifier
-  description_es: Identificador OACI o Cod FAP
-  unit: null
-  type: string
-  aliases:
-    - Identificador OACI o Cod FAP
+dictionary:
+  name: "qc_datamet_data_dictionary"
+  version: "1.0.0"
+  project: "QC_DATAMET"
+  language: "es"
+  description: >
+    Diccionario semántico de las variables utilizadas por QC_DATAMET para
+    procesar, normalizar, validar y documentar observaciones meteorológicas
+    aeronáuticas.
 
-report_status:
-  description: Aviation report status
-  description_es: Estado del producto de aviación
-  unit: null
-  type: category
-  valid_values:
-    - routine
-    - special
-    - corrected
-    - missing
-  aliases:
-    - Estado del producto de aviación
-    - Estado del producto de aviación (rutinario, especial, corregido, no disponible)
+  source_schema: "excel_schema.yaml"
 
-# -----------------------------------------------------------------------------
-# TIEMPO / DATETIME
-# -----------------------------------------------------------------------------
+  conventions:
+    standard_names: "snake_case"
+    text_dtype: "string"
+    nullable_integer_dtype: "Int64"
+    nullable_float_dtype: "Float64"
+    datetime_timezone: "UTC"
+    indentation_spaces: 2
+    encoding: "UTF-8"
 
-year:
-  description: Observation year UTC
-  description_es: Año de observación UTC
-  unit: year
-  type: int16
-  aliases:
-    - Año
+fields:
 
-month:
-  description: Observation month UTC
-  description_es: Mes de observación UTC
-  unit: month
-  type: int8
-  valid_min: 1
-  valid_max: 12
-  aliases:
-    - Mes
+  # ===========================================================================
+  # 1. IDENTIFICACIÓN DE LA ESTACIÓN
+  # ===========================================================================
 
-day:
-  description: Observation day UTC
-  description_es: Día de observación UTC
-  unit: day
-  type: int8
-  valid_min: 1
-  valid_max: 31
-  aliases:
-    - Dia
+  - id: 1
+    source_name: "Identificador OACI o Cod FAP"
+    standard_name: "station_id"
+    short_name: "station_id"
 
-hour_utc:
-  description: Observation hour UTC
-  description_es: Hora de observación UTC
-  unit: hour
-  type: int8
-  valid_min: 0
-  valid_max: 23
-  aliases:
-    - Hora (UTC)
+    description_es: >
+      Identificador OACI o código institucional FAP correspondiente a la
+      estación meteorológica o aeródromo.
+    description_en: >
+      ICAO identifier or institutional FAP code corresponding to the
+      meteorological station or aerodrome.
 
-minute:
-  description: Observation minute UTC
-  description_es: Minuto de observación UTC
-  unit: minute
-  type: int8
-  valid_min: 0
-  valid_max: 59
-  aliases:
-    - Minuto
+    category: "station"
+    variable_group: "station_identification"
 
-datetime_utc:
-  description: Consolidated UTC datetime (built internally from year, month, day, hour_utc, minute)
-  description_es: Fecha y hora UTC consolidada (construida internamente)
-  unit: datetime
-  type: datetime64
-  computed: true
-  source_fields:
-    - year
-    - month
-    - day
-    - hour_utc
-    - minute
+    source_dtype: "string"
+    target_dtype: "string"
 
-# -----------------------------------------------------------------------------
-# VIENTO / WIND
-# -----------------------------------------------------------------------------
+    source_unit: null
+    target_unit: null
 
-wind_dir:
-  description: Wind direction
-  description_es: Dirección del viento
-  unit: degree
-  type: float32
-  valid_min: 0
-  valid_max: 360
-  aliases:
-    - Dirección del viento
+    nullable: false
+    datetime_component: false
 
-wind_dir_ccw_extreme:
-  description: Extreme counterclockwise wind direction
-  description_es: Dirección extrema antihoraria del viento
-  unit: degree
-  type: float32
-  valid_min: 0
-  valid_max: 360
-  aliases:
-    - Dirección extrema antihoraria del viento
+    descriptor: null
+    omm_code: null
+    oaci_code: "ICAO_LOCATION_INDICATOR"
 
-wind_dir_cw_extreme:
-  description: Extreme clockwise wind direction
-  description_es: Dirección extrema horaria del viento
-  unit: degree
-  type: float32
-  valid_min: 0
-  valid_max: 360
-  aliases:
-    - Dirección extrema horaria del viento
+    example: "SPIM"
 
-wind_speed_kt:
-  description: Wind speed
-  description_es: Velocidad del viento
-  unit: knot
-  type: float32
-  valid_min: 0
-  valid_max: 150
-  aliases:
-    - Velocidad del viento (nudos)
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "climatology"
+      - "quality_control"
 
-wind_gust_kt:
-  description: Wind gust speed
-  description_es: Velocidad de ráfagas de viento
-  unit: knot
-  type: float32
-  valid_min: 0
-  valid_max: 200
-  aliases:
-    - Velocidad del viento. Rafagas (nudos)
+    notes: >
+      Debe normalizarse en mayúsculas y eliminar espacios al inicio y al final.
 
-# -----------------------------------------------------------------------------
-# TEMPERATURA / TEMPERATURE
-# -----------------------------------------------------------------------------
+  # ===========================================================================
+  # 2. ESTADO DEL PRODUCTO
+  # ===========================================================================
 
-air_temp_c:
-  description: Air temperature
-  description_es: Temperatura del aire
-  unit: celsius
-  type: float32
-  valid_min: -90
-  valid_max: 60
-  aliases:
-    - Temperatura del aire
+  - id: 2
+    source_name: >
+      Estado del producto de aviación (rutinario, especial, corregido,
+      no disponible)
+    standard_name: "report_status"
+    short_name: "status"
 
-wet_bulb_temp_c:
-  description: Wet bulb temperature
-  description_es: Temperatura de bulbo húmedo
-  unit: celsius
-  type: float32
-  valid_min: -90
-  valid_max: 60
-  aliases:
-    - Temperatura Bulbo humedo
+    description_es: >
+      Estado operacional del producto meteorológico de aviación.
+    description_en: >
+      Operational status of the aviation meteorological report.
 
-dewpoint_temp_c:
-  description: Dew point temperature
-  description_es: Temperatura de rocío
-  unit: celsius
-  type: float32
-  valid_min: -100
-  valid_max: 50
-  aliases:
-    - Temperatura de rocio
+    category: "report"
+    variable_group: "report_metadata"
 
-max_temp_c:
-  description: Maximum air temperature
-  description_es: Temperatura máxima del aire
-  unit: celsius
-  type: float32
-  aliases:
-    - Temperatura Maxima
+    source_dtype: "string"
+    target_dtype: "string"
 
-min_temp_c:
-  description: Minimum air temperature
-  description_es: Temperatura mínima del aire
-  unit: celsius
-  type: float32
-  aliases:
-    - Temperatura Minima
+    source_unit: null
+    target_unit: null
 
-# -----------------------------------------------------------------------------
-# PRESIÓN / PRESSURE
-# -----------------------------------------------------------------------------
+    nullable: false
+    datetime_component: false
 
-qnh_hpa:
-  description: Sea level pressure QNH
-  description_es: Presión a nivel medio del mar (QNH)
-  unit: hPa
-  type: float32
-  valid_min: 870
-  valid_max: 1085
-  aliases:
-    - Presion a nivel medio del mar (QNH)
+    descriptor: "report_types"
+    omm_code: null
+    oaci_code: null
 
-qfe_hpa:
-  description: Station pressure QFE
-  description_es: Presión a nivel de la estación (QFE)
-  unit: hPa
-  type: float32
-  valid_min: 500
-  valid_max: 1085
-  aliases:
-    - Presion a nivel de la estacion (QFE)
+    example: "rutinario"
 
-# -----------------------------------------------------------------------------
-# VISIBILIDAD / VISIBILITY
-# -----------------------------------------------------------------------------
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+      - "reports"
 
-visibility_m:
-  description: Prevailing visibility
-  description_es: Visibilidad reinante
-  unit: meter
-  type: float32
-  valid_min: 0
-  valid_max: 100000
-  aliases:
-    - Visibilidad reinante
+    notes: >
+      Los valores permitidos deben ser administrados mediante el descriptor
+      report_types.yaml.
 
-visibility_min_1_m:
-  description: First minimum horizontal visibility
-  description_es: Primera visibilidad mínima horizontal
-  unit: meter
-  type: float32
-  valid_min: 0
-  valid_max: 100000
-  aliases:
-    - 1° Visibilidad minima horizontal
+  # ===========================================================================
+  # 3. AÑO
+  # ===========================================================================
 
-visibility_min_1_dir:
-  description: Direction of first minimum visibility
-  description_es: Dirección de la primera visibilidad mínima
-  unit: degree
-  type: float32
-  valid_min: 0
-  valid_max: 360
-  aliases:
-    - 1° Direccion de la visibilidad horizontal minima observada
+  - id: 3
+    source_name: "Año"
+    standard_name: "year"
+    short_name: "year"
 
-visibility_min_2_m:
-  description: Second minimum horizontal visibility
-  description_es: Segunda visibilidad mínima horizontal
-  unit: meter
-  type: float32
-  valid_min: 0
-  valid_max: 100000
-  aliases:
-    - 2° Visibilidad minima horizontal
+    description_es: >
+      Año UTC correspondiente a la observación meteorológica.
+    description_en: >
+      UTC year corresponding to the meteorological observation.
 
-visibility_min_2_dir:
-  description: Direction of second minimum visibility
-  description_es: Dirección de la segunda visibilidad mínima
-  unit: degree
-  type: float32
-  valid_min: 0
-  valid_max: 360
-  aliases:
-    - 2° Direccion de la visibilidad horizontal minima observada
+    category: "datetime"
+    variable_group: "datetime_components"
 
-# -----------------------------------------------------------------------------
-# TIEMPO PRESENTE / PRESENT WEATHER
-# -----------------------------------------------------------------------------
+    source_dtype: "integer"
+    target_dtype: "Int16"
 
-present_weather_1:
-  description: First significant present weather
-  description_es: Primer tiempo presente significativo
-  unit: code
-  type: string
-  aliases:
-    - 1 Tiempo presente significativo
+    source_unit: "year"
+    target_unit: "year"
 
-present_weather_2:
-  description: Second significant present weather
-  description_es: Segundo tiempo presente significativo
-  unit: code
-  type: string
-  aliases:
-    - 2 Tiempo presente significativo
+    nullable: false
+    datetime_component: true
 
-present_weather_3:
-  description: Third significant present weather
-  description_es: Tercer tiempo presente significativo
-  unit: code
-  type: string
-  aliases:
-    - 3 Tiempo presente significativo
+    descriptor: null
+    omm_code: null
+    oaci_code: null
 
-# -----------------------------------------------------------------------------
-# NUBES / CLOUDS
-# -----------------------------------------------------------------------------
+    example: 2026
 
-cloud_amount_1:
-  description: First cloud layer amount
-  description_es: Cantidad de nubes — primera capa
-  unit: oktas
-  type: string
-  aliases:
-    - 1° Cantidad de nubes
+    used_in:
+      - "datetime_utc"
+      - "quality_control"
+      - "climatology"
+      - "reports"
 
-cloud_base_1_ft:
-  description: First cloud layer base height
-  description_es: Altura de la base — primera capa de nubes
-  unit: feet
-  type: float32
-  valid_min: 0
-  aliases:
-    - 1° Altura de la base de la nube (pies)
+    notes: >
+      Se utiliza junto con mes, día, hora y minuto para construir datetime_utc.
 
-cloud_type_1:
-  description: First cloud layer type
-  description_es: Tipo de nube — primera capa
-  unit: code
-  type: string
-  aliases:
-    - 1° Tipo de nube
+  # ===========================================================================
+  # 4. MES
+  # ===========================================================================
 
-cloud_amount_2:
-  description: Second cloud layer amount
-  description_es: Cantidad de nubes — segunda capa
-  unit: oktas
-  type: string
-  aliases:
-    - 2° Cantidad de nubes
+  - id: 4
+    source_name: "Mes"
+    standard_name: "month"
+    short_name: "month"
 
-cloud_base_2_ft:
-  description: Second cloud layer base height
-  description_es: Altura de la base — segunda capa de nubes
-  unit: feet
-  type: float32
-  valid_min: 0
-  aliases:
-    - 2° Altura de la base de la nube (pies)
+    description_es: >
+      Mes UTC correspondiente a la observación meteorológica.
+    description_en: >
+      UTC month corresponding to the meteorological observation.
 
-cloud_type_2:
-  description: Second cloud layer type
-  description_es: Tipo de nube — segunda capa
-  unit: code
-  type: string
-  aliases:
-    - 2° Tipo de nube
+    category: "datetime"
+    variable_group: "datetime_components"
 
-cloud_amount_3:
-  description: Third cloud layer amount
-  description_es: Cantidad de nubes — tercera capa
-  unit: oktas
-  type: string
-  aliases:
-    - 3° Cantidad de nubes
+    source_dtype: "integer"
+    target_dtype: "Int8"
 
-cloud_base_3_ft:
-  description: Third cloud layer base height
-  description_es: Altura de la base — tercera capa de nubes
-  unit: feet
-  type: float32
-  valid_min: 0
-  aliases:
-    - 3° Altura de la base de la nube (pies)
+    source_unit: "month"
+    target_unit: "month"
 
-cloud_type_3:
-  description: Third cloud layer type
-  description_es: Tipo de nube — tercera capa
-  unit: code
-  type: string
-  aliases:
-    - 3° Tipo de nube
+    nullable: false
+    datetime_component: true
 
-# -----------------------------------------------------------------------------
-# PRECIPITACIÓN Y HUMEDAD / PRECIPITATION & HUMIDITY
-# -----------------------------------------------------------------------------
+    descriptor: null
+    omm_code: null
+    oaci_code: null
 
-precipitation_mm:
-  description: Accumulated precipitation
-  description_es: Precipitación acumulada
-  unit: millimeter
-  type: float32
-  valid_min: 0
-  aliases:
-    - Precipitacion Acumulada
+    example: 7
 
-relative_humidity:
-  description: Relative humidity
-  description_es: Humedad relativa
-  unit: percent
-  type: float32
-  valid_min: 0
-  valid_max: 100
-  aliases:
-    - Humedad relativa (%)
+    used_in:
+      - "datetime_utc"
+      - "quality_control"
+      - "climatology"
+      - "reports"
 
-# -----------------------------------------------------------------------------
-# METADATA DE ESTACIÓN / STATION METADATA
-# -----------------------------------------------------------------------------
+    notes: >
+      Los valores válidos deben estar comprendidos entre 1 y 12.
 
-country:
-  description: Country
-  description_es: País
-  unit: null
-  type: string
-  aliases:
-    - Pais
+  # ===========================================================================
+  # 5. DÍA
+  # ===========================================================================
 
-department:
-  description: Administrative department
-  description_es: Departamento administrativo
-  unit: null
-  type: string
-  aliases:
-    - Departamento
+  - id: 5
+    source_name: "Dia"
+    standard_name: "day"
+    short_name: "day"
 
-province:
-  description: Province
-  description_es: Provincia
-  unit: null
-  type: string
-  aliases:
-    - Provincia
+    description_es: >
+      Día UTC correspondiente a la observación meteorológica.
+    description_en: >
+      UTC day corresponding to the meteorological observation.
 
-district:
-  description: District
-  description_es: Distrito
-  unit: null
-  type: string
-  aliases:
-    - Distrito
+    category: "datetime"
+    variable_group: "datetime_components"
 
-latitude:
-  description: Station latitude
-  description_es: Latitud de la estación
-  unit: degree
-  type: float64
-  valid_min: -90
-  valid_max: 90
-  aliases:
-    - Latitud
+    source_dtype: "integer"
+    target_dtype: "Int8"
 
-longitude:
-  description: Station longitude
-  description_es: Longitud de la estación
-  unit: degree
-  type: float64
-  valid_min: -180
-  valid_max: 180
-  aliases:
-    - Longitud
+    source_unit: "day"
+    target_unit: "day"
 
-elevation_m:
-  description: Station elevation
-  description_es: Elevación de la estación
-  unit: meter
-  type: float32
-  aliases:
-    - Elevacion
+    nullable: false
+    datetime_component: true
 
-location:
-  description: Locality name
-  description_es: Nombre de la localidad
-  unit: null
-  type: string
-  aliases:
-    - Lugar
+    descriptor: null
+    omm_code: null
+    oaci_code: null
 
-aerodrome_name:
-  description: Aerodrome name
-  description_es: Nombre del aeródromo
-  unit: null
-  type: string
-  aliases:
-    - Nombre del Aeródromo
+    example: 13
 
-station_type:
-  description: Station type
-  description_es: Tipo de estación
-  unit: null
-  type: category
-  aliases:
-    - Tipo de Estacion
+    used_in:
+      - "datetime_utc"
+      - "quality_control"
+      - "climatology"
+      - "reports"
 
-meteorological_office:
-  description: Meteorological office
-  description_es: Oficina meteorológica
-  unit: null
-  type: string
-  aliases:
-    - Oficina Meteorologica
+    notes: >
+      La validación debe considerar la cantidad real de días de cada mes
+      y los años bisiestos.
 
-observer:
-  description: Observer name or identifier
-  description_es: Nombre o identificador del observador
-  unit: null
-  type: string
-  aliases:
-    - Observador
+  # ===========================================================================
+  # 6. HORA UTC
+  # ===========================================================================
 
-# -----------------------------------------------------------------------------
-# OTROS / OTHER
-# -----------------------------------------------------------------------------
+  - id: 6
+    source_name: "Hora (UTC)"
+    standard_name: "hour_utc"
+    short_name: "hour"
 
-metar:
-  description: Raw METAR aeronautical meteorological report (full text string)
-  description_es: Reporte meteorológico aeronáutico de rutina (texto completo)
-  unit: null
-  type: string
-  example: "SPIM 151200Z 18005KT 9999 FEW020 25/18 Q1013"
-  aliases:
-    - METAR
-    - Reporte METAR
+    description_es: >
+      Hora UTC correspondiente a la observación meteorológica.
+    description_en: >
+      UTC hour corresponding to the meteorological observation.
 
-remarks:
-  description: Additional remarks
-  description_es: Observaciones adicionales
-  unit: null
-  type: string
-  aliases:
-    - Remarks
+    category: "datetime"
+    variable_group: "datetime_components"
 
-source_file:
-  description: Original source filename
-  description_es: Nombre del archivo fuente original
-  unit: null
-  type: string
-  aliases:
-    - ARCHIVO_ORIGEN
+    source_dtype: "integer"
+    target_dtype: "Int8"
+
+    source_unit: "hour"
+    target_unit: "hour"
+
+    nullable: false
+    datetime_component: true
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: 18
+
+    used_in:
+      - "datetime_utc"
+      - "quality_control"
+      - "METAR"
+      - "SPECI"
+
+    notes: >
+      Los valores válidos deben estar comprendidos entre 0 y 23.
+
+  # ===========================================================================
+  # 7. MINUTO
+  # ===========================================================================
+
+  - id: 7
+    source_name: "Minuto"
+    standard_name: "minute"
+    short_name: "minute"
+
+    description_es: >
+      Minuto UTC correspondiente a la observación meteorológica.
+    description_en: >
+      UTC minute corresponding to the meteorological observation.
+
+    category: "datetime"
+    variable_group: "datetime_components"
+
+    source_dtype: "integer"
+    target_dtype: "Int8"
+
+    source_unit: "minute"
+    target_unit: "minute"
+
+    nullable: false
+    datetime_component: true
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: 0
+
+    used_in:
+      - "datetime_utc"
+      - "quality_control"
+      - "METAR"
+      - "SPECI"
+
+    notes: >
+      Los valores válidos deben estar comprendidos entre 0 y 59.
+
+  # ===========================================================================
+  # 8. DIRECCIÓN DEL VIENTO
+  # ===========================================================================
+
+  - id: 8
+    source_name: "Dirección del viento"
+    standard_name: "wind_direction_deg"
+    short_name: "wind_dir"
+
+    description_es: >
+      Dirección media desde la cual sopla el viento durante el periodo
+      de observación.
+    description_en: >
+      Mean direction from which the wind is blowing during the observation
+      period.
+
+    category: "wind"
+    variable_group: "wind_direction"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "degree"
+    target_unit: "degree"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "wind_codes"
+    omm_code: null
+    oaci_code: "ddd"
+
+    example: 180
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+      - "climatology"
+
+    notes: >
+      Se expresa en grados verdaderos. Los valores especiales como viento
+      variable o calma deben normalizarse mediante el descriptor correspondiente.
+
+  # ===========================================================================
+  # 9. DIRECCIÓN EXTREMA ANTIHORARIA
+  # ===========================================================================
+
+  - id: 9
+    source_name: "Dirección extrema antihoraria del viento"
+    standard_name: "wind_direction_ccw_deg"
+    short_name: "wind_dir_ccw"
+
+    description_es: >
+      Límite extremo antihorario de la variación observada en la dirección
+      del viento.
+    description_en: >
+      Counterclockwise extreme limit of the observed wind-direction variation.
+
+    category: "wind"
+    variable_group: "wind_direction_variation"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "degree"
+    target_unit: "degree"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: 140
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+
+    notes: >
+      Debe interpretarse junto con wind_direction_cw_deg.
+
+  # ===========================================================================
+  # 10. DIRECCIÓN EXTREMA HORARIA
+  # ===========================================================================
+
+  - id: 10
+    source_name: "Dirección extrema horaria del viento"
+    standard_name: "wind_direction_cw_deg"
+    short_name: "wind_dir_cw"
+
+    description_es: >
+      Límite extremo horario de la variación observada en la dirección
+      del viento.
+    description_en: >
+      Clockwise extreme limit of the observed wind-direction variation.
+
+    category: "wind"
+    variable_group: "wind_direction_variation"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "degree"
+    target_unit: "degree"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: 220
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+
+    notes: >
+      Debe interpretarse junto con wind_direction_ccw_deg.
+
+  # ===========================================================================
+  # 11. VELOCIDAD DEL VIENTO
+  # ===========================================================================
+
+  - id: 11
+    source_name: "Velocidad del viento (nudos)"
+    standard_name: "wind_speed_kt"
+    short_name: "wind_speed"
+
+    description_es: >
+      Velocidad media del viento expresada en nudos.
+    description_en: >
+      Mean wind speed expressed in knots.
+
+    category: "wind"
+    variable_group: "wind_speed"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "knot"
+    target_unit: "knot"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: "ff"
+
+    example: 12
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+
+    notes: >
+      Los valores negativos no son válidos.
+
+  # ===========================================================================
+  # 12. RÁFAGA DEL VIENTO
+  # ===========================================================================
+
+  - id: 12
+    source_name: "Velocidad del viento. Rafagas (nudos)"
+    standard_name: "wind_gust_kt"
+    short_name: "wind_gust"
+
+    description_es: >
+      Velocidad máxima de la ráfaga observada durante el periodo de medición.
+    description_en: >
+      Maximum gust speed observed during the measurement period.
+
+    category: "wind"
+    variable_group: "wind_speed"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "knot"
+    target_unit: "knot"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: "Gff"
+
+    example: 22
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+
+    notes: >
+      Cuando exista, normalmente debe ser mayor que la velocidad media
+      del viento.
+
+  # ===========================================================================
+  # 13. TEMPERATURA DEL AIRE
+  # ===========================================================================
+
+  - id: 13
+    source_name: "Temperatura del aire"
+    standard_name: "air_temperature_c"
+    short_name: "air_temp"
+
+    description_es: >
+      Temperatura del aire observada en la estación meteorológica.
+    description_en: >
+      Air temperature observed at the meteorological station.
+
+    category: "temperature"
+    variable_group: "air_temperature"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "celsius"
+    target_unit: "celsius"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: "T"
+
+    example: 24.5
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Los límites físicos y climatológicos deben definirse en qc_rules.yaml
+
+        # ===========================================================================
+  # 14. TEMPERATURA DE BULBO HÚMEDO
+  # ===========================================================================
+
+  - id: 14
+    source_name: "Temperatura Bulbo humedo"
+    standard_name: "wet_bulb_temperature_c"
+    short_name: "wet_bulb_temp"
+
+    description_es: >
+      Temperatura de bulbo húmedo observada en la estación meteorológica.
+    description_en: >
+      Wet-bulb temperature observed at the meteorological station.
+
+    category: "temperature"
+    variable_group: "air_temperature"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "celsius"
+    target_unit: "celsius"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: 21.3
+
+    used_in:
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      La temperatura de bulbo húmedo normalmente no debe ser mayor que la
+      temperatura del aire. Los límites y relaciones deben definirse en
+      qc_rules.yaml.
+
+  # ===========================================================================
+  # 15. TEMPERATURA DEL PUNTO DE ROCÍO
+  # ===========================================================================
+
+  - id: 15
+    source_name: "Temperatura de rocio"
+    standard_name: "dew_point_temperature_c"
+    short_name: "dew_point"
+
+    description_es: >
+      Temperatura del punto de rocío calculada u observada en la estación.
+    description_en: >
+      Dew-point temperature calculated or observed at the station.
+
+    category: "temperature"
+    variable_group: "air_temperature"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "celsius"
+    target_unit: "celsius"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: "Td"
+
+    example: 18.7
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Normalmente no debe ser mayor que la temperatura del aire. Las reglas
+      de consistencia deben definirse en qc_rules.yaml.
+
+  # ===========================================================================
+  # 16. PRESIÓN QNH
+  # ===========================================================================
+
+  - id: 16
+    source_name: "Presion a nivel medio del mar (QNH)"
+    standard_name: "qnh_hpa"
+    short_name: "qnh"
+
+    description_es: >
+      Presión atmosférica reducida al nivel medio del mar y utilizada como
+      reglaje altimétrico QNH.
+    description_en: >
+      Atmospheric pressure reduced to mean sea level and used as the QNH
+      altimeter setting.
+
+    category: "pressure"
+    variable_group: "atmospheric_pressure"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "hPa"
+    target_unit: "hPa"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: "QNH"
+
+    example: 1013.2
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Los límites físicos y climatológicos deben definirse por estación en
+      qc_rules.yaml o stations.yaml.
+
+  # ===========================================================================
+  # 17. PRESIÓN QFE
+  # ===========================================================================
+
+  - id: 17
+    source_name: "Presion a nivel de la estacion (QFE)"
+    standard_name: "qfe_hpa"
+    short_name: "qfe"
+
+    description_es: >
+      Presión atmosférica observada o reducida al nivel de referencia de la
+      estación o aeródromo.
+    description_en: >
+      Atmospheric pressure observed or reduced to the station or aerodrome
+      reference level.
+
+    category: "pressure"
+    variable_group: "atmospheric_pressure"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "hPa"
+    target_unit: "hPa"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: "QFE"
+
+    example: 1004.8
+
+    used_in:
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Su relación con QNH depende de la elevación de la estación. Las reglas de
+      consistencia deben definirse en qc_rules.yaml.
+
+  # ===========================================================================
+  # 18. VISIBILIDAD REINANTE
+  # ===========================================================================
+
+  - id: 18
+    source_name: "Visibilidad reinante"
+    standard_name: "prevailing_visibility_m"
+    short_name: "visibility"
+
+    description_es: >
+      Visibilidad horizontal reinante representativa del aeródromo o estación.
+    description_en: >
+      Prevailing horizontal visibility representative of the aerodrome or
+      station.
+
+    category: "visibility"
+    variable_group: "horizontal_visibility"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "meter"
+    target_unit: "meter"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "visibility_codes"
+    omm_code: null
+    oaci_code: "VVVV"
+
+    example: 10000
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Los valores especiales o codificados deben normalizarse mediante
+      visibility_codes.yaml.
+
+  # ===========================================================================
+  # 19. PRIMERA VISIBILIDAD MÍNIMA
+  # ===========================================================================
+
+  - id: 19
+    source_name: "1° Visibilidad minima horizontal"
+    standard_name: "minimum_visibility_1_m"
+    short_name: "min_visibility_1"
+
+    description_es: >
+      Primera visibilidad horizontal mínima observada cuando difiere de la
+      visibilidad reinante.
+    description_en: >
+      First minimum horizontal visibility observed when it differs from the
+      prevailing visibility.
+
+    category: "visibility"
+    variable_group: "minimum_visibility"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "meter"
+    target_unit: "meter"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "visibility_codes"
+    omm_code: null
+    oaci_code: null
+
+    example: 3000
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+      - "climatology"
+
+    notes: >
+      Debe interpretarse conjuntamente con minimum_visibility_direction_1.
+
+  # ===========================================================================
+  # 20. DIRECCIÓN DE LA PRIMERA VISIBILIDAD MÍNIMA
+  # ===========================================================================
+
+  - id: 20
+    source_name: "1° Direccion de la visibilidad horizontal minima observada"
+    standard_name: "minimum_visibility_direction_1"
+    short_name: "min_visibility_dir_1"
+
+    description_es: >
+      Dirección correspondiente a la primera visibilidad horizontal mínima
+      observada.
+    description_en: >
+      Direction corresponding to the first observed minimum horizontal
+      visibility.
+
+    category: "visibility"
+    variable_group: "minimum_visibility"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "visibility_codes"
+    omm_code: null
+    oaci_code: null
+
+    example: "NE"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+
+    notes: >
+      Los valores deben normalizarse a los sectores de dirección definidos en
+      visibility_codes.yaml.
+
+  # ===========================================================================
+  # 21. SEGUNDA VISIBILIDAD MÍNIMA
+  # ===========================================================================
+
+  - id: 21
+    source_name: "2° Visibilidad minima horizontal"
+    standard_name: "minimum_visibility_2_m"
+    short_name: "min_visibility_2"
+
+    description_es: >
+      Segunda visibilidad horizontal mínima observada cuando se registra una
+      segunda dirección significativa.
+    description_en: >
+      Second minimum horizontal visibility observed when a second significant
+      direction is reported.
+
+    category: "visibility"
+    variable_group: "minimum_visibility"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "meter"
+    target_unit: "meter"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "visibility_codes"
+    omm_code: null
+    oaci_code: null
+
+    example: 5000
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+      - "climatology"
+
+    notes: >
+      Debe interpretarse conjuntamente con minimum_visibility_direction_2.
+
+  # ===========================================================================
+  # 22. DIRECCIÓN DE LA SEGUNDA VISIBILIDAD MÍNIMA
+  # ===========================================================================
+
+  - id: 22
+    source_name: "2° Direccion de la visibilidad horizontal minima observada"
+    standard_name: "minimum_visibility_direction_2"
+    short_name: "min_visibility_dir_2"
+
+    description_es: >
+      Dirección correspondiente a la segunda visibilidad horizontal mínima
+      observada.
+    description_en: >
+      Direction corresponding to the second observed minimum horizontal
+      visibility.
+
+    category: "visibility"
+    variable_group: "minimum_visibility"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "visibility_codes"
+    omm_code: null
+    oaci_code: null
+
+    example: "SW"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "quality_control"
+
+    notes: >
+      Los valores deben normalizarse a los sectores de dirección definidos en
+      visibility_codes.yaml.
+
+  # ===========================================================================
+  # 23. PRIMER TIEMPO PRESENTE SIGNIFICATIVO
+  # ===========================================================================
+
+  - id: 23
+    source_name: "1 Tiempo presente significativo"
+    standard_name: "present_weather_1"
+    short_name: "weather_1"
+
+    description_es: >
+      Primer fenómeno de tiempo presente significativo observado en la
+      estación o sus inmediaciones.
+    description_en: >
+      First significant present-weather phenomenon observed at the station or
+      in its vicinity.
+
+    category: "weather"
+    variable_group: "present_weather"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "weather_codes"
+    omm_code: null
+    oaci_code: "w'w'"
+
+    example: "RA"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Debe conservar la codificación meteorológica aeronáutica estandarizada y
+      validarse mediante weather_codes.yaml.
+
+  # ===========================================================================
+  # 24. SEGUNDO TIEMPO PRESENTE SIGNIFICATIVO
+  # ===========================================================================
+
+  - id: 24
+    source_name: "2 Tiempo presente significativo"
+    standard_name: "present_weather_2"
+    short_name: "weather_2"
+
+    description_es: >
+      Segundo fenómeno de tiempo presente significativo observado.
+    description_en: >
+      Second significant present-weather phenomenon observed.
+
+    category: "weather"
+    variable_group: "present_weather"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "weather_codes"
+    omm_code: null
+    oaci_code: "w'w'"
+
+    example: "BR"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+
+    notes: >
+      Se utiliza cuando existe más de un fenómeno significativo en la misma
+      observación.
+
+  # ===========================================================================
+  # 25. TERCER TIEMPO PRESENTE SIGNIFICATIVO
+  # ===========================================================================
+
+  - id: 25
+    source_name: "3 Tiempo presente significativo"
+    standard_name: "present_weather_3"
+    short_name: "weather_3"
+
+    description_es: >
+      Tercer fenómeno de tiempo presente significativo observado.
+    description_en: >
+      Third significant present-weather phenomenon observed.
+
+    category: "weather"
+    variable_group: "present_weather"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "weather_codes"
+    omm_code: null
+    oaci_code: "w'w'"
+
+    example: "FG"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+
+    notes: >
+      Se utiliza únicamente cuando existen tres fenómenos significativos
+      diferenciados.
+
+  # ===========================================================================
+  # 26. CANTIDAD DE NUBES DE LA PRIMERA CAPA
+  # ===========================================================================
+
+  - id: 26
+    source_name: "1° Cantidad de nubes"
+    standard_name: "cloud_amount_1"
+    short_name: "cloud_amount_1"
+
+    description_es: >
+      Cantidad de nubes correspondiente a la primera capa observada.
+    description_en: >
+      Cloud amount corresponding to the first observed layer.
+
+    category: "cloud"
+    variable_group: "cloud_layer_1"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "cloud_codes"
+    omm_code: null
+    oaci_code: "NsNsNs"
+
+    example: "SCT"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Debe validarse y normalizarse mediante cloud_codes.yaml. La primera capa
+      corresponde normalmente a la capa más baja reportada.
+
+        # ===========================================================================
+  # 27. ALTURA DE LA BASE DE LA PRIMERA CAPA
+  # ===========================================================================
+
+  - id: 27
+    source_name: "1° Altura de la base de la nube (pies)"
+    standard_name: "cloud_base_height_1_ft"
+    short_name: "cloud_base_1"
+
+    description_es: >
+      Altura de la base de la primera capa de nubes observada, expresada
+      en pies.
+    description_en: >
+      Height of the base of the first observed cloud layer, expressed
+      in feet.
+
+    category: "cloud"
+    variable_group: "cloud_layer_1"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "foot"
+    target_unit: "foot"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: "hhh"
+
+    example: 1500
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Corresponde a la altura de la base de la primera capa reportada.
+      Los límites físicos y operacionales deben definirse en qc_rules.yaml.
+
+  # ===========================================================================
+  # 28. TIPO DE NUBE DE LA PRIMERA CAPA
+  # ===========================================================================
+
+  - id: 28
+    source_name: "1° Tipo de nube"
+    standard_name: "cloud_type_1"
+    short_name: "cloud_type_1"
+
+    description_es: >
+      Tipo de nube correspondiente a la primera capa observada.
+    description_en: >
+      Cloud type corresponding to the first observed layer.
+
+    category: "cloud"
+    variable_group: "cloud_layer_1"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "cloud_types"
+    omm_code: null
+    oaci_code: null
+
+    example: "CB"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Debe validarse mediante cloud_types.yaml. Puede contener tipos de nube
+      significativos para la aviación, como CB o TCU.
+
+  # ===========================================================================
+  # 29. CANTIDAD DE NUBES DE LA SEGUNDA CAPA
+  # ===========================================================================
+
+  - id: 29
+    source_name: "2° Cantidad de nubes"
+    standard_name: "cloud_amount_2"
+    short_name: "cloud_amount_2"
+
+    description_es: >
+      Cantidad de nubes correspondiente a la segunda capa observada.
+    description_en: >
+      Cloud amount corresponding to the second observed layer.
+
+    category: "cloud"
+    variable_group: "cloud_layer_2"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "cloud_codes"
+    omm_code: null
+    oaci_code: "NsNsNs"
+
+    example: "BKN"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Debe validarse y normalizarse mediante cloud_codes.yaml.
+
+  # ===========================================================================
+  # 30. ALTURA DE LA BASE DE LA SEGUNDA CAPA
+  # ===========================================================================
+
+  - id: 30
+    source_name: "2° Altura de la base de la nube (pies)"
+    standard_name: "cloud_base_height_2_ft"
+    short_name: "cloud_base_2"
+
+    description_es: >
+      Altura de la base de la segunda capa de nubes observada, expresada
+      en pies.
+    description_en: >
+      Height of the base of the second observed cloud layer, expressed
+      in feet.
+
+    category: "cloud"
+    variable_group: "cloud_layer_2"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "foot"
+    target_unit: "foot"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: "hhh"
+
+    example: 3000
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Debe ser coherente con el orden vertical de las capas de nubes.
+
+  # ===========================================================================
+  # 31. TIPO DE NUBE DE LA SEGUNDA CAPA
+  # ===========================================================================
+
+  - id: 31
+    source_name: "2° Tipo de nube"
+    standard_name: "cloud_type_2"
+    short_name: "cloud_type_2"
+
+    description_es: >
+      Tipo de nube correspondiente a la segunda capa observada.
+    description_en: >
+      Cloud type corresponding to the second observed layer.
+
+    category: "cloud"
+    variable_group: "cloud_layer_2"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "cloud_types"
+    omm_code: null
+    oaci_code: null
+
+    example: "TCU"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+
+    notes: >
+      Debe validarse mediante cloud_types.yaml.
+
+  # ===========================================================================
+  # 32. CANTIDAD DE NUBES DE LA TERCERA CAPA
+  # ===========================================================================
+
+  - id: 32
+    source_name: "3° Cantidad de nubes"
+    standard_name: "cloud_amount_3"
+    short_name: "cloud_amount_3"
+
+    description_es: >
+      Cantidad de nubes correspondiente a la tercera capa observada.
+    description_en: >
+      Cloud amount corresponding to the third observed layer.
+
+    category: "cloud"
+    variable_group: "cloud_layer_3"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "cloud_codes"
+    omm_code: null
+    oaci_code: "NsNsNs"
+
+    example: "OVC"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Debe validarse y normalizarse mediante cloud_codes.yaml.
+
+  # ===========================================================================
+  # 33. ALTURA DE LA BASE DE LA TERCERA CAPA
+  # ===========================================================================
+
+  - id: 33
+    source_name: "3° Altura de la base de la nube (pies)"
+    standard_name: "cloud_base_height_3_ft"
+    short_name: "cloud_base_3"
+
+    description_es: >
+      Altura de la base de la tercera capa de nubes observada, expresada
+      en pies.
+    description_en: >
+      Height of the base of the third observed cloud layer, expressed
+      in feet.
+
+    category: "cloud"
+    variable_group: "cloud_layer_3"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "foot"
+    target_unit: "foot"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: "hhh"
+
+    example: 6000
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+      - "reports"
+
+    notes: >
+      Debe ser coherente con el orden vertical de las capas reportadas.
+
+  # ===========================================================================
+  # 34. TIPO DE NUBE DE LA TERCERA CAPA
+  # ===========================================================================
+
+  - id: 34
+    source_name: "3° Tipo de nube"
+    standard_name: "cloud_type_3"
+    short_name: "cloud_type_3"
+
+    description_es: >
+      Tipo de nube correspondiente a la tercera capa observada.
+    description_en: >
+      Cloud type corresponding to the third observed layer.
+
+    category: "cloud"
+    variable_group: "cloud_layer_3"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: "cloud_types"
+    omm_code: null
+    oaci_code: null
+
+    example: "CB"
+
+    used_in:
+      - "METAR"
+      - "SPECI"
+      - "TAF"
+      - "quality_control"
+      - "climatology"
+
+    notes: >
+      Debe validarse mediante cloud_types.yaml.
+
+  # ===========================================================================
+  # 35. TEMPERATURA MÁXIMA
+  # ===========================================================================
+
+  - id: 35
+    source_name: "Temperatura Maxima"
+    standard_name: "maximum_temperature_c"
+    short_name: "max_temp"
+
+    description_es: >
+      Temperatura máxima registrada durante el periodo de referencia.
+    description_en: >
+      Maximum temperature recorded during the reference period.
+
+    category: "temperature"
+    variable_group: "temperature_extremes"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "celsius"
+    target_unit: "celsius"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: 31.8
+
+    used_in:
+      - "quality_control"
+      - "climatology"
+      - "reports"
+      - "statistics"
+
+    notes: >
+      El periodo de referencia debe estar definido en la documentación
+      operativa o en la fuente de datos.
+
+  # ===========================================================================
+  # 36. TEMPERATURA MÍNIMA
+  # ===========================================================================
+
+  - id: 36
+    source_name: "Temperatura Minima"
+    standard_name: "minimum_temperature_c"
+    short_name: "min_temp"
+
+    description_es: >
+      Temperatura mínima registrada durante el periodo de referencia.
+    description_en: >
+      Minimum temperature recorded during the reference period.
+
+    category: "temperature"
+    variable_group: "temperature_extremes"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "celsius"
+    target_unit: "celsius"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: 17.2
+
+    used_in:
+      - "quality_control"
+      - "climatology"
+      - "reports"
+      - "statistics"
+
+    notes: >
+      Debe ser menor o igual que maximum_temperature_c cuando ambas variables
+      correspondan al mismo periodo.
+
+  # ===========================================================================
+  # 37. PRECIPITACIÓN ACUMULADA
+  # ===========================================================================
+
+  - id: 37
+    source_name: "Precipitacion Acumulada"
+    standard_name: "accumulated_precipitation_mm"
+    short_name: "precipitation"
+
+    description_es: >
+      Cantidad de precipitación acumulada durante el periodo de referencia,
+      expresada en milímetros.
+    description_en: >
+      Amount of precipitation accumulated during the reference period,
+      expressed in millimetres.
+
+    category: "precipitation"
+    variable_group: "accumulated_precipitation"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "millimeter"
+    target_unit: "millimeter"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: 2.4
+
+    used_in:
+      - "quality_control"
+      - "climatology"
+      - "reports"
+      - "statistics"
+
+    notes: >
+      No debe contener valores negativos. El periodo de acumulación debe estar
+      documentado en la fuente o en la configuración operativa.
+
+  # ===========================================================================
+  # 38. HUMEDAD RELATIVA
+  # ===========================================================================
+
+  - id: 38
+    source_name: "Humedad relativa (%)"
+    standard_name: "relative_humidity_pct"
+    short_name: "relative_humidity"
+
+    description_es: >
+      Humedad relativa del aire expresada como porcentaje.
+    description_en: >
+      Relative humidity of the air expressed as a percentage.
+
+    category: "humidity"
+    variable_group: "atmospheric_humidity"
+
+    source_dtype: "numeric"
+    target_dtype: "Float32"
+
+    source_unit: "percent"
+    target_unit: "percent"
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: 78.5
+
+    used_in:
+      - "quality_control"
+      - "climatology"
+      - "reports"
+      - "statistics"
+
+    notes: >
+      Los valores deben estar comprendidos entre 0 y 100. Las reglas de
+      consistencia con temperatura y punto de rocío deben definirse en
+      qc_rules.yaml.
+
+  # ===========================================================================
+  # 39. PAÍS
+  # ===========================================================================
+
+  - id: 39
+    source_name: "Pais"
+    standard_name: "country"
+    short_name: "country"
+
+    description_es: >
+      País donde se encuentra ubicada la estación meteorológica.
+    description_en: >
+      Country where the meteorological station is located.
+
+    category: "station_metadata"
+    variable_group: "administrative_location"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: "Perú"
+
+    used_in:
+      - "station_catalog"
+      - "reports"
+      - "maps"
+      - "statistics"
+
+    notes: >
+      Se recomienda normalizar el nombre conforme al catálogo institucional
+      de estaciones.
+
+
+        # ===========================================================================
+  # 40. DEPARTAMENTO
+  # ===========================================================================
+
+  - id: 40
+    source_name: "Departamento"
+    standard_name: "department"
+    short_name: "department"
+
+    description_es: >
+      Departamento político-administrativo donde se ubica la estación.
+
+    description_en: >
+      Administrative department where the station is located.
+
+    category: "station_metadata"
+    variable_group: "administrative_location"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+    omm_code: null
+    oaci_code: null
+
+    example: "Lima"
+
+    used_in:
+      - "station_catalog"
+      - "reports"
+      - "maps"
+
+    notes: >
+      Debe normalizarse utilizando el catálogo oficial del Perú.
+
+
+  # ===========================================================================
+  # 41. PROVINCIA
+  # ===========================================================================
+
+  - id: 41
+    source_name: "Provincia"
+    standard_name: "province"
+    short_name: "province"
+
+    description_es: >
+      Provincia donde se encuentra ubicada la estación.
+
+    description_en: >
+      Province where the station is located.
+
+    category: "station_metadata"
+    variable_group: "administrative_location"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+    oaci_code: null
+
+    example: "Callao"
+
+    used_in:
+      - "station_catalog"
+      - "reports"
+
+    notes: >
+      Información geográfica administrativa.
+
+
+  # ===========================================================================
+  # 42. DISTRITO
+  # ===========================================================================
+
+  - id: 42
+    source_name: "Distrito"
+    standard_name: "district"
+    short_name: "district"
+
+    description_es: >
+      Distrito donde se encuentra ubicada la estación.
+
+    description_en: >
+      District where the station is located.
+
+    category: "station_metadata"
+    variable_group: "administrative_location"
+
+    source_dtype: "string"
+    target_dtype: "string"
+
+    source_unit: null
+    target_unit: null
+
+    nullable: true
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+    oaci_code: null
+
+    example: "La Joya"
+
+    used_in:
+      - "station_catalog"
+
+    notes: >
+      Información geográfica administrativa.
+
+
+  # ===========================================================================
+  # 43. LATITUD
+  # ===========================================================================
+
+  - id: 43
+    source_name: "Latitud"
+    standard_name: "latitude"
+
+    short_name: "lat"
+
+    description_es: >
+      Latitud geográfica de la estación.
+
+    description_en: >
+      Geographic latitude of the station.
+
+    category: "geographic"
+
+    variable_group: "coordinates"
+
+    source_dtype: "numeric"
+
+    target_dtype: "Float64"
+
+    source_unit: "degree"
+
+    target_unit: "degree"
+
+    nullable: false
+
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+
+    oaci_code: null
+
+    example: -12.0219
+
+    used_in:
+
+      - "maps"
+
+      - "station_catalog"
+
+      - "spatial_qc"
+
+    notes: >
+      Coordenada geográfica en grados decimales WGS-84.
+
+
+  # ===========================================================================
+  # 44. LONGITUD
+  # ===========================================================================
+
+  - id: 44
+
+    source_name: "Longitud"
+
+    standard_name: "longitude"
+
+    short_name: "lon"
+
+    description_es: >
+      Longitud geográfica de la estación.
+
+    description_en: >
+      Geographic longitude of the station.
+
+    category: "geographic"
+
+    variable_group: "coordinates"
+
+    source_dtype: "numeric"
+
+    target_dtype: "Float64"
+
+    source_unit: "degree"
+
+    target_unit: "degree"
+
+    nullable: false
+
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+
+    oaci_code: null
+
+    example: -77.1143
+
+    used_in:
+
+      - "maps"
+
+      - "station_catalog"
+
+      - "spatial_qc"
+
+    notes: >
+      Coordenada geográfica en grados decimales WGS-84.
+
+
+  # ===========================================================================
+  # 45. ELEVACIÓN
+  # ===========================================================================
+
+  - id: 45
+
+    source_name: "Elevacion"
+
+    standard_name: "elevation_m"
+
+    short_name: "elevation"
+
+    description_es: >
+      Elevación de la estación sobre el nivel medio del mar.
+
+    description_en: >
+      Station elevation above mean sea level.
+
+    category: "geographic"
+
+    variable_group: "coordinates"
+
+    source_dtype: "numeric"
+
+    target_dtype: "Float32"
+
+    source_unit: "meter"
+
+    target_unit: "meter"
+
+    nullable: true
+
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+
+    oaci_code: "AERODROME_ELEVATION"
+
+    example: 34
+
+    used_in:
+
+      - "station_catalog"
+
+      - "pressure_qc"
+
+      - "reports"
+
+    notes: >
+      Elevación oficial de la estación.
+
+
+  # ===========================================================================
+  # 46. LUGAR
+  # ===========================================================================
+
+  - id: 46
+
+    source_name: "Lugar"
+
+    standard_name: "location"
+
+    short_name: "location"
+
+    description_es: >
+      Localidad donde se encuentra instalada la estación.
+
+    description_en: >
+      Locality where the station is installed.
+
+    category: "station_metadata"
+
+    variable_group: "station_information"
+
+    source_dtype: "string"
+
+    target_dtype: "string"
+
+    source_unit: null
+
+    target_unit: null
+
+    nullable: true
+
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+
+    oaci_code: null
+
+    example: "Grupo Aéreo N°8"
+
+    used_in:
+
+      - "station_catalog"
+
+      - "reports"
+
+    notes: >
+      Nombre descriptivo del lugar.
+
+
+  # ===========================================================================
+  # 47. NOMBRE DEL AERÓDROMO
+  # ===========================================================================
+
+  - id: 47
+
+    source_name: "Nombre del Aeródromo"
+
+    standard_name: "aerodrome_name"
+
+    short_name: "aerodrome"
+
+    description_es: >
+      Nombre oficial del aeródromo.
+
+    description_en: >
+      Official aerodrome name.
+
+    category: "station_metadata"
+
+    variable_group: "station_information"
+
+    source_dtype: "string"
+
+    target_dtype: "string"
+
+    nullable: false
+
+    source_unit: null
+
+    target_unit: null
+
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+
+    oaci_code: "AERODROME_NAME"
+
+    example: "Aeropuerto Internacional Jorge Chávez"
+
+    used_in:
+
+      - "reports"
+
+      - "station_catalog"
+
+      - "dashboard"
+
+    notes: >
+      Nombre oficial publicado.
+
+
+  # ===========================================================================
+  # 48. TIPO DE ESTACIÓN
+  # ===========================================================================
+
+  - id: 48
+
+    source_name: "Tipo de Estacion"
+
+    standard_name: "station_type"
+
+    short_name: "station_type"
+
+    description_es: >
+      Tipo de estación meteorológica.
+
+    description_en: >
+      Meteorological station type.
+
+    category: "station_metadata"
+
+    variable_group: "station_information"
+
+    source_dtype: "string"
+
+    target_dtype: "string"
+
+    nullable: false
+
+    source_unit: null
+
+    target_unit: null
+
+    datetime_component: false
+
+    descriptor: "station_types"
+
+    omm_code: null
+
+    oaci_code: null
+
+    example: "AERONAUTICA"
+
+    used_in:
+
+      - "reports"
+
+      - "station_catalog"
+
+    notes: >
+      Los valores válidos deben administrarse mediante station_types.yaml.
+
+
+  # ===========================================================================
+  # 49. REMARKS
+  # ===========================================================================
+
+  - id: 49
+
+    source_name: "Remarks"
+
+    standard_name: "remarks"
+
+    short_name: "remarks"
+
+    description_es: >
+      Observaciones adicionales asociadas al registro.
+
+    description_en: >
+      Additional remarks associated with the observation.
+
+    category: "metadata"
+
+    variable_group: "remarks"
+
+    source_dtype: "string"
+
+    target_dtype: "string"
+
+    nullable: true
+
+    source_unit: null
+
+    target_unit: null
+
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+
+    oaci_code: "RMK"
+
+    example: "RWY WET"
+
+    used_in:
+
+      - "METAR"
+
+      - "reports"
+
+    notes: >
+      Texto libre.
+
+
+  # ===========================================================================
+  # 50. REPORTE METAR
+  # ===========================================================================
+
+  - id: 50
+
+    source_name: "Reporte METAR"
+
+    standard_name: "metar"
+
+    short_name: "metar"
+
+    description_es: >
+      Reporte METAR completo.
+
+    description_en: >
+      Complete METAR report.
+
+    category: "aviation"
+
+    variable_group: "meteorological_products"
+
+    source_dtype: "string"
+
+    target_dtype: "string"
+
+    nullable: true
+
+    source_unit: null
+
+    target_unit: null
+
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+
+    oaci_code: "METAR"
+
+    example: >
+      METAR SPIM 101800Z 18012KT 9999 SCT020 24/18 Q1013 NOSIG
+
+    used_in:
+
+      - "METAR"
+
+      - "reports"
+
+      - "quality_control"
+
+      - "parser"
+
+    notes: >
+      Debe conservarse íntegro para futuras validaciones.
+
+
+  # ===========================================================================
+  # 51. OFICINA METEOROLÓGICA
+  # ===========================================================================
+
+  - id: 51
+
+    source_name: "Oficina Meteorologica"
+
+    standard_name: "meteorological_office"
+
+    short_name: "office"
+
+    description_es: >
+      Oficina meteorológica responsable de la emisión del reporte.
+
+    description_en: >
+      Meteorological office responsible for issuing the report.
+
+    category: "metadata"
+
+    variable_group: "station_information"
+
+    source_dtype: "string"
+
+    target_dtype: "string"
+
+    nullable: true
+
+    source_unit: null
+
+    target_unit: null
+
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+
+    oaci_code: null
+
+    example: "DIRMA"
+
+    used_in:
+
+      - "reports"
+
+      - "metadata"
+
+    notes: >
+      Información institucional.
+
+
+  # ===========================================================================
+  # 52. OBSERVADOR
+  # ===========================================================================
+
+  - id: 52
+
+    source_name: "Observador"
+
+    standard_name: "observer"
+
+    short_name: "observer"
+
+    description_es: >
+      Nombre o identificador del observador meteorológico.
+
+    description_en: >
+      Name or identifier of the meteorological observer.
+
+    category: "metadata"
+
+    variable_group: "human_resources"
+
+    source_dtype: "string"
+
+    target_dtype: "string"
+
+    nullable: true
+
+    source_unit: null
+
+    target_unit: null
+
+    datetime_component: false
+
+    descriptor: null
+
+    omm_code: null
+
+    oaci_code: null
+
+    example: "RCAP"
+
+    used_in:
+
+      - "reports"
+
+      - "metadata"
+
+      - "audit"
+
+    notes: >
+      Puede contener el nombre completo o un identificador institucional.
+
+
+      # =============================================================================
+# CAMPOS CALCULADOS
+# =============================================================================
+
+computed_fields:
+
+  # ---------------------------------------------------------------------------
+  # FECHA Y HORA UTC
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "datetime_utc"
+
+    short_name: "datetime"
+
+    description_es: >
+      Fecha y hora UTC construida automáticamente a partir de los
+      componentes año, mes, día, hora y minuto.
+
+    description_en: >
+      UTC datetime automatically built from year, month, day,
+      hour and minute.
+
+    category: "datetime"
+
+    variable_group: "derived_datetime"
+
+    target_dtype: "datetime64[ns, UTC]"
+
+    nullable: false
+
+    generated: true
+
+    source_fields:
+
+      - year
+
+      - month
+
+      - day
+
+      - hour_utc
+
+      - minute
+
+    used_in:
+
+      - pipeline
+
+      - quality_control
+
+      - climatology
+
+      - statistics
+
+      - reports
+
+      - parquet
+
+      - database
+
+    notes: >
+      Es la columna temporal principal utilizada por QC_DATAMET.
+
+
+  # ---------------------------------------------------------------------------
+  # FECHA
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "date"
+
+    short_name: "date"
+
+    description_es: >
+      Fecha derivada de datetime_utc.
+
+    description_en: >
+      Date derived from datetime_utc.
+
+    category: "datetime"
+
+    variable_group: "derived_datetime"
+
+    target_dtype: "date"
+
+    nullable: false
+
+    generated: true
+
+    source_fields:
+
+      - datetime_utc
+
+
+  # ---------------------------------------------------------------------------
+  # AÑO CLIMATOLÓGICO
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "climatological_year"
+
+    short_name: "clim_year"
+
+    description_es: >
+      Año climatológico utilizado por estadísticas.
+
+    description_en: >
+      Climatological year.
+
+    category: "climatology"
+
+    variable_group: "derived"
+
+    target_dtype: "Int16"
+
+    nullable: false
+
+    generated: true
+
+    source_fields:
+
+      - datetime_utc
+
+
+# =============================================================================
+# CAMPOS TÉCNICOS
+# =============================================================================
+
+technical_fields:
+
+  # ---------------------------------------------------------------------------
+  # IDENTIFICADOR ÚNICO
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "record_id"
+
+    description_es: >
+      Identificador único del registro.
+
+    description_en: >
+      Unique record identifier.
+
+    category: "technical"
+
+    target_dtype: "string"
+
+    generated: true
+
+    nullable: false
+
+
+  # ---------------------------------------------------------------------------
+  # ARCHIVO FUENTE
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "source_file"
+
+    description_es: >
+      Nombre del archivo Excel de origen.
+
+    description_en: >
+      Source Excel filename.
+
+    category: "provenance"
+
+    target_dtype: "string"
+
+    generated: true
+
+    nullable: false
+
+
+  # ---------------------------------------------------------------------------
+  # HOJA EXCEL
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "source_sheet"
+
+    description_es: >
+      Hoja Excel de donde proviene el registro.
+
+    description_en: >
+      Source worksheet.
+
+    category: "provenance"
+
+    target_dtype: "string"
+
+    generated: true
+
+    nullable: true
+
+
+  # ---------------------------------------------------------------------------
+  # FILA ORIGINAL
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "source_row"
+
+    description_es: >
+      Número de fila original del Excel.
+
+    description_en: >
+      Original Excel row number.
+
+    category: "provenance"
+
+    target_dtype: "Int32"
+
+    generated: true
+
+    nullable: true
+
+
+  # ---------------------------------------------------------------------------
+  # HASH DEL ARCHIVO
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "source_hash"
+
+    description_es: >
+      Hash SHA-256 del archivo de origen.
+
+    description_en: >
+      SHA-256 hash of source file.
+
+    category: "provenance"
+
+    target_dtype: "string"
+
+    generated: true
+
+    nullable: true
+
+
+  # ---------------------------------------------------------------------------
+  # EJECUCIÓN DEL PIPELINE
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "pipeline_run_id"
+
+    description_es: >
+      Identificador único de la ejecución del pipeline.
+
+    description_en: >
+      Pipeline execution identifier.
+
+    category: "technical"
+
+    target_dtype: "string"
+
+    generated: true
+
+    nullable: false
+
+
+  # ---------------------------------------------------------------------------
+  # ESTADO QC
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "qc_status"
+
+    description_es: >
+      Estado general del control de calidad.
+
+    description_en: >
+      Overall quality-control status.
+
+    category: "quality_control"
+
+    target_dtype: "string"
+
+    generated: true
+
+    nullable: false
+
+    descriptor: "quality_flags"
+
+    example: "PASS"
+
+
+  # ---------------------------------------------------------------------------
+  # FLAGS QC
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "qc_flags"
+
+    description_es: >
+      Lista de flags generados durante el control de calidad.
+
+    description_en: >
+      List of quality-control flags.
+
+    category: "quality_control"
+
+    target_dtype: "list[string]"
+
+    generated: true
+
+    nullable: true
+
+
+  # ---------------------------------------------------------------------------
+  # SCORE QC
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "qc_score"
+
+    description_es: >
+      Puntaje global de calidad del registro.
+
+    description_en: >
+      Overall quality score.
+
+    category: "quality_control"
+
+    target_dtype: "Float32"
+
+    generated: true
+
+    nullable: true
+
+
+  # ---------------------------------------------------------------------------
+  # TIMESTAMP DE PROCESAMIENTO
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "processing_timestamp"
+
+    description_es: >
+      Fecha y hora en que el registro fue procesado.
+
+    description_en: >
+      Processing timestamp.
+
+    category: "technical"
+
+    target_dtype: "datetime64[ns, UTC]"
+
+    generated: true
+
+    nullable: false
+
+
+  # ---------------------------------------------------------------------------
+  # VERSIÓN DEL PIPELINE
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "pipeline_version"
+
+    description_es: >
+      Versión del pipeline utilizada durante el procesamiento.
+
+    description_en: >
+      Pipeline version.
+
+    category: "technical"
+
+    target_dtype: "string"
+
+    generated: true
+
+    nullable: false
+
+
+  # ---------------------------------------------------------------------------
+  # VERSIÓN DEL DICCIONARIO
+  # ---------------------------------------------------------------------------
+
+  - standard_name: "dictionary_version"
+
+    description_es: >
+      Versión del Data Dictionary utilizada.
+
+    description_en: >
+      Data Dictionary version.
+
+    category: "technical"
+
+    target_dtype: "string"
+
+    generated: true
+
+    nullable: false
+
+
+# =============================================================================
+# FIN DEL ARCHIVO
+# =============================================================================
