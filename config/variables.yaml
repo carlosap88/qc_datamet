@@ -1,0 +1,1065 @@
+# =============================================================================
+# QC_DATAMET v1.0
+# variables.yaml
+#
+# Catálogo maestro de variables meteorológicas.
+#
+# Alcance:
+#   - METAR
+#   - SPECI
+#   - TAF
+#   - TREND
+#   - variables operacionales históricas del archivo Excel
+#
+# IMPORTANTE:
+#   - Las variables actuales tienen enabled: true e implemented: true.
+#   - Las variables futuras permanecen preparadas con enabled: false.
+#   - Tipos y descripciones extensas pertenecen a data_dictionary.yaml.
+#   - Las definiciones completas de unidades pertenecerán a units.yaml.
+# =============================================================================
+
+catalog:
+  name: qc_datamet_variables_catalog
+  version: 1.0.0
+  description: Catálogo maestro de variables para METAR, SPECI, TAF y variables operacionales históricas utilizadas
+    por QC_DATAMET.
+  scope:
+    aviation_products:
+    - METAR
+    - SPECI
+    - TAF
+    - TREND
+    historical_operational_variables:
+    - wet_bulb_temperature
+    - relative_humidity
+    - maximum_daily_temperature
+    - minimum_daily_temperature
+    - hourly_precipitation
+    - qfe
+    excluded_products:
+    - SIGMET
+    - AIRMET
+    - GAMET
+    - SWX
+    - VAA
+    - TCA
+  references:
+    data_dictionary: data_dictionary.yaml
+    canonical_schema: canonical_schema.yaml
+    units: units.yaml
+    qc_rules: qc_rules.yaml
+    descriptors_directory: descriptors/
+  conventions:
+    variable_keys: snake_case
+    enabled_meaning: La variable participa en el pipeline actual.
+    implemented_meaning: Existe soporte de lectura, normalización o QC.
+    operational_meaning: La variable pertenece al alcance operacional definido.
+variable_groups:
+- identification
+- report_metadata
+- datetime
+- surface_wind
+- temperature
+- humidity
+- precipitation
+- pressure
+- visibility
+- runway_visual_range
+- weather
+- clouds
+- cloud_layer_1
+- cloud_layer_2
+- cloud_layer_3
+- supplementary_information
+- runway_state
+- taf_validity
+- taf_forecast
+- taf_temperature
+- taf_change_groups
+variables:
+- key: station_id
+  canonical_name: station_id
+  group: identification
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: null
+  role: metadata
+  temporal_scope: not_applicable
+  implemented: true
+  enabled: true
+  operational: true
+- key: report_status
+  canonical_name: report_status
+  group: report_metadata
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: report_types
+  role: metadata
+  temporal_scope: not_applicable
+  implemented: true
+  enabled: true
+  operational: true
+- key: report_type
+  canonical_name: report_type
+  group: report_metadata
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: report_types
+  role: metadata
+  temporal_scope: not_applicable
+  implemented: false
+  enabled: false
+  operational: true
+  notes: Preparado para distinguir explícitamente METAR, SPECI y TAF.
+- key: automatic_report
+  canonical_name: automatic_report
+  group: report_metadata
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: null
+  role: metadata
+  temporal_scope: not_applicable
+  implemented: false
+  enabled: false
+  operational: true
+- key: remarks
+  canonical_name: remarks
+  group: report_metadata
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: null
+  role: metadata
+  temporal_scope: not_applicable
+  implemented: true
+  enabled: true
+  operational: true
+- key: metar_report
+  canonical_name: metar
+  group: report_metadata
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: null
+  role: raw_report
+  temporal_scope: not_applicable
+  implemented: true
+  enabled: true
+  operational: true
+- key: year
+  canonical_name: year
+  group: datetime
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: null
+  role: time
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: month
+  canonical_name: month
+  group: datetime
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: null
+  role: time
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: day
+  canonical_name: day
+  group: datetime
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: null
+  role: time
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: hour_utc
+  canonical_name: hour_utc
+  group: datetime
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: null
+  role: time
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: minute
+  canonical_name: minute
+  group: datetime
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: null
+  role: time
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: datetime_utc
+  canonical_name: datetime_utc
+  group: datetime
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: null
+  role: time
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: issue_time
+  canonical_name: issue_time_utc
+  group: taf_validity
+  products:
+  - TAF
+  unit: null
+  descriptor: null
+  role: forecast_time
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: validity_start
+  canonical_name: validity_start_utc
+  group: taf_validity
+  products:
+  - TAF
+  unit: null
+  descriptor: null
+  role: forecast_time
+  temporal_scope: period_start
+  implemented: false
+  enabled: false
+  operational: true
+- key: validity_end
+  canonical_name: validity_end_utc
+  group: taf_validity
+  products:
+  - TAF
+  unit: null
+  descriptor: null
+  role: forecast_time
+  temporal_scope: period_end
+  implemented: false
+  enabled: false
+  operational: true
+- key: wind_direction
+  canonical_name: wind_direction_deg
+  group: surface_wind
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: degree
+  descriptor: wind_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: wind_direction_variation_ccw
+  canonical_name: wind_direction_ccw_deg
+  group: surface_wind
+  products:
+  - METAR
+  - SPECI
+  unit: degree
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: wind_direction_variation_cw
+  canonical_name: wind_direction_cw_deg
+  group: surface_wind
+  products:
+  - METAR
+  - SPECI
+  unit: degree
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: wind_speed
+  canonical_name: wind_speed_kt
+  group: surface_wind
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: knot
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: wind_gust
+  canonical_name: wind_gust_kt
+  group: surface_wind
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: knot
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: wind_variable
+  canonical_name: wind_variable
+  group: surface_wind
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: wind_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: low_level_wind_shear
+  canonical_name: low_level_wind_shear
+  group: supplementary_information
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: wind_shear_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: air_temperature
+  canonical_name: air_temperature_c
+  group: temperature
+  products:
+  - METAR
+  - SPECI
+  unit: celsius
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: wet_bulb_temperature
+  canonical_name: wet_bulb_temperature_c
+  group: temperature
+  products:
+  - LOCAL_OBSERVATION
+  unit: celsius
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+  notes: Variable operacional histórica; no se codifica normalmente en METAR/SPECI/TAF.
+- key: dew_point_temperature
+  canonical_name: dew_point_temperature_c
+  group: temperature
+  products:
+  - METAR
+  - SPECI
+  unit: celsius
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: maximum_daily_temperature
+  canonical_name: maximum_temperature_c
+  group: temperature
+  products:
+  - LOCAL_OBSERVATION
+  - CLIMATOLOGY
+  unit: celsius
+  descriptor: null
+  role: observed
+  temporal_scope: daily_extreme
+  implemented: true
+  enabled: true
+  operational: true
+  notes: Temperatura máxima diaria incluida por su uso histórico y climatológico.
+- key: minimum_daily_temperature
+  canonical_name: minimum_temperature_c
+  group: temperature
+  products:
+  - LOCAL_OBSERVATION
+  - CLIMATOLOGY
+  unit: celsius
+  descriptor: null
+  role: observed
+  temporal_scope: daily_extreme
+  implemented: true
+  enabled: true
+  operational: true
+  notes: Temperatura mínima diaria incluida por su uso histórico y climatológico.
+- key: relative_humidity
+  canonical_name: relative_humidity_pct
+  group: humidity
+  products:
+  - LOCAL_OBSERVATION
+  - CLIMATOLOGY
+  unit: percent
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+  notes: Variable derivada u observada de uso operacional y climatológico.
+- key: hourly_precipitation
+  canonical_name: accumulated_precipitation_mm
+  group: precipitation
+  products:
+  - LOCAL_OBSERVATION
+  - CLIMATOLOGY
+  unit: millimeter
+  descriptor: null
+  role: observed
+  temporal_scope: hourly_accumulation
+  implemented: true
+  enabled: true
+  operational: true
+  notes: La columna histórica se interpreta como precipitación acumulada del periodo horario.
+- key: daily_precipitation
+  canonical_name: daily_precipitation_mm
+  group: precipitation
+  products:
+  - CLIMATOLOGY
+  unit: millimeter
+  descriptor: null
+  role: observed
+  temporal_scope: daily_accumulation
+  implemented: false
+  enabled: false
+  operational: true
+- key: qnh
+  canonical_name: qnh_hpa
+  group: pressure
+  products:
+  - METAR
+  - SPECI
+  unit: hPa
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: qfe
+  canonical_name: qfe_hpa
+  group: pressure
+  products:
+  - LOCAL_OBSERVATION
+  unit: hPa
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+  notes: Variable operacional local; no siempre se incluye en METAR.
+- key: prevailing_visibility
+  canonical_name: prevailing_visibility_m
+  group: visibility
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: meter
+  descriptor: visibility_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: minimum_visibility_1
+  canonical_name: minimum_visibility_1_m
+  group: visibility
+  products:
+  - METAR
+  - SPECI
+  unit: meter
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: minimum_visibility_direction_1
+  canonical_name: minimum_visibility_direction_1
+  group: visibility
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: visibility_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: minimum_visibility_2
+  canonical_name: minimum_visibility_2_m
+  group: visibility
+  products:
+  - METAR
+  - SPECI
+  unit: meter
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: minimum_visibility_direction_2
+  canonical_name: minimum_visibility_direction_2
+  group: visibility
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: visibility_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: runway_visual_range
+  canonical_name: runway_visual_range_m
+  group: runway_visual_range
+  products:
+  - METAR
+  - SPECI
+  unit: meter
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: rvr_tendency
+  canonical_name: rvr_tendency
+  group: runway_visual_range
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: rvr_tendency_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: cavok
+  canonical_name: cavok
+  group: visibility
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: present_weather_1
+  canonical_name: present_weather_1
+  group: weather
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: weather_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: present_weather_2
+  canonical_name: present_weather_2
+  group: weather
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: weather_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: present_weather_3
+  canonical_name: present_weather_3
+  group: weather
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: weather_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: recent_weather
+  canonical_name: recent_weather
+  group: supplementary_information
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: weather_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_weather
+  canonical_name: forecast_weather
+  group: taf_forecast
+  products:
+  - TAF
+  unit: null
+  descriptor: weather_codes
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: cloud_amount_1
+  canonical_name: cloud_amount_1
+  group: cloud_layer_1
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: cloud_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: cloud_base_height_1
+  canonical_name: cloud_base_height_1_ft
+  group: cloud_layer_1
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: foot
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: cloud_type_1
+  canonical_name: cloud_type_1
+  group: cloud_layer_1
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: cloud_types
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: cloud_amount_2
+  canonical_name: cloud_amount_2
+  group: cloud_layer_2
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: cloud_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: cloud_base_height_2
+  canonical_name: cloud_base_height_2_ft
+  group: cloud_layer_2
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: foot
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: cloud_type_2
+  canonical_name: cloud_type_2
+  group: cloud_layer_2
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: cloud_types
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: cloud_amount_3
+  canonical_name: cloud_amount_3
+  group: cloud_layer_3
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: cloud_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: cloud_base_height_3
+  canonical_name: cloud_base_height_3_ft
+  group: cloud_layer_3
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: foot
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: cloud_type_3
+  canonical_name: cloud_type_3
+  group: cloud_layer_3
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: null
+  descriptor: cloud_types
+  role: observed
+  temporal_scope: instantaneous
+  implemented: true
+  enabled: true
+  operational: true
+- key: vertical_visibility
+  canonical_name: vertical_visibility_ft
+  group: clouds
+  products:
+  - METAR
+  - SPECI
+  - TAF
+  unit: foot
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_wind_direction
+  canonical_name: forecast_wind_direction_deg
+  group: taf_forecast
+  products:
+  - TAF
+  unit: degree
+  descriptor: wind_codes
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_wind_speed
+  canonical_name: forecast_wind_speed_kt
+  group: taf_forecast
+  products:
+  - TAF
+  unit: knot
+  descriptor: null
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_wind_gust
+  canonical_name: forecast_wind_gust_kt
+  group: taf_forecast
+  products:
+  - TAF
+  unit: knot
+  descriptor: null
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_visibility
+  canonical_name: forecast_visibility_m
+  group: taf_forecast
+  products:
+  - TAF
+  unit: meter
+  descriptor: visibility_codes
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_cloud_amount
+  canonical_name: forecast_cloud_amount
+  group: taf_forecast
+  products:
+  - TAF
+  unit: null
+  descriptor: cloud_codes
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_cloud_base_height
+  canonical_name: forecast_cloud_base_height_ft
+  group: taf_forecast
+  products:
+  - TAF
+  unit: foot
+  descriptor: null
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_cloud_type
+  canonical_name: forecast_cloud_type
+  group: taf_forecast
+  products:
+  - TAF
+  unit: null
+  descriptor: cloud_types
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_vertical_visibility
+  canonical_name: forecast_vertical_visibility_ft
+  group: taf_forecast
+  products:
+  - TAF
+  unit: foot
+  descriptor: null
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_cavok
+  canonical_name: forecast_cavok
+  group: taf_forecast
+  products:
+  - TAF
+  unit: null
+  descriptor: null
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: maximum_forecast_temperature
+  canonical_name: maximum_forecast_temperature_c
+  group: taf_temperature
+  products:
+  - TAF
+  unit: celsius
+  descriptor: null
+  role: forecast
+  temporal_scope: forecast_extreme
+  implemented: false
+  enabled: false
+  operational: true
+- key: maximum_temperature_time
+  canonical_name: maximum_temperature_time_utc
+  group: taf_temperature
+  products:
+  - TAF
+  unit: null
+  descriptor: null
+  role: forecast_time
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: minimum_forecast_temperature
+  canonical_name: minimum_forecast_temperature_c
+  group: taf_temperature
+  products:
+  - TAF
+  unit: celsius
+  descriptor: null
+  role: forecast
+  temporal_scope: forecast_extreme
+  implemented: false
+  enabled: false
+  operational: true
+- key: minimum_temperature_time
+  canonical_name: minimum_temperature_time_utc
+  group: taf_temperature
+  products:
+  - TAF
+  unit: null
+  descriptor: null
+  role: forecast_time
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: change_indicator
+  canonical_name: change_indicator
+  group: taf_change_groups
+  products:
+  - TAF
+  - TREND
+  unit: null
+  descriptor: trend_codes
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: change_period_start
+  canonical_name: change_period_start_utc
+  group: taf_change_groups
+  products:
+  - TAF
+  - TREND
+  unit: null
+  descriptor: null
+  role: forecast_time
+  temporal_scope: period_start
+  implemented: false
+  enabled: false
+  operational: true
+- key: change_period_end
+  canonical_name: change_period_end_utc
+  group: taf_change_groups
+  products:
+  - TAF
+  - TREND
+  unit: null
+  descriptor: null
+  role: forecast_time
+  temporal_scope: period_end
+  implemented: false
+  enabled: false
+  operational: true
+- key: forecast_probability
+  canonical_name: forecast_probability_pct
+  group: taf_change_groups
+  products:
+  - TAF
+  unit: percent
+  descriptor: probability_codes
+  role: forecast
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: sea_surface_temperature
+  canonical_name: sea_surface_temperature_c
+  group: supplementary_information
+  products:
+  - METAR
+  - SPECI
+  unit: celsius
+  descriptor: null
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: sea_state
+  canonical_name: sea_state
+  group: supplementary_information
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: sea_state_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true
+- key: runway_state
+  canonical_name: runway_state
+  group: runway_state
+  products:
+  - METAR
+  - SPECI
+  unit: null
+  descriptor: runway_state_codes
+  role: observed
+  temporal_scope: instantaneous
+  implemented: false
+  enabled: false
+  operational: true

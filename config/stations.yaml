@@ -1,579 +1,2508 @@
+# =============================================================================
+# QC_DATAMET v1.0
+# stations.yaml
+#
+# Catálogo Maestro de Sitios de Observación Meteorológica
+#
+# Migrado desde el inventario institucional anterior.
+#
+# IMPORTANTE:
+#   - Los valores desconocidos se conservan como null.
+#   - No se asumió que una EMA nula equivalga a una estación convencional.
+#   - Los campos pendientes deben verificarse antes de usarlos en reglas QC.
+# =============================================================================
+
+catalog:
+  name: qc_datamet_station_catalog
+  version: 1.0.0
+  description: Catálogo maestro de sitios de observación meteorológica utilizados por QC_DATAMET, migrado desde
+    el inventario institucional anterior.
+  maintainer: DIRMA
+  coordinate_system: WGS84
+  coordinate_format: decimal_degrees
+  elevation_unit: meter
+  timezone_default: America/Lima
+  station_id_case: uppercase
+  date_format: YYYY-MM-DD
+  station_count: 34
+catalogs:
+  site_types:
+  - aerodrome
+  - heliport
+  - military_base
+  - temporary_site
+  - field_observation
+  - antarctic_base
+  - observation_site
+  observation_systems:
+  - conventional
+  - automatic
+  - hybrid
+  - temporary
+  permanence_types:
+  - permanent
+  - temporary
+  infrastructure_levels:
+  - full_station
+  - basic_station
+  - observer_post
+  - temporary_post
+  operational_statuses:
+  - active
+  - inactive
+  - suspended
+  - planned
+  - unknown
+  use_types:
+  - public
+  - private_military
+  - private_civil
 stations:
-- codigo: SPLC
-  unidad: GRUP4
+- station_id: SPLC
+  identifiers:
+    icao: SPLC
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: La Joya
-  nombre_aerodromo: Aeródromo de Grupo Aereo N°4 - "La Joya"
-  estado: Activo
-  pais: Perú
-  departamento: Arequipa
-  provincia: Islay
-  distrito: Mollendo
-  administracion: Grupo Aereo N°4
-  uso: Privado / Militar
-  latitud: 16°47'29.16"S
-  longitud: 071°53'11.97"W
-  elevacion: 1186.0
-  xy: -16.7914,-71.8867
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPRM
-  unidad: AGSRA
+  aerodrome_name: Aeródromo de Grupo Aereo N°4 - "La Joya"
+  organization:
+    administration: Grupo Aereo N°4
+    unit_code: GRUP4
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Arequipa
+    province: Islay
+    district: Mollendo
+    latitude: -16.7914
+    longitude: -71.8867
+    elevation_m: 1186.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 16°47'29.16"S
+    longitude_dms: 071°53'11.97"W
+    original_xy: -16.7914,-71.8867
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPRM
+  identifiers:
+    icao: SPRM
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: San Ramon
-  nombre_aerodromo: Aerodromo de Base Aerea de San Ramon
-  estado: Activo
-  pais: Perú
-  departamento: Junin
-  provincia: Chanchamayo
-  distrito: San Ramon
-  administracion: Agrupamiento Aereo San Ramon
-  uso: Privado / Militar
-  latitud: 11°07'42.00"S
-  longitud: 075°21'02.00"W
-  elevacion: 835.5
-  xy: -11.1283,-75.3506
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPVR
-  unidad: GRUP2
+  aerodrome_name: Aerodromo de Base Aerea de San Ramon
+  organization:
+    administration: Agrupamiento Aereo San Ramon
+    unit_code: AGSRA
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Junin
+    province: Chanchamayo
+    district: San Ramon
+    latitude: -11.1283
+    longitude: -75.3506
+    elevation_m: 835.5
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 11°07'42.00"S
+    longitude_dms: 075°21'02.00"W
+    original_xy: -11.1283,-75.3506
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPVR
+  identifiers:
+    icao: SPVR
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Vitor
-  nombre_aerodromo: Aeródromo de Grupo Aereo N°2 - "Vitor"
-  estado: Activo
-  pais: Perú
-  departamento: Arequipa
-  provincia: Arequipa
-  distrito: La Joya
-  administracion: Grupo Aereo N°2
-  uso: Privado / Militar
-  latitud: 16°25'40.00"S
-  longitud: 071°50'15.00"W
-  elevacion: 1560.5
-  xy: -16.4278,-71.8375
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPHI
-  unidad: GRUP6
+  aerodrome_name: Aeródromo de Grupo Aereo N°2 - "Vitor"
+  organization:
+    administration: Grupo Aereo N°2
+    unit_code: GRUP2
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Arequipa
+    province: Arequipa
+    district: La Joya
+    latitude: -16.4278
+    longitude: -71.8375
+    elevation_m: 1560.5
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 16°25'40.00"S
+    longitude_dms: 071°50'15.00"W
+    original_xy: -16.4278,-71.8375
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPHI
+  identifiers:
+    icao: SPHI
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Chiclayo
-  nombre_aerodromo: Aeropuerto Capitan FAP Jose Abelardo Quiñonez Gonzales
-  estado: Activo
-  pais: Perú
-  departamento: Lambayeque
-  provincia: Chiclayo
-  distrito: Chiclayo
-  administracion: Grupo Aereo N°6
-  uso: Publico
-  latitud: 06°47'13.92"S
-  longitud: 079°49'41.16"W
-  elevacion: 30.0
-  xy: -6.7872,-79.8281
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPID
-  unidad: GRU42
+  aerodrome_name: Aeropuerto Capitan FAP Jose Abelardo Quiñonez Gonzales
+  organization:
+    administration: Grupo Aereo N°6
+    unit_code: GRUP6
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Lambayeque
+    province: Chiclayo
+    district: Chiclayo
+    latitude: -6.7872
+    longitude: -79.8281
+    elevation_m: 30.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 06°47'13.92"S
+    longitude_dms: 079°49'41.16"W
+    original_xy: -6.7872,-79.8281
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPID
+  identifiers:
+    icao: SPID
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Bergerie
-  nombre_aerodromo: Aerodromo Teniente FAP Bergerie
-  estado: Activo
-  pais: Perú
-  departamento: Loreto
-  provincia: Maynas
-  distrito: Iquitos
-  administracion: Grupo Aereo N°42
-  uso: Privado / Militar
-  latitud: 03°44'32.10"S
-  longitud: 073°15'37.20"W
-  elevacion: 88.0
-  xy: -3.7423,-73.2603
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPSO
-  unidad: GRU51
+  aerodrome_name: Aerodromo Teniente FAP Bergerie
+  organization:
+    administration: Grupo Aereo N°42
+    unit_code: GRU42
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Loreto
+    province: Maynas
+    district: Iquitos
+    latitude: -3.7423
+    longitude: -73.2603
+    elevation_m: 88.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 03°44'32.10"S
+    longitude_dms: 073°15'37.20"W
+    original_xy: -3.7423,-73.2603
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPSO
+  identifiers:
+    icao: SPSO
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Pisco
-  nombre_aerodromo: Aeropuerto Capitán FAP Renán Elías Olivera
-  estado: Activo
-  pais: Perú
-  departamento: Ica
-  provincia: Pisco
-  distrito: San Andrés
-  administracion: Grupo Aereo N°51
-  uso: Publico
-  latitud: 13°44'41.28"S
-  longitud: 076°13'13.48"W
-  elevacion: 12.0
-  xy: -13.7448,-76.2204
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPMF
-  unidad: CAVRAEM
+  aerodrome_name: Aeropuerto Capitán FAP Renán Elías Olivera
+  organization:
+    administration: Grupo Aereo N°51
+    unit_code: GRU51
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Ica
+    province: Pisco
+    district: San Andrés
+    latitude: -13.7448
+    longitude: -76.2204
+    elevation_m: 12.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 13°44'41.28"S
+    longitude_dms: 076°13'13.48"W
+    original_xy: -13.7448,-76.2204
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPMF
+  identifiers:
+    icao: SPMF
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Mazamari
-  nombre_aerodromo: Aeropuerto Mayor PNP Nancy Flores Páucar
-  estado: Activo
-  pais: Perú
-  departamento: Junin
-  provincia: Satipo
-  distrito: Mazamari
-  administracion: Componente Aereo VRAEM
-  uso: Publico
-  latitud: 11°19'32.00"S
-  longitud: 074°32'09.00"W
-  elevacion: 664.0
-  xy: -11.3256,-74.5358
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPUR
-  unidad: GRUP7
+  aerodrome_name: Aeropuerto Mayor PNP Nancy Flores Páucar
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Junin
+    province: Satipo
+    district: Mazamari
+    latitude: -11.3256
+    longitude: -74.5358
+    elevation_m: 664.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 11°19'32.00"S
+    longitude_dms: 074°32'09.00"W
+    original_xy: -11.3256,-74.5358
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPUR
+  identifiers:
+    icao: SPUR
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Piura
-  nombre_aerodromo: Aeropuerto Capitán FAP Guillermo Concha Iberico
-  estado: Activo
-  pais: Perú
-  departamento: Piura
-  provincia: Piura
-  distrito: Castilla
-  administracion: Grupo Aereo N°7
-  uso: Publico
-  latitud: 05°12'21.00"S
-  longitud: 080°36'59.00"W
-  elevacion: 35.0
-  xy: -5.2058,-80.6164
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPTU
-  unidad: AGMAL
+  aerodrome_name: Aeropuerto Capitán FAP Guillermo Concha Iberico
+  organization:
+    administration: Grupo Aereo N°7
+    unit_code: GRUP7
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Piura
+    province: Piura
+    district: Castilla
+    latitude: -5.2058
+    longitude: -80.6164
+    elevation_m: 35.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 05°12'21.00"S
+    longitude_dms: 080°36'59.00"W
+    original_xy: -5.2058,-80.6164
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPTU
+  identifiers:
+    icao: SPTU
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Puerto Maldonado
-  nombre_aerodromo: Aeropuerto Padre Aldamiz
-  estado: Activo
-  pais: Perú
-  departamento: Madre de Dios
-  provincia: Tambopata
-  distrito: Tambopata
-  administracion: Agrupamiento Aereo de Puerto Maldonado
-  uso: Publico
-  latitud: 12°36'50.00"S
-  longitud: 069°13'43.00"W
-  elevacion: 201.0
-  xy: -12.6139,-69.2286
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPTP
-  unidad: GRU11
+  aerodrome_name: Aeropuerto Padre Aldamiz
+  organization:
+    administration: Agrupamiento Aereo de Puerto Maldonado
+    unit_code: AGMAL
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Madre de Dios
+    province: Tambopata
+    district: Tambopata
+    latitude: -12.6139
+    longitude: -69.2286
+    elevation_m: 201.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 12°36'50.00"S
+    longitude_dms: 069°13'43.00"W
+    original_xy: -12.6139,-69.2286
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPTP
+  identifiers:
+    icao: SPTP
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: El Pato
-  nombre_aerodromo: Aeródromo de Grupo Aereo N°11 - "El Pato"
-  estado: Activo
-  pais: Perú
-  departamento: Piura
-  provincia: Talara
-  distrito: Pariñas
-  administracion: Grupo Aereo N°11
-  uso: Privado / Militar
-  latitud: 04°33'03.56"S
-  longitud: 081°13'25.80"W
-  elevacion: 90.0
-  xy: -4.551,-81.2238
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPEV
-  unidad: DIRMA
+  aerodrome_name: Aeródromo de Grupo Aereo N°11 - "El Pato"
+  organization:
+    administration: Grupo Aereo N°11
+    unit_code: GRU11
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Piura
+    province: Talara
+    district: Pariñas
+    latitude: -4.551
+    longitude: -81.2238
+    elevation_m: 90.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 04°33'03.56"S
+    longitude_dms: 081°13'25.80"W
+    original_xy: -4.551,-81.2238
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPEV
+  identifiers:
+    icao: SPEV
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: El Valor
-  nombre_aerodromo: Helipuerto de Estacion N°7 - El Valor
-  estado: Inactivo
-  pais: Perú
-  departamento: Amazonas
-  provincia: Uctubamba
-  distrito: El Milagro
-  administracion: Direccion de Meteorologia Aeronautica y Espacial
-  uso: Privado / Civil
-  latitud: 05°40'23.02"S
-  longitud: 078°38'39.73"W
-  elevacion: 443.0
-  xy: -5.6731,-78.6444
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPHR
-  unidad: CAVRAEM
+  aerodrome_name: Helipuerto de Estacion N°7 - El Valor
+  organization:
+    administration: Direccion de Meteorologia Aeronautica y Espacial
+    unit_code: DIRMA
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: inactive
+    use_type: private_civil
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Amazonas
+    province: Uctubamba
+    district: El Milagro
+    latitude: -5.6731
+    longitude: -78.6444
+    elevation_m: 443.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 05°40'23.02"S
+    longitude_dms: 078°38'39.73"W
+    original_xy: -5.6731,-78.6444
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: false
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPHR
+  identifiers:
+    icao: SPHR
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Pichari
-  nombre_aerodromo: Helipuerto de CE-VRAEM - "Fuerte Pichari"
-  estado: Activo
-  pais: Perú
-  departamento: Cusco
-  provincia: La Convencion
-  distrito: Pichari
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: 12°31'24.50"S
-  longitud: 073°49'50.00"W
-  elevacion: 586.0
-  xy: -12.5235,-73.8306
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPLP
-  unidad: ALAR6
+  aerodrome_name: Helipuerto de CE-VRAEM - "Fuerte Pichari"
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Cusco
+    province: La Convencion
+    district: Pichari
+    latitude: -12.5235
+    longitude: -73.8306
+    elevation_m: 586.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 12°31'24.50"S
+    longitude_dms: 073°49'50.00"W
+    original_xy: -12.5235,-73.8306
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPLP
+  identifiers:
+    icao: SPLP
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Las Palmas
-  nombre_aerodromo: Base Aerea de Las Palmas - "Las Palmas"
-  estado: Activo
-  pais: Perú
-  departamento: Lima
-  provincia: Lima
-  distrito: Santiago de Surco
-  administracion: Ala Aerea N°6
-  uso: Privado / Militar
-  latitud: 12°09'36.45"S
-  longitud: 076°59'55.60"W
-  elevacion: 77.0
-  xy: -12.1601,-76.9988
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPVS
-  unidad: DIRMA
+  aerodrome_name: Base Aerea de Las Palmas - "Las Palmas"
+  organization:
+    administration: Ala Aerea N°6
+    unit_code: ALAR6
+    meteorological_office: null
+  site:
+    type: military_base
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Lima
+    province: Lima
+    district: Santiago de Surco
+    latitude: -12.1601
+    longitude: -76.9988
+    elevation_m: 77.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 12°09'36.45"S
+    longitude_dms: 076°59'55.60"W
+    original_xy: -12.1601,-76.9988
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPVS
+  identifiers:
+    icao: SPVS
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: La Vista
-  nombre_aerodromo: Helipuerto de Estacion N°5 - La Vista
-  estado: Inactivo
-  pais: Perú
-  departamento: Loreto
-  provincia: Datem del Marañon
-  distrito: Manseriche
-  administracion: Direccion de Meteorologia Aeronautica y Espacial
-  uso: Privado / Civil
-  latitud: null
-  longitud: null
-  elevacion: 278.0
-  xy: -4.64965,-77.50579
-  tipo_estacion: .nan
-  ema: null
-- codigo: FAQK
-  unidad: CAVRAEM
+  aerodrome_name: Helipuerto de Estacion N°5 - La Vista
+  organization:
+    administration: Direccion de Meteorologia Aeronautica y Espacial
+    unit_code: DIRMA
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: inactive
+    use_type: private_civil
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Loreto
+    province: Datem del Marañon
+    district: Manseriche
+    latitude: -4.64965
+    longitude: -77.50579
+    elevation_m: 278.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: null
+    longitude_dms: null
+    original_xy: -4.64965,-77.50579
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: false
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: FAQK
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FAQK
+    local_code: null
   alias: Quillabamba
-  nombre_aerodromo: Helipuerto de 33° Brigada de Infantería EP
-  estado: Inactivo
-  pais: Perú
-  departamento: Cusco
-  provincia: La Convencion
-  distrito: Santa Ana
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: null
-  longitud: null
-  elevacion: 1052.0
-  xy: -12.86197,-72.70046
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPVD
-  unidad: CAVRAEM
+  aerodrome_name: Helipuerto de 33° Brigada de Infantería EP
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: inactive
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Cusco
+    province: La Convencion
+    district: Santa Ana
+    latitude: -12.86197
+    longitude: -72.70046
+    elevation_m: 1052.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: null
+    longitude_dms: null
+    original_xy: -12.86197,-72.70046
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: false
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPVD
+  identifiers:
+    icao: SPVD
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Valle Esmeralda
-  nombre_aerodromo: Helipuerto BCT EP- N°324 - "Valle Esmeralda"
-  estado: Activo
-  pais: Perú
-  departamento: Junin
-  provincia: Satipo
-  distrito: Rio Tambo
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: 12°07'35.64"S
-  longitud: 074°04'34.27"W
-  elevacion: 565.0
-  xy: -12.1266,-74.0762
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPST
-  unidad: AGRAT
+  aerodrome_name: Helipuerto BCT EP- N°324 - "Valle Esmeralda"
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Junin
+    province: Satipo
+    district: Rio Tambo
+    latitude: -12.1266
+    longitude: -74.0762
+    elevation_m: 565.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 12°07'35.64"S
+    longitude_dms: 074°04'34.27"W
+    original_xy: -12.1266,-74.0762
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPST
+  identifiers:
+    icao: SPST
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Tarapoto
-  nombre_aerodromo: Aeropuerto Cadete FAP Guillermo del Castillo Paredes
-  estado: Activo
-  pais: Perú
-  departamento: San Martin
-  provincia: San Martin
-  distrito: Tarapoto
-  administracion: Agrupamiento Aereo de Tarapoto
-  uso: Publico
-  latitud: 06°30'32.00"S
-  longitud: 076°22'24.00"W
-  elevacion: 264.0
-  xy: -6.5089,-76.3733
-  tipo_estacion: .nan
-  ema: null
-- codigo: FANK
-  unidad: CAVRAEM
+  aerodrome_name: Aeropuerto Cadete FAP Guillermo del Castillo Paredes
+  organization:
+    administration: Agrupamiento Aereo de Tarapoto
+    unit_code: AGRAT
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: San Martin
+    province: San Martin
+    district: Tarapoto
+    latitude: -6.5089
+    longitude: -76.3733
+    elevation_m: 264.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 06°30'32.00"S
+    longitude_dms: 076°22'24.00"W
+    original_xy: -6.5089,-76.3733
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: FANK
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FANK
+    local_code: null
   alias: Cielo Punku
-  nombre_aerodromo: Helipuerto de BCT DINOES "Cielo Punku"
-  estado: Inactivo
-  pais: Perú
-  departamento: Cusco
-  provincia: La Convencion
-  distrito: Kimbiri
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: null
-  longitud: null
-  elevacion: 2118.0
-  xy: -12.8001,-73.5025
-  tipo_estacion: .nan
-  ema: null
-- codigo: FAMQ
-  unidad: CAVRAEM
+  aerodrome_name: Helipuerto de BCT DINOES "Cielo Punku"
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: inactive
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Cusco
+    province: La Convencion
+    district: Kimbiri
+    latitude: -12.8001
+    longitude: -73.5025
+    elevation_m: 2118.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: null
+    longitude_dms: null
+    original_xy: -12.8001,-73.5025
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: false
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: FAMQ
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FAMQ
+    local_code: null
   alias: Pampas
-  nombre_aerodromo: Helipuerto del BCT Mariscal Cáceres N°43
-  estado: Inactivo
-  pais: Perú
-  departamento: Huancavelica
-  provincia: Tayacaja
-  distrito: Pampas
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: null
-  longitud: null
-  elevacion: 3272.0
-  xy: -12.396313,-74.866113
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPPQ
-  unidad: CAVRAEM
+  aerodrome_name: Helipuerto del BCT Mariscal Cáceres N°43
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: inactive
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Huancavelica
+    province: Tayacaja
+    district: Pampas
+    latitude: -12.396313
+    longitude: -74.866113
+    elevation_m: 3272.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: null
+    longitude_dms: null
+    original_xy: -12.396313,-74.866113
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: false
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPPQ
+  identifiers:
+    icao: SPPQ
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Alto Anapati
-  nombre_aerodromo: Helipuerto de BCT EP-N°312 - "Alto Anapati"
-  estado: Activo
-  pais: Perú
-  departamento: Junin
-  provincia: Satipo
-  distrito: Pangoa
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: 11°40'21.79"S
-  longitud: 074°18'32.44"W
-  elevacion: 855.0
-  xy: -11.6727,-74.309
-  tipo_estacion: .nan
-  ema: null
-- codigo: FAQI
-  unidad: CAVRAEM
+  aerodrome_name: Helipuerto de BCT EP-N°312 - "Alto Anapati"
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Junin
+    province: Satipo
+    district: Pangoa
+    latitude: -11.6727
+    longitude: -74.309
+    elevation_m: 855.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 11°40'21.79"S
+    longitude_dms: 074°18'32.44"W
+    original_xy: -11.6727,-74.309
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: FAQI
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FAQI
+    local_code: null
   alias: Quiteni
-  nombre_aerodromo: Helipuerto de Base de Control Fluvial MGP de Quiteni
-  estado: Inactivo
-  pais: Perú
-  departamento: Junin
-  provincia: Satipo
-  distrito: Rio Tambo
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: null
-  longitud: null
-  elevacion: 380.0
-  xy: -11.673463,-74.014007
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPBC
-  unidad: GRU42
+  aerodrome_name: Helipuerto de Base de Control Fluvial MGP de Quiteni
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: inactive
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Junin
+    province: Satipo
+    district: Rio Tambo
+    latitude: -11.673463
+    longitude: -74.014007
+    elevation_m: 380.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: null
+    longitude_dms: null
+    original_xy: -11.673463,-74.014007
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: false
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPBC
+  identifiers:
+    icao: SPBC
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Caballococha
-  nombre_aerodromo: Aeródromo de Caballococha
-  estado: Activo
-  pais: Perú
-  departamento: Loreto
-  provincia: Mariscal Ramon Castilla
-  distrito: Ramon Castilla
-  administracion: Grupo Aereo N°42
-  uso: Publico
-  latitud: 03°55'00.57"S
-  longitud: 070°30'29.47"W
-  elevacion: 10.0
-  xy: -3.9168,-70.5082
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPEE
-  unidad: GRU42
+  aerodrome_name: Aeródromo de Caballococha
+  organization:
+    administration: Grupo Aereo N°42
+    unit_code: GRU42
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Loreto
+    province: Mariscal Ramon Castilla
+    district: Ramon Castilla
+    latitude: -3.9168
+    longitude: -70.5082
+    elevation_m: 10.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 03°55'00.57"S
+    longitude_dms: 070°30'29.47"W
+    original_xy: -3.9168,-70.5082
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPEE
+  identifiers:
+    icao: SPEE
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: El Estrecho
-  nombre_aerodromo: Aeródromo de El Estrecho
-  estado: Activo
-  pais: Perú
-  departamento: Loreto
-  provincia: Maynas
-  distrito: Putumayo
-  administracion: Grupo Aereo N°42
-  uso: Publico
-  latitud: 02°27'14.15"S
-  longitud: 072°40'14.58"W
-  elevacion: 132.0
-  xy: -2.4539,-72.6707
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPDN
-  unidad: GRU42
+  aerodrome_name: Aeródromo de El Estrecho
+  organization:
+    administration: Grupo Aereo N°42
+    unit_code: GRU42
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Loreto
+    province: Maynas
+    district: Putumayo
+    latitude: -2.4539
+    longitude: -72.6707
+    elevation_m: 132.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 02°27'14.15"S
+    longitude_dms: 072°40'14.58"W
+    original_xy: -2.4539,-72.6707
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPDN
+  identifiers:
+    icao: SPDN
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Angamos
-  nombre_aerodromo: Aeródromo de Colonia Angamos
-  estado: Activo
-  pais: Perú
-  departamento: Loreto
-  provincia: Requena
-  distrito: Yaquerana
-  administracion: Grupo Aereo N°42
-  uso: Publico
-  latitud: 05°08'14.00"S
-  longitud: 072°52'04.00"W
-  elevacion: 130.0
-  xy: -5.1372,-72.8678
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPQM
-  unidad: GRU42
+  aerodrome_name: Aeródromo de Colonia Angamos
+  organization:
+    administration: Grupo Aereo N°42
+    unit_code: GRU42
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Loreto
+    province: Requena
+    district: Yaquerana
+    latitude: -5.1372
+    longitude: -72.8678
+    elevation_m: 130.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 05°08'14.00"S
+    longitude_dms: 072°52'04.00"W
+    original_xy: -5.1372,-72.8678
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPQM
+  identifiers:
+    icao: SPQM
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: San Lorenzo
-  nombre_aerodromo: Aeródromo de San Lorenzo
-  estado: Activo
-  pais: Perú
-  departamento: Loreto
-  provincia: Datem del Marañon
-  distrito: Barranca
-  administracion: Grupo Aereo N°42
-  uso: Publico
-  latitud: 04°49'27.00"S
-  longitud: 076°33'37.00"W
-  elevacion: 132.0
-  xy: -4.8242,-76.5603
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPCL
-  unidad: ALAR4
+  aerodrome_name: Aeródromo de San Lorenzo
+  organization:
+    administration: Grupo Aereo N°42
+    unit_code: GRU42
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Loreto
+    province: Datem del Marañon
+    district: Barranca
+    latitude: -4.8242
+    longitude: -76.5603
+    elevation_m: 132.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 04°49'27.00"S
+    longitude_dms: 076°33'37.00"W
+    original_xy: -4.8242,-76.5603
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPCL
+  identifiers:
+    icao: SPCL
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Pucallpa
-  nombre_aerodromo: Aeropuerto Capitán FAP David Abensur Rengifo
-  estado: Activo
-  pais: Perú
-  departamento: Ucayali
-  provincia: Coronel Portillo
-  distrito: Yarinacocha
-  administracion: Ala Aerea N°4
-  uso: Publico
-  latitud: 08°22'40.59"S
-  longitud: 074°34'27.48"W
-  elevacion: 157.0
-  xy: -8.3779,-74.5743
-  tipo_estacion: .nan
-  ema: null
-- codigo: FATO
-  unidad: CAVRAEM
+  aerodrome_name: Aeropuerto Capitán FAP David Abensur Rengifo
+  organization:
+    administration: Ala Aerea N°4
+    unit_code: ALAR4
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Ucayali
+    province: Coronel Portillo
+    district: Yarinacocha
+    latitude: -8.3779
+    longitude: -74.5743
+    elevation_m: 157.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 08°22'40.59"S
+    longitude_dms: 074°34'27.48"W
+    original_xy: -8.3779,-74.5743
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: FATO
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FATO
+    local_code: null
   alias: Itariato
-  nombre_aerodromo: Helipuerto BCT EP- N°333 - "Itariato"
-  estado: Inactivo
-  pais: Perú
-  departamento: null
-  provincia: null
-  distrito: null
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: null
-  longitud: null
-  elevacion: 0.0
-  xy: -12.546663,-73.138925
-  tipo_estacion: .nan
-  ema: null
-- codigo: FASV
-  unidad: GRU42
+  aerodrome_name: Helipuerto BCT EP- N°333 - "Itariato"
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: inactive
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: null
+    province: null
+    district: null
+    latitude: -12.546663
+    longitude: -73.138925
+    elevation_m: 0.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: null
+    longitude_dms: null
+    original_xy: -12.546663,-73.138925
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: false
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación. Elevación 0.0 heredada de la fuente; verificar si es un valor real.
+- station_id: FASV
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FASV
+    local_code: null
   alias: Soplin Vargas
-  nombre_aerodromo: Punto de Observacion - Soplin Vargas
-  estado: Activo
-  pais: Perú
-  departamento: Loreto
-  provincia: Maynas
-  distrito: Teniente Manuel Clavero
-  administracion: Grupo Aereo N°42
-  uso: '---'
-  latitud: 00°22'24.18"S
-  longitud: 074°40'32.02"W
-  elevacion: 198.0
-  xy: -0.3734,-74.6756
-  tipo_estacion: .nan
-  ema: null
-- codigo: FAMP
-  unidad: DIRMA
+  aerodrome_name: Punto de Observacion - Soplin Vargas
+  organization:
+    administration: Grupo Aereo N°42
+    unit_code: GRU42
+    meteorological_office: null
+  site:
+    type: field_observation
+    permanence: permanent
+    operational_status: active
+    use_type: null
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Loreto
+    province: Maynas
+    district: Teniente Manuel Clavero
+    latitude: -0.3734
+    longitude: -74.6756
+    elevation_m: 198.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 00°22'24.18"S
+    longitude_dms: 074°40'32.02"W
+    original_xy: -0.3734,-74.6756
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: FAMP
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FAMP
+    local_code: null
   alias: Machu Picchu
-  nombre_aerodromo: Estacion Cientifica Antartica Machu Picchu
-  estado: Activo
-  pais: Perú
-  departamento: Isla Rey Jorge
-  provincia: Isla Rey Jorge
-  distrito: Isla Rey Jorge
-  administracion: Direccion de Meteorologia Aeronautica y Espacial
-  uso: Privado / Civil
-  latitud: null
-  longitud: null
-  elevacion: 0.0
-  xy: -62.093366, -58.472822
-  tipo_estacion: .nan
-  ema: null
-- codigo: FAUM
-  unidad: CAVRAEM
+  aerodrome_name: Estacion Cientifica Antartica Machu Picchu
+  organization:
+    administration: Direccion de Meteorologia Aeronautica y Espacial
+    unit_code: DIRMA
+    meteorological_office: null
+  site:
+    type: antarctic_base
+    permanence: permanent
+    operational_status: active
+    use_type: private_civil
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Isla Rey Jorge
+    province: Isla Rey Jorge
+    district: Isla Rey Jorge
+    latitude: -62.093366
+    longitude: -58.472822
+    elevation_m: 0.0
+    timezone: Antarctica/King_George_Island
+  source_reference:
+    latitude_dms: null
+    longitude_dms: null
+    original_xy: -62.093366, -58.472822
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación. Elevación 0.0 heredada de la fuente; verificar si es un valor real. Sitio administrado por
+    Perú y ubicado geográficamente en la Antártida.
+- station_id: FAUM
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FAUM
+    local_code: null
   alias: Union Mantaro
-  nombre_aerodromo: Helipuerto de BCT EP-N°42 - "Union Mantaro"
-  estado: Inactivo
-  pais: Perú
-  departamento: Ayacucho
-  provincia: Huanta
-  distrito: Llochegua
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: null
-  longitud: null
-  elevacion: 540.0
-  xy: -12.285015, -74.090941
-  tipo_estacion: .nan
-  ema: null
-- codigo: SPQU
-  unidad: ALAR3
+  aerodrome_name: Helipuerto de BCT EP-N°42 - "Union Mantaro"
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAEM
+    meteorological_office: null
+  site:
+    type: heliport
+    permanence: permanent
+    operational_status: inactive
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Ayacucho
+    province: Huanta
+    district: Llochegua
+    latitude: -12.285015
+    longitude: -74.090941
+    elevation_m: 540.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: null
+    longitude_dms: null
+    original_xy: -12.285015, -74.090941
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: false
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: SPQU
+  identifiers:
+    icao: SPQU
+    wmo: null
+    fap_code: null
+    local_code: null
   alias: Arequipa
-  nombre_aerodromo: Aeropuerto Alfredo Rodriguez Ballon
-  estado: Activo
-  pais: Perú
-  departamento: Arequipa
-  provincia: Arequipa
-  distrito: Cerro Colorado
-  administracion: Ala Aerea N°3
-  uso: Publico
-  latitud: 16°20'26.20"S
-  longitud: 071°34'14.85"W
-  elevacion: 2560.5
-  xy: -16.3406,-71.5708
-  tipo_estacion: .nan
-  ema: null
-- codigo: FASR
-  unidad: GRU42
+  aerodrome_name: Aeropuerto Alfredo Rodriguez Ballon
+  organization:
+    administration: Ala Aerea N°3
+    unit_code: ALAR3
+    meteorological_office: null
+  site:
+    type: aerodrome
+    permanence: permanent
+    operational_status: active
+    use_type: public
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Arequipa
+    province: Arequipa
+    district: Cerro Colorado
+    latitude: -16.3406
+    longitude: -71.5708
+    elevation_m: 2560.5
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 16°20'26.20"S
+    longitude_dms: 071°34'14.85"W
+    original_xy: -16.3406,-71.5708
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: FASR
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FASR
+    local_code: null
   alias: Santa Rosa
-  nombre_aerodromo: Santa Rosa de Yavari
-  estado: Activo
-  pais: Perú
-  departamento: Loreto
-  provincia: Mariscal Ramón Castilla
-  distrito: Yavari
-  administracion: Grupo Aereo N°42
-  uso: Privado / Militar
-  latitud: 04°14'33"S
-  longitud: 69°57'05"W
-  elevacion: 70.0
-  xy: -4.2425,-69.9514
-  tipo_estacion: .nan
-  ema: EMFAP-0001
-- codigo: FABA
-  unidad: CAVRAE
+  aerodrome_name: Santa Rosa de Yavari
+  organization:
+    administration: Grupo Aereo N°42
+    unit_code: GRU42
+    meteorological_office: null
+  site:
+    type: observation_site
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: automatic
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: true
+      asset_code: EMFAP-0001
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Loreto
+    province: Mariscal Ramón Castilla
+    district: Yavari
+    latitude: -4.2425
+    longitude: -69.9514
+    elevation_m: 70.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 04°14'33"S
+    longitude_dms: 69°57'05"W
+    original_xy: -4.2425,-69.9514
+    legacy_station_type: null
+    legacy_ema: EMFAP-0001
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Clasificación técnica de la estación pendiente de verificación.
+- station_id: FABA
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FABA
+    local_code: null
   alias: Boca Anapati
-  nombre_aerodromo: Base de Control Fluvial Boca Anapati
-  estado: Activo
-  pais: Perú
-  departamento: Junín
-  provincia: Satipo
-  distrito: Mazamari
-  administracion: Componente Aereo VRAEM
-  uso: Privado / Militar
-  latitud: 11°55'40.88"S
-  longitud: 73°59'11.66"W
-  elevacion: 466.0
-  xy: -11.928,-73.9866
-  tipo_estacion: .nan
-  ema: null
-- codigo: FAES
-  unidad: ESOFA
+  aerodrome_name: Base de Control Fluvial Boca Anapati
+  organization:
+    administration: Componente Aereo VRAEM
+    unit_code: CAVRAE
+    meteorological_office: null
+  site:
+    type: observation_site
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Junín
+    province: Satipo
+    district: Mazamari
+    latitude: -11.928
+    longitude: -73.9866
+    elevation_m: 466.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 11°55'40.88"S
+    longitude_dms: 73°59'11.66"W
+    original_xy: -11.928,-73.9866
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
+- station_id: FAES
+  identifiers:
+    icao: null
+    wmo: null
+    fap_code: FAES
+    local_code: null
   alias: Esofa
-  nombre_aerodromo: Escuela de Suboficiales de la FAP
-  estado: Activo
-  pais: Perú
-  departamento: Lima
-  provincia: Lima
-  distrito: Santiago de Surco
-  administracion: Escuela de Suboficiales de la FAP
-  uso: Privado / Militar
-  latitud: 12°09'16.50"S
-  longitud: 77°00'24.17"W
-  elevacion: 64.0
-  xy: -12.1546,-77.0067
-  tipo_estacion: .nan
-  ema: null
+  aerodrome_name: Escuela de Suboficiales de la FAP
+  organization:
+    administration: Escuela de Suboficiales de la FAP
+    unit_code: ESOFA
+    meteorological_office: null
+  site:
+    type: military_base
+    permanence: permanent
+    operational_status: active
+    use_type: private_military
+  observation:
+    system: null
+    reports:
+      metar: null
+      speci: null
+      taf: null
+      synop: null
+      climatology: null
+  infrastructure:
+    level: null
+  equipment:
+    aws:
+      installed: null
+      asset_code: null
+      manufacturer: null
+      model: null
+      serial_number: null
+      operational: null
+    barometer:
+      installed: null
+    thermometer:
+      installed: null
+    hygrometer:
+      installed: null
+    anemometer:
+      installed: null
+    rain_gauge:
+      installed: null
+    ceilometer:
+      installed: null
+    visibility_sensor:
+      installed: null
+    present_weather_sensor:
+      installed: null
+  location:
+    country: Perú
+    department: Lima
+    province: Lima
+    district: Santiago de Surco
+    latitude: -12.1546
+    longitude: -77.0067
+    elevation_m: 64.0
+    timezone: America/Lima
+  source_reference:
+    latitude_dms: 12°09'16.50"S
+    longitude_dms: 77°00'24.17"W
+    original_xy: -12.1546,-77.0067
+    legacy_station_type: null
+    legacy_ema: null
+  operation:
+    active: true
+    first_observation: null
+    last_observation: null
+  notes: Tipo de sistema de observación pendiente de verificación. Clasificación técnica de la estación pendiente
+    de verificación.
