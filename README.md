@@ -1,4 +1,4 @@
-# QC_DATAMET
+# QC_DataMet v0.1.0
 
 > **Quality Control Platform for Aeronautical Meteorological
 > Observations**
@@ -13,7 +13,7 @@
 
 ## Overview
 
-**QC_DATAMET** is a professional Python platform for the ingestion,
+**QC_DataMet** is a professional Python platform for the ingestion,
 consolidation, normalization, quality control (QC), climatological
 analysis and publication of aeronautical meteorological observations.
 
@@ -247,7 +247,7 @@ python main.py
 
 # Project Status
 
-QC_DATAMET is under active development following the official roadmap.
+QC_DataMet is under active development following the official roadmap.
 
 ------------------------------------------------------------------------
 

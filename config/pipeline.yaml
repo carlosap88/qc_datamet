@@ -1,5 +1,5 @@
 # =============================================================================
-# QC_DATAMET v1.0
+# QC_DataMet v0.1.0
 # pipeline.yaml
 #
 # Configuración del flujo de ejecución del pipeline.
@@ -9,7 +9,7 @@ pipeline:
 
   name: "qc_datamet_pipeline"
 
-  version: "1.0.0"
+  version: "0.1.0"
 
   enabled: true
 

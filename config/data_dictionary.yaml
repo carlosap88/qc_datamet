@@ -1,5 +1,5 @@
 # =============================================================================
-# QC_DATAMET v1.0
+# QC_DataMet v0.1.0
 # data_dictionary.yaml
 #
 # Diccionario semántico de datos meteorológicos aeronáuticos.
@@ -17,11 +17,11 @@
 
 dictionary:
   name: "qc_datamet_data_dictionary"
-  version: "1.0.0"
-  project: "QC_DATAMET"
+  version: "0.1.0"
+  project: "QC_DataMet"
   language: "es"
   description: >
-    Diccionario semántico de las variables utilizadas por QC_DATAMET para
+    Diccionario semántico de las variables utilizadas por QC_DataMet para
     procesar, normalizar, validar y documentar observaciones meteorológicas
     aeronáuticas.
 
@@ -2432,7 +2432,7 @@ computed_fields:
       - database
 
     notes: >
-      Es la columna temporal principal utilizada por QC_DATAMET.
+      Es la columna temporal principal utilizada por QC_DataMet.
 
 
   # ---------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 # =============================================================================
-# QC_DATAMET v1.0
+# QC_DataMet v0.1.0
 # stations.yaml
 #
 # Catálogo Maestro de Sitios de Observación Meteorológica
@@ -14,8 +14,8 @@
 
 catalog:
   name: qc_datamet_station_catalog
-  version: 1.0.0
-  description: Catálogo maestro de sitios de observación meteorológica utilizados por QC_DATAMET, migrado desde
+  version: 0.1.0
+  description: Catálogo maestro de sitios de observación meteorológica utilizados por QC_DataMet, migrado desde
     el inventario institucional anterior.
   maintainer: DIRMA
   coordinate_system: WGS84

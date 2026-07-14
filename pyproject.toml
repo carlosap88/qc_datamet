@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qc_datamet"
-version = "1.0.0"
+version = "0.1.0"
 description = "Professional platform for quality control of aeronautical meteorological observations."
 readme = "README.md"
 license = { file = "LICENSE" }

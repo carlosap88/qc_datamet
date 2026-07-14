@@ -1,5 +1,5 @@
 # =============================================================================
-# QC_DATAMET v1.0
+# QC_DataMet v0.1.0
 # excel_schema.yaml
 #
 # Esquema físico de los archivos Excel de entrada.
@@ -27,7 +27,7 @@
 
 schema:
   name: "qc_datamet_excel_input"
-  version: "1.0.0"
+  version: "0.1.0"
 
   description: >
     Esquema oficial de entrada para archivos Excel de observaciones

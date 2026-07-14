@@ -1,11 +1,11 @@
 # =============================================================================
-# QC_DATAMET v1.0
+# QC_DataMet v0.1.0
 # canonical_schema.yaml
 #
 # Esquema Canónico Oficial
 #
 # Este archivo define la estructura final del dataset generado por
-# QC_DATAMET después de completar todo el pipeline de procesamiento.
+# QC_DataMet después de completar todo el pipeline de procesamiento.
 #
 # Responsabilidades
 # -----------------
@@ -36,13 +36,13 @@ canonical_schema:
 
   name: "qc_datamet_canonical_schema"
 
-  version: "1.0.0"
+  version: "0.1.0"
 
-  project: "QC_DATAMET"
+  project: "QC_DataMet"
 
   description: >
     Esquema canónico oficial del dataset final utilizado por
-    QC_DATAMET.
+    QC_DataMet.
 
   references:
 

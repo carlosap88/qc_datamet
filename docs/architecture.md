@@ -1,4 +1,4 @@
-# QC_DATAMET
+# QC_DataMet v0.1.0
 ## Arquitectura del Sistema
 
 **Versión:** 0.1.0  
@@ -12,7 +12,7 @@
 
 # 1. Propósito
 
-QC_DATAMET es una plataforma modular para la ingestión, normalización,
+QC_DataMet es una plataforma modular para la ingestión, normalización,
 consolidación, control de calidad, análisis y publicación de observaciones
 meteorológicas aeronáuticas históricas y operacionales.
 
@@ -25,7 +25,7 @@ control de calidad avanzados.
 
 # 2. Principios de diseño
 
-QC_DATAMET sigue los siguientes principios:
+QC_DataMet sigue los siguientes principios:
 
 1. Los datos originales son inmutables.
 2. Ninguna observación se elimina durante el control de calidad.
@@ -149,7 +149,7 @@ proyecto.
 
 # 6. Puntos de entrada
 
-QC_DATAMET debe poder ejecutarse de tres formas:
+QC_DataMet debe poder ejecutarse de tres formas:
 
 ```bash
 qc-datamet
@@ -513,7 +513,7 @@ Las pruebas deben ejecutarse automáticamente mediante GitHub Actions.
 
 # 20. Estándares de desarrollo
 
-QC_DATAMET adopta:
+QC_DataMet adopta:
 
 - PEP 8;
 - type hints;
@@ -557,7 +557,7 @@ Ejemplos futuros:
 
 # 22. Estado actual
 
-QC_DATAMET se encuentra en versión `0.1.0` y estado Alpha.
+QC_DataMet se encuentra en versión `0.1.0` y estado Alpha.
 
 Prioridades inmediatas:
 
@@ -576,7 +576,7 @@ pruebas automatizadas.
 
 # 23. Resumen
 
-QC_DATAMET se concibe como una plataforma institucional y mantenible, no como
+QC_DataMet se concibe como una plataforma institucional y mantenible, no como
 una colección de scripts aislados. Su arquitectura modular, el pipeline de
 etapas independientes, la configuración externa, la trazabilidad, los
 checkpoints y el sistema de banderas permiten desarrollar una solución sólida

@@ -1,5 +1,5 @@
 # =============================================================================
-# QC_DATAMET v1.0
+# QC_DataMet v0.1.0
 # variables.yaml
 #
 # Catálogo maestro de variables meteorológicas.
@@ -20,9 +20,9 @@
 
 catalog:
   name: qc_datamet_variables_catalog
-  version: 1.0.0
+  version: 0.1.0
   description: Catálogo maestro de variables para METAR, SPECI, TAF y variables operacionales históricas utilizadas
-    por QC_DATAMET.
+    por QC_DataMet.
   scope:
     aviation_products:
     - METAR

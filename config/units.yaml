@@ -1,5 +1,5 @@
 # =============================================================================
-# QC_DATAMET v1.0
+# QC_DataMet v0.1.0
 # units.yaml
 #
 # Catálogo maestro de unidades físicas.
@@ -18,9 +18,9 @@
 
 catalog:
   name: qc_datamet_units_catalog
-  version: 1.0.0
-  project: QC_DATAMET
-  description: Catálogo maestro de unidades físicas utilizadas por QC_DATAMET para METAR, SPECI, TAF y observaciones
+  version: 0.1.0
+  project: QC_DataMet
+  description: Catálogo maestro de unidades físicas utilizadas por QC_DataMet para METAR, SPECI, TAF y observaciones
     meteorológicas históricas.
   references:
     variables: variables.yaml
