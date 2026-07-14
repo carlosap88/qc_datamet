@@ -43,13 +43,15 @@ class BaseStage(ABC):
             )
             raise
 
-        self.state.complete_stage(self.name)
-        self.state.set_statistic(
-            f"{self.name}_duration_seconds",
-            round(perf_counter() - started, 3),
-        )
+        else:
+            self.state.complete_stage(self.name)
+            return result
 
-        return result
+        finally:
+            self.state.set_statistic(
+                f"{self.name}_duration_seconds",
+                round(perf_counter() - started, 3),
+            )
 
     def validate_inputs(self, data: Any) -> None:
         """Valida las entradas antes de ejecutar la etapa."""
