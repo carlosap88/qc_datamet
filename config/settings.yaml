@@ -3,7 +3,8 @@
 # settings.yaml
 #
 # Configuración global del sistema.
-# Este archivo contiene únicamente parámetros generales de la plataforma.
+# Todas las rutas son relativas a la raíz del proyecto, salvo que se indique
+# explícitamente una ruta absoluta.
 # =============================================================================
 
 # =============================================================================
@@ -11,21 +12,14 @@
 # =============================================================================
 
 project:
-
   name: "QC_DataMet"
-
   version: "0.1.0"
-
   description: >
     Plataforma profesional para el Control de Calidad de
     Observaciones Meteorológicas Aeronáuticas.
-
   organization: "Dirección de Meteorología Aeronáutica y Espacial"
-
   institution: "Fuerza Aérea del Perú"
-
   author: "TC3 FAP Roberto Carlos Arqqui Poma"
-
   license: "MIT"
 
 # =============================================================================
@@ -33,17 +27,11 @@ project:
 # =============================================================================
 
 system:
-
   language: "es"
-
   timezone: "UTC"
-
   encoding: "utf-8"
-
   locale: "es_PE"
-
   datetime_format: "%Y-%m-%d %H:%M:%S"
-
   date_format: "%Y-%m-%d"
 
 # =============================================================================
@@ -51,21 +39,15 @@ system:
 # =============================================================================
 
 paths:
-
+  root: "."
+  package: "./qc_datamet"
   assets: "./assets"
-
   config: "./config"
-
   data: "./data"
-
   docs: "./docs"
-
   logs: "./logs"
-
   reports: "./reports"
-
-  src: "./src"
-
+  scripts: "./scripts"
   tests: "./tests"
 
 # =============================================================================
@@ -73,41 +55,26 @@ paths:
 # =============================================================================
 
 data:
-
   raw:
-
     excel: "./data/raw/excel"
-
     csv: "./data/raw/csv"
-
     metar: "./data/raw/metar"
-
     bufr: "./data/raw/bufr"
 
   staging: "./data/staging"
-
   processed: "./data/processed"
-
   consolidated: "./data/consolidated"
-
   final: "./data/final"
 
   quarantine:
-
     files: "./data/quarantine/files"
-
     records: "./data/quarantine/records"
 
   parquet:
-
     root: "./data/parquet"
-
     cache: "./data/parquet/cache"
-
     daily: "./data/parquet/daily"
-
     monthly: "./data/parquet/monthly"
-
     yearly: "./data/parquet/yearly"
 
 # =============================================================================
@@ -115,40 +82,31 @@ data:
 # =============================================================================
 
 input:
-
   excel:
-
     enabled: true
-
+    recursive: true
     extensions:
-
       - ".xlsx"
       - ".xls"
       - ".xlsm"
       - ".xlsb"
 
   csv:
-
     enabled: true
-
+    recursive: true
     extensions:
-
       - ".csv"
 
   metar:
-
     enabled: true
-
+    recursive: true
     extensions:
-
       - ".txt"
 
   bufr:
-
     enabled: false
-
+    recursive: true
     extensions:
-
       - ".bufr"
 
 # =============================================================================
@@ -156,21 +114,13 @@ input:
 # =============================================================================
 
 logging:
-
   enabled: true
-
   level: "INFO"
-
   console: true
-
   file: true
-
   directory: "./logs"
-
   filename: "qc_datamet.log"
-
   rotation: "daily"
-
   retention_days: 30
 
 # =============================================================================
@@ -178,23 +128,18 @@ logging:
 # =============================================================================
 
 execution:
-
   stop_on_error: true
-
   overwrite_outputs: true
-
   save_intermediate_files: true
-
   resume_previous_execution: true
+  create_missing_directories: true
 
 # =============================================================================
 # PANDAS
 # =============================================================================
 
 pandas:
-
   nullable_dtypes: true
-
   copy_on_write: false
 
 # =============================================================================
@@ -202,11 +147,8 @@ pandas:
 # =============================================================================
 
 export:
-
   default_csv_encoding: "utf-8"
-
   default_csv_separator: ","
-
   parquet_compression: "snappy"
 
 # =============================================================================
@@ -214,13 +156,10 @@ export:
 # =============================================================================
 
 development:
-
   debug: false
-
   verbose: false
-
   profiling: false
 
 # =============================================================================
-# FIN
+# FIN DEL ARCHIVO
 # =============================================================================
