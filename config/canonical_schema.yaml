@@ -215,7 +215,6 @@ columns:
   # ===========================================================================
   # IDENTIFICACIÓN TÉCNICA
   # ===========================================================================
-
   - position: 1
 
     name: "record_id"
@@ -236,8 +235,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 2
 
     name: "station_id"
@@ -263,7 +260,6 @@ columns:
   # ===========================================================================
   # FECHA Y HORA
   # ===========================================================================
-
   - position: 3
 
     name: "datetime_utc"
@@ -284,8 +280,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 4
 
     name: "date"
@@ -306,8 +300,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 5
 
     name: "year"
@@ -328,8 +320,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 6
 
     name: "month"
@@ -350,8 +340,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 7
 
     name: "day"
@@ -372,8 +360,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 8
 
     name: "hour_utc"
@@ -394,8 +380,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 9
 
     name: "minute"
@@ -416,8 +400,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 10
 
     name: "climatological_year"
@@ -443,7 +425,6 @@ columns:
   # ===========================================================================
   # METADATA DEL REPORTE
   # ===========================================================================
-
   - position: 11
 
     name: "report_status"
@@ -469,7 +450,6 @@ columns:
   # ===========================================================================
   # VIENTO
   # ===========================================================================
-
   - position: 12
 
     name: "wind_direction_deg"
@@ -490,8 +470,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 13
 
     name: "wind_direction_ccw_deg"
@@ -512,8 +490,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 14
 
     name: "wind_direction_cw_deg"
@@ -534,8 +510,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 15
 
     name: "wind_speed_kt"
@@ -556,8 +530,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 16
 
     name: "wind_gust_kt"
@@ -583,7 +555,6 @@ columns:
   # ===========================================================================
   # TEMPERATURA
   # ===========================================================================
-
   - position: 17
 
     name: "air_temperature_c"
@@ -604,8 +575,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 18
 
     name: "wet_bulb_temperature_c"
@@ -626,8 +595,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 19
 
     name: "dew_point_temperature_c"
@@ -648,8 +615,6 @@ columns:
       parquet: true
 
       database: true
-
-
   - position: 20
 
     name: "maximum_temperature_c"
@@ -670,9 +635,7 @@ columns:
       parquet: true
 
       database: true
-
-
-        - position: 21
+  - position: 21
     name: "minimum_temperature_c"
     dtype: "Float32"
     nullable: true
@@ -687,7 +650,6 @@ columns:
   # ===========================================================================
   # PRESIÓN
   # ===========================================================================
-
   - position: 22
     name: "qnh_hpa"
     dtype: "Float32"
@@ -699,7 +661,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 23
     name: "qfe_hpa"
     dtype: "Float32"
@@ -715,7 +676,6 @@ columns:
   # ===========================================================================
   # HUMEDAD Y PRECIPITACIÓN
   # ===========================================================================
-
   - position: 24
     name: "relative_humidity_pct"
     dtype: "Float32"
@@ -727,7 +687,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 25
     name: "accumulated_precipitation_mm"
     dtype: "Float32"
@@ -743,7 +702,6 @@ columns:
   # ===========================================================================
   # VISIBILIDAD
   # ===========================================================================
-
   - position: 26
     name: "prevailing_visibility_m"
     dtype: "Float32"
@@ -755,7 +713,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 27
     name: "minimum_visibility_1_m"
     dtype: "Float32"
@@ -767,7 +724,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 28
     name: "minimum_visibility_direction_1"
     dtype: "string"
@@ -779,7 +735,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 29
     name: "minimum_visibility_2_m"
     dtype: "Float32"
@@ -791,7 +746,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 30
     name: "minimum_visibility_direction_2"
     dtype: "string"
@@ -807,7 +761,6 @@ columns:
   # ===========================================================================
   # TIEMPO PRESENTE
   # ===========================================================================
-
   - position: 31
     name: "present_weather_1"
     dtype: "string"
@@ -819,7 +772,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 32
     name: "present_weather_2"
     dtype: "string"
@@ -831,7 +783,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 33
     name: "present_weather_3"
     dtype: "string"
@@ -847,7 +798,6 @@ columns:
   # ===========================================================================
   # PRIMERA CAPA DE NUBES
   # ===========================================================================
-
   - position: 34
     name: "cloud_amount_1"
     dtype: "string"
@@ -859,7 +809,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 35
     name: "cloud_base_height_1_ft"
     dtype: "Float32"
@@ -871,7 +820,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 36
     name: "cloud_type_1"
     dtype: "string"
@@ -887,7 +835,6 @@ columns:
   # ===========================================================================
   # SEGUNDA CAPA DE NUBES
   # ===========================================================================
-
   - position: 37
     name: "cloud_amount_2"
     dtype: "string"
@@ -899,7 +846,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 38
     name: "cloud_base_height_2_ft"
     dtype: "Float32"
@@ -911,7 +857,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 39
     name: "cloud_type_2"
     dtype: "string"
@@ -927,7 +872,6 @@ columns:
   # ===========================================================================
   # TERCERA CAPA DE NUBES
   # ===========================================================================
-
   - position: 40
     name: "cloud_amount_3"
     dtype: "string"
@@ -939,8 +883,7 @@ columns:
       csv: true
       parquet: true
       database: true
-
-        - position: 41
+  - position: 41
     name: "cloud_base_height_3_ft"
     dtype: "Float32"
     nullable: true
@@ -951,7 +894,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 42
     name: "cloud_type_3"
     dtype: "string"
@@ -967,7 +909,6 @@ columns:
   # ===========================================================================
   # METADATOS DE LA ESTACIÓN
   # ===========================================================================
-
   - position: 43
     name: "country"
     dtype: "string"
@@ -979,7 +920,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 44
     name: "department"
     dtype: "string"
@@ -991,7 +931,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 45
     name: "province"
     dtype: "string"
@@ -1003,7 +942,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 46
     name: "district"
     dtype: "string"
@@ -1015,7 +953,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 47
     name: "latitude"
     dtype: "Float64"
@@ -1027,7 +964,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 48
     name: "longitude"
     dtype: "Float64"
@@ -1039,7 +975,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 49
     name: "elevation_m"
     dtype: "Float32"
@@ -1051,7 +986,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 50
     name: "location"
     dtype: "string"
@@ -1063,7 +997,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 51
     name: "aerodrome_name"
     dtype: "string"
@@ -1075,7 +1008,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 52
     name: "station_type"
     dtype: "string"
@@ -1087,7 +1019,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 53
     name: "meteorological_office"
     dtype: "string"
@@ -1099,7 +1030,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 54
     name: "observer"
     dtype: "string"
@@ -1115,7 +1045,6 @@ columns:
   # ===========================================================================
   # CONTENIDO DEL REPORTE
   # ===========================================================================
-
   - position: 55
     name: "remarks"
     dtype: "string"
@@ -1127,7 +1056,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 56
     name: "metar"
     dtype: "string"
@@ -1143,7 +1071,6 @@ columns:
   # ===========================================================================
   # TRAZABILIDAD
   # ===========================================================================
-
   - position: 57
     name: "source_file"
     dtype: "string"
@@ -1155,7 +1082,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 58
     name: "source_sheet"
     dtype: "string"
@@ -1167,7 +1093,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 59
     name: "source_row"
     dtype: "Int32"
@@ -1179,7 +1104,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 60
     name: "source_hash"
     dtype: "string"
@@ -1195,7 +1119,6 @@ columns:
   # ===========================================================================
   # CAMPOS TÉCNICOS
   # ===========================================================================
-
   - position: 61
     name: "pipeline_run_id"
     dtype: "string"
@@ -1207,7 +1130,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 62
     name: "processing_timestamp"
     dtype: "datetime64[ns, UTC]"
@@ -1219,7 +1141,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 63
     name: "pipeline_version"
     dtype: "string"
@@ -1231,7 +1152,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 64
     name: "dictionary_version"
     dtype: "string"
@@ -1247,7 +1167,6 @@ columns:
   # ===========================================================================
   # CONTROL DE CALIDAD
   # ===========================================================================
-
   - position: 65
     name: "qc_status"
     dtype: "string"
@@ -1259,7 +1178,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 66
     name: "qc_flags"
     dtype: "list[string]"
@@ -1271,7 +1189,6 @@ columns:
       csv: true
       parquet: true
       database: true
-
   - position: 67
     name: "qc_score"
     dtype: "Float32"
