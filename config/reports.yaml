@@ -1,0 +1,533 @@
+# =============================================================================
+# QC_DataMet v0.1.0
+# reports.yaml
+#
+# Configuración de generación de reportes.
+#
+# Toda la presentación de resultados del sistema se controla desde este
+# archivo. No contiene reglas de control de calidad; únicamente define
+# cómo deben organizarse y exportarse los productos generados por el
+# pipeline.
+# =============================================================================
+
+reports:
+
+  # ===========================================================================
+  # METADATA
+  # ===========================================================================
+
+  metadata:
+
+    name: "qc_datamet_reports"
+
+    project: "QC_DataMet"
+
+    version: "0.1.0"
+
+    language: "es"
+
+    description: >
+      Configuración general para la generación de reportes técnicos,
+      estadísticos y ejecutivos del sistema QC_DataMet.
+
+
+  # ===========================================================================
+  # CONFIGURACIÓN GENERAL
+  # ===========================================================================
+
+  general:
+
+    enabled: true
+
+    generate_reports: true
+
+    overwrite_existing: true
+
+    create_directories: true
+
+    include_metadata: true
+
+    include_execution_time: true
+
+    include_qc_version: true
+
+    include_pipeline_version: true
+
+    include_git_revision: true
+
+    include_creation_timestamp: true
+
+    timezone: "UTC"
+
+    datetime_format: "%Y-%m-%d %H:%M:%S"
+
+    decimal_places: 2
+
+
+  # ===========================================================================
+  # DIRECTORIOS
+  # ===========================================================================
+
+  directories:
+
+    root: "./reports"
+
+    import: "./reports/import"
+
+    preprocessing: "./reports/preprocessing"
+
+    basic_qc: "./reports/basic_qc"
+
+    meteorological_qc: "./reports/meteorological_qc"
+
+    advanced_qc: "./reports/advanced_qc"
+
+    statistics: "./reports/statistics"
+
+    graphics: "./reports/graphics"
+
+    executive: "./reports/executive"
+
+    logs: "./reports/logs"
+
+    exports: "./reports/exports"
+
+
+  # ===========================================================================
+  # FORMATOS
+  # ===========================================================================
+
+  formats:
+
+    csv: true
+
+    parquet: true
+
+    excel: true
+
+    json: true
+
+    pdf: true
+
+    html: false
+
+    png: true
+
+    svg: false
+
+
+  # ===========================================================================
+  # NOMENCLATURA
+  # ===========================================================================
+
+  filenames:
+
+    separator: "_"
+
+    date_format: "%Y%m%d"
+
+    datetime_format: "%Y%m%d_%H%M%S"
+
+    include_station: true
+
+    include_report_name: true
+
+    include_version: false
+
+    include_timestamp: true
+
+
+  # ===========================================================================
+  # LOGOS
+  # ===========================================================================
+
+  branding:
+
+    enabled: true
+
+    organization: "Dirección de Meteorología Aeronáutica"
+
+    logos:
+
+      primary: "assets/logos/logo_1.png"
+
+      secondary: "assets/logos/logo_2.png"
+
+      noaa: "assets/logos/NOAA.png"
+
+      comop: "assets/logos/logo_COMOP.png"
+
+
+  # ===========================================================================
+  # ENCABEZADOS
+  # ===========================================================================
+
+  header:
+
+    enabled: true
+
+    title: "QC_DataMet"
+
+    subtitle: "Sistema de Control de Calidad Meteorológico"
+
+    show_logo: true
+
+    show_datetime: true
+
+    show_station: true
+
+    show_pipeline_version: true
+
+
+  # ===========================================================================
+  # PIE DE PÁGINA
+  # ===========================================================================
+
+  footer:
+
+    enabled: true
+
+    show_page_number: true
+
+    show_generation_datetime: true
+
+    show_project_version: true
+
+    show_copyright: true
+
+    text: "QC_DataMet v0.1.0"
+
+
+  # ===========================================================================
+  # CONFIGURACIÓN PDF
+  # ===========================================================================
+
+  pdf:
+
+    enabled: true
+
+    page_size: "A4"
+
+    orientation: "portrait"
+
+    margins_mm:
+
+      top: 20
+
+      bottom: 20
+
+      left: 20
+
+      right: 20
+
+    font:
+
+      family: "Helvetica"
+
+      size: 10
+
+    title_font_size: 18
+
+    subtitle_font_size: 12
+
+    dpi: 300
+
+
+  # ===========================================================================
+  # CONFIGURACIÓN EXCEL
+  # ===========================================================================
+
+  excel:
+
+    enabled: true
+
+    freeze_header: true
+
+    auto_filter: true
+
+    auto_adjust_columns: true
+
+    include_table_style: true
+
+    worksheet_name: "QC_Report"
+
+
+  # ===========================================================================
+  # CONFIGURACIÓN CSV
+  # ===========================================================================
+
+  csv:
+
+    enabled: true
+
+    separator: ","
+
+    encoding: "utf-8"
+
+    include_header: true
+
+
+  # ===========================================================================
+  # CONFIGURACIÓN PARQUET
+  # ===========================================================================
+
+  parquet:
+
+    enabled: true
+
+    compression: "snappy"
+
+
+  # ===========================================================================
+  # CONFIGURACIÓN JSON
+  # ===========================================================================
+
+  json:
+
+    enabled: true
+
+    indent: 2
+
+    ensure_ascii: false
+
+
+  # ===========================================================================
+  # TABLAS
+  # ===========================================================================
+
+  tables:
+
+    include_row_numbers: false
+
+    maximum_rows_pdf: 100
+
+    maximum_rows_excel: null
+
+    alternate_row_colors: true
+
+    show_summary: true
+
+
+  # ===========================================================================
+  # GRÁFICOS
+  # ===========================================================================
+
+  graphics:
+
+    enabled: true
+
+    dpi: 300
+
+    image_format: "png"
+
+    width_inches: 10
+
+    height_inches: 6
+
+    include_grid: true
+
+    transparent_background: false
+
+    save_individual_figures: true
+
+
+  # ===========================================================================
+  # ESTADÍSTICAS
+  # ===========================================================================
+
+  statistics:
+
+    enabled: true
+
+    include:
+
+      observations: true
+
+      missing: true
+
+      passed: true
+
+      suspect: true
+
+      errors: true
+
+      duplicates: true
+
+      percentages: true
+
+      mean: true
+
+      median: true
+
+      minimum: true
+
+      maximum: true
+
+      standard_deviation: true
+
+
+  # ===========================================================================
+  # REPORTES DISPONIBLES
+  # ===========================================================================
+
+  report_types:
+
+    import_report:
+
+      enabled: true
+
+      stage: 3
+
+      formats:
+
+        - pdf
+
+        - excel
+
+        - json
+
+
+    preprocessing_report:
+
+      enabled: true
+
+      stage: 5
+
+      formats:
+
+        - pdf
+
+        - excel
+
+
+    basic_qc_report:
+
+      enabled: true
+
+      stage: 8
+
+      formats:
+
+        - pdf
+
+        - excel
+
+        - csv
+
+
+    meteorological_qc_report:
+
+      enabled: true
+
+      stage: 10
+
+      formats:
+
+        - pdf
+
+        - excel
+
+
+    advanced_qc_report:
+
+      enabled: true
+
+      stage: 12
+
+      formats:
+
+        - pdf
+
+        - excel
+
+
+    executive_summary:
+
+      enabled: true
+
+      stage: 13
+
+      formats:
+
+        - pdf
+
+
+    statistics_report:
+
+      enabled: true
+
+      stage: 13
+
+      formats:
+
+        - excel
+
+        - csv
+
+        - parquet
+
+
+    graphics_report:
+
+      enabled: true
+
+      stage: 14
+
+      formats:
+
+        - png
+
+        - pdf
+
+
+    final_dataset_report:
+
+      enabled: true
+
+      stage: 15
+
+      formats:
+
+        - parquet
+
+        - csv
+
+        - excel
+
+        - json
+
+
+  # ===========================================================================
+  # PUBLICACIÓN
+  # ===========================================================================
+
+  publication:
+
+    enabled: true
+
+    copy_to_final_directory: true
+
+    compress_outputs: false
+
+    generate_manifest: true
+
+    generate_checksum: true
+
+    checksum_algorithm: "sha256"
+
+
+  # ===========================================================================
+  # VALIDACIÓN
+  # ===========================================================================
+
+  validation:
+
+    require_existing_directories: false
+
+    require_supported_formats: true
+
+    require_unique_report_names: true
+
+    require_existing_logo_files: true
+
+    require_existing_templates: false
