@@ -1,355 +1,373 @@
 # =============================================================================
-# QC_DataMet v0.1.0
+# QC_DATAMET v0.1.0
 # pipeline.yaml
 #
 # Configuración del flujo de ejecución del pipeline.
+#
+# Convenciones:
+#   - Las rutas de módulos corresponden al paquete Python qc_datamet.
+#   - Solo deben habilitarse etapas que estén implementadas y probadas.
+#   - Los checkpoints separan metadata JSON y datasets Parquet.
 # =============================================================================
 
 pipeline:
-
   name: "qc_datamet_pipeline"
-
   version: "0.1.0"
 
   enabled: true
-
   execution_mode: "sequential"
 
   resume_previous_execution: true
-
   save_checkpoints: true
 
   stop_on_critical_error: true
-
   continue_on_warning: true
-
   validate_stage_dependencies: true
 
-  checkpoint_format: "json"
+  checkpoint:
+    directory: "./data/staging/checkpoints"
+    metadata_format: "json"
+    dataset_format: "parquet"
+    overwrite: false
 
-  checkpoint_directory: "./data/staging/checkpoints"
 
 # =============================================================================
-# STAGES
+# ETAPAS DEL PIPELINE
 # =============================================================================
 
 stages:
 
+  # ===========================================================================
+  # STAGE 01 — DISCOVERY
+  # ===========================================================================
+
   stage01_discovery:
-
     enabled: true
-
     order: 1
 
     class_name: "Stage01Discovery"
-
-    module: "src.pipeline.stages.stage01_discovery"
+    module: "qc_datamet.pipeline.stages.stage01_discovery"
 
     description: >
-      Busca, identifica e inventaría todos los archivos de entrada.
+      Busca, identifica y genera el inventario de todos los archivos
+      de entrada disponibles.
 
     requires: []
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 02 — INGESTION
+  # ===========================================================================
+
   stage02_ingestion:
-
-    enabled: true
-
+    enabled: false
     order: 2
 
     class_name: "Stage02Ingestion"
-
-    module: "src.pipeline.stages.stage02_ingestion"
+    module: "qc_datamet.pipeline.stages.stage02_ingestion"
 
     description: >
-      Lee los archivos identificados mediante el lector correspondiente.
+      Lee los archivos identificados mediante el lector correspondiente
+      y los convierte en estructuras de datos internas.
 
     requires:
-
       - "stage01_discovery"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 03 — STRUCTURE VALIDATION
+  # ===========================================================================
+
   stage03_structure_validation:
-
-    enabled: true
-
+    enabled: false
     order: 3
 
     class_name: "Stage03StructureValidation"
-
-    module: "src.pipeline.stages.stage03_structure_validation"
+    module: "qc_datamet.pipeline.stages.stage03_structure_validation"
 
     description: >
-      Valida la estructura de cada archivo usando el esquema configurado.
+      Valida la estructura física de cada archivo utilizando
+      el esquema de entrada configurado.
 
     requires:
-
       - "stage02_ingestion"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 04 — CONSOLIDATION
+  # ===========================================================================
+
   stage04_consolidation:
-
-    enabled: true
-
+    enabled: false
     order: 4
 
     class_name: "Stage04Consolidation"
-
-    module: "src.pipeline.stages.stage04_consolidation"
+    module: "qc_datamet.pipeline.stages.stage04_consolidation"
 
     description: >
-      Consolida los DataFrames válidos en un único dataset.
+      Consolida los DataFrames válidos en un único dataset,
+      preservando la procedencia de cada registro.
 
     requires:
-
       - "stage03_structure_validation"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 05 — PREPROCESSING
+  # ===========================================================================
+
   stage05_preprocessing:
-
-    enabled: true
-
+    enabled: false
     order: 5
 
     class_name: "Stage05Preprocessing"
-
-    module: "src.pipeline.stages.stage05_preprocessing"
+    module: "qc_datamet.pipeline.stages.stage05_preprocessing"
 
     description: >
-      Normaliza columnas, tipos de datos, valores faltantes,
-      unidades, fechas y metadata.
+      Normaliza nombres de columnas, tipos de datos, valores faltantes,
+      unidades, fechas y metadata técnica.
 
     requires:
-
       - "stage04_consolidation"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 06 — PREPARED DATA EXPORT
+  # ===========================================================================
+
   stage06_prepared_data_export:
-
-    enabled: true
-
+    enabled: false
     order: 6
 
     class_name: "Stage06PreparedDataExport"
-
-    module: "src.pipeline.stages.stage06_prepared_data_export"
+    module: "qc_datamet.pipeline.stages.stage06_prepared_data_export"
 
     description: >
-      Exporta el dataset preparado antes del control de calidad.
+      Exporta el dataset preparado antes de iniciar los controles
+      de calidad meteorológica.
 
     requires:
-
       - "stage05_preprocessing"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 07 — BASIC QUALITY CONTROL
+  # ===========================================================================
+
   stage07_basic_quality_control:
-
     enabled: false
-
     order: 7
 
     class_name: "Stage07BasicQualityControl"
-
-    module: "src.pipeline.stages.stage07_basic_quality_control"
+    module: "qc_datamet.pipeline.stages.stage07_basic_quality_control"
 
     description: >
-      Ejecuta los controles básicos de calidad.
+      Ejecuta controles básicos de calidad, como valores faltantes,
+      tipos inválidos, duplicados y límites físicos elementales.
 
     requires:
-
       - "stage06_prepared_data_export"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 08 — BASIC QC SUMMARY
+  # ===========================================================================
+
   stage08_basic_qc_summary:
-
     enabled: false
-
     order: 8
 
     class_name: "Stage08BasicQCSummary"
-
-    module: "src.pipeline.stages.stage08_basic_qc_summary"
+    module: "qc_datamet.pipeline.stages.stage08_basic_qc_summary"
 
     description: >
-      Resume los resultados del control de calidad básico.
+      Resume los resultados obtenidos durante el control
+      básico de calidad.
 
     requires:
-
       - "stage07_basic_quality_control"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 09 — METEOROLOGICAL QUALITY CONTROL
+  # ===========================================================================
+
   stage09_meteorological_quality_control:
-
     enabled: false
-
     order: 9
 
     class_name: "Stage09MeteorologicalQualityControl"
-
-    module: "src.pipeline.stages.stage09_meteorological_quality_control"
+    module: "qc_datamet.pipeline.stages.stage09_meteorological_quality_control"
 
     description: >
-      Ejecuta controles de consistencia meteorológica.
+      Ejecuta controles de consistencia meteorológica entre variables
+      relacionadas.
 
     requires:
-
       - "stage08_basic_qc_summary"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 10 — METEOROLOGICAL QC SUMMARY
+  # ===========================================================================
+
   stage10_meteorological_qc_summary:
-
     enabled: false
-
     order: 10
 
     class_name: "Stage10MeteorologicalQCSummary"
-
-    module: "src.pipeline.stages.stage10_meteorological_qc_summary"
+    module: "qc_datamet.pipeline.stages.stage10_meteorological_qc_summary"
 
     description: >
-      Resume los resultados del control meteorológico.
+      Resume los resultados obtenidos durante el control
+      de consistencia meteorológica.
 
     requires:
-
       - "stage09_meteorological_quality_control"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 11 — ADVANCED QUALITY CONTROL
+  # ===========================================================================
+
   stage11_advanced_quality_control:
-
     enabled: false
-
     order: 11
 
     class_name: "Stage11AdvancedQualityControl"
-
-    module: "src.pipeline.stages.stage11_advanced_quality_control"
+    module: "qc_datamet.pipeline.stages.stage11_advanced_quality_control"
 
     description: >
-      Ejecuta controles climatológicos, estadísticos y espaciales.
+      Ejecuta controles climatológicos, estadísticos, temporales
+      y espaciales avanzados.
 
     requires:
-
       - "stage10_meteorological_qc_summary"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 12 — FINAL QUALITY ASSESSMENT
+  # ===========================================================================
+
   stage12_final_quality_assessment:
-
     enabled: false
-
     order: 12
 
     class_name: "Stage12FinalQualityAssessment"
-
-    module: "src.pipeline.stages.stage12_final_quality_assessment"
+    module: "qc_datamet.pipeline.stages.stage12_final_quality_assessment"
 
     description: >
-      Consolida todos los flags y genera la evaluación final.
+      Consolida las banderas de calidad y genera la evaluación
+      final de cada observación.
 
     requires:
-
       - "stage11_advanced_quality_control"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 13 — REPORTING
+  # ===========================================================================
+
   stage13_reporting:
-
     enabled: false
-
     order: 13
 
     class_name: "Stage13Reporting"
-
-    module: "src.pipeline.stages.stage13_reporting"
+    module: "qc_datamet.pipeline.stages.stage13_reporting"
 
     description: >
-      Genera reportes técnicos, estadísticos y ejecutivos.
+      Genera reportes técnicos, estadísticos, operacionales
+      y ejecutivos.
 
     requires:
-
       - "stage12_final_quality_assessment"
 
     checkpoint: false
 
 
+  # ===========================================================================
+  # STAGE 14 — GRAPHICS
+  # ===========================================================================
+
   stage14_graphics:
-
     enabled: false
-
     order: 14
 
     class_name: "Stage14Graphics"
-
-    module: "src.pipeline.stages.stage14_graphics"
+    module: "qc_datamet.pipeline.stages.stage14_graphics"
 
     description: >
-      Genera productos gráficos y visualizaciones.
+      Genera productos gráficos, estadísticas visuales
+      y representaciones climatológicas.
 
     requires:
-
       - "stage12_final_quality_assessment"
 
     checkpoint: false
 
 
+  # ===========================================================================
+  # STAGE 15 — FINAL EXPORT
+  # ===========================================================================
+
   stage15_final_export:
-
     enabled: false
-
     order: 15
 
     class_name: "Stage15FinalExport"
-
-    module: "src.pipeline.stages.stage15_final_export"
+    module: "qc_datamet.pipeline.stages.stage15_final_export"
 
     description: >
-      Exporta los datasets y productos finales.
+      Exporta los datasets finales y los productos generados
+      por el pipeline.
 
     requires:
-
       - "stage13_reporting"
       - "stage14_graphics"
 
     checkpoint: true
 
 
+  # ===========================================================================
+  # STAGE 16 — PUBLICATION
+  # ===========================================================================
+
   stage16_publication:
-
     enabled: false
-
     order: 16
 
     class_name: "Stage16Publication"
-
-    module: "src.pipeline.stages.stage16_publication"
+    module: "qc_datamet.pipeline.stages.stage16_publication"
 
     description: >
-      Organiza, verifica y publica los productos finales.
+      Organiza, verifica y publica los productos finales
+      generados por QC_DATAMET.
 
     requires:
-
       - "stage15_final_export"
 
     checkpoint: true

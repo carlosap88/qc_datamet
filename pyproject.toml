@@ -2,14 +2,10 @@
 requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
-# =============================================================================
-# PROJECT
-# =============================================================================
-
 [project]
-name = "qc_datamet"
+name = "qc-datamet"
 version = "0.1.0"
-description = "Professional platform for quality control of aeronautical meteorological observations."
+description = "Plataforma modular para el control de calidad de observaciones meteorológicas aeronáuticas."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.12"
@@ -24,6 +20,8 @@ keywords = [
     "quality-control",
     "meteorological-data",
     "metar",
+    "speci",
+    "taf",
     "icao",
     "wmo",
     "climatology",
@@ -32,36 +30,31 @@ keywords = [
 
 classifiers = [
     "Development Status :: 3 - Alpha",
-
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
-
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Atmospheric Science",
-
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
-
     "License :: OSI Approved :: MIT License",
-
     "Operating System :: OS Independent"
 ]
 
 dependencies = [
-    "pandas>=2.2",
     "numpy>=2.0",
+    "pandas>=2.2",
+    "pyarrow>=18.0",
     "PyYAML>=6.0",
     "openpyxl>=3.1",
-    "pyarrow>=18.0",
-    "matplotlib>=3.10",
+    "xlsxwriter>=3.2",
     "scipy>=1.15",
-    "reportlab>=4.2"
+    "matplotlib>=3.10",
+    "reportlab>=4.2",
+    "tqdm>=4.67",
+    "python-dateutil>=2.9",
+    "colorlog>=6.9"
 ]
-
-# =============================================================================
-# OPTIONAL DEPENDENCIES
-# =============================================================================
 
 [project.optional-dependencies]
 
@@ -70,83 +63,57 @@ dev = [
     "pytest-cov>=6.0",
     "black>=25.0",
     "ruff>=0.8",
-    "mypy>=1.14"
+    "mypy>=1.14",
+    "pre-commit>=4.0"
 ]
 
 docs = [
-    "mkdocs",
-    "mkdocs-material"
+    "mkdocs>=1.6",
+    "mkdocs-material>=9.5"
 ]
 
-# =============================================================================
-# URLS
-# =============================================================================
-
 [project.urls]
+Homepage = "https://github.com/carlosap88/qc_datamet"
+Repository = "https://github.com/carlosap88/qc_datamet"
+Documentation = "https://github.com/carlosap88/qc_datamet/tree/main/docs"
+Issues = "https://github.com/carlosap88/qc_datamet/issues"
 
-Homepage = "https://github.com/<usuario>/qc_datamet"
-Repository = "https://github.com/<usuario>/qc_datamet"
-Documentation = "https://github.com/<usuario>/qc_datamet/tree/main/docs"
-Issues = "https://github.com/<usuario>/qc_datamet/issues"
-
-# =============================================================================
-# SETUPTOOLS
-# =============================================================================
+[project.scripts]
+qc-datamet = "qc_datamet.cli:main"
 
 [tool.setuptools]
-
 include-package-data = true
 
-# =============================================================================
-# BLACK
-# =============================================================================
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qc_datamet*"]
+exclude = [
+    "tests*",
+    "docs*",
+    "config*",
+    "data*",
+    "reports*",
+    "assets*"
+]
 
 [tool.black]
-
 line-length = 88
 target-version = ["py312"]
 
-# =============================================================================
-# RUFF
-# =============================================================================
-
 [tool.ruff]
-
 line-length = 88
 target-version = "py312"
 
-# =============================================================================
-# PYTEST
-# =============================================================================
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
 
 [tool.pytest.ini_options]
-
-testpaths = [
-    "tests"
-]
-
-python_files = [
-    "test_*.py"
-]
-
-python_classes = [
-    "Test*"
-]
-
-python_functions = [
-    "test_*"
-]
-
-# =============================================================================
-# COVERAGE
-# =============================================================================
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-ra"
 
 [tool.coverage.run]
-
-source = [
-    "src"
-]
-
-omit = [
-    "tests/*"
-]
+source = ["qc_datamet"]
+omit = ["tests/*"]
