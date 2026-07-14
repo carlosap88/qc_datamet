@@ -69,7 +69,16 @@ reports/**/*
 !reports/**/.gitkeep
 
 # -----------------------------------------------------------------------------
-# Temporary Data
+# Raw Source Data
+# -----------------------------------------------------------------------------
+
+# Los datos originales permanecen únicamente en el entorno local.
+data/raw/**/*
+!data/raw/**/
+!data/raw/**/.gitkeep
+
+# -----------------------------------------------------------------------------
+# Temporary and Generated Data
 # -----------------------------------------------------------------------------
 
 data/staging/*
