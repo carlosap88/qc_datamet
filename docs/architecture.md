@@ -1,549 +1,583 @@
-# METEO_QC Architecture
+# QC_DATAMET
+## Arquitectura del Sistema
 
-**Project:** METEO_QC  
-**Version:** 1.0.0  
-**Author:** Roberto Arqui  
-**Institution:** Dirección de Meteorología Aeronáutica (DIRMA)  
-**Organization:** Fuerza Aérea del Perú (FAP)  
-**Language:** Python 3.12+  
-**Architecture:** Modular Pipeline Architecture
-
----
-
-# 1. Purpose
-
-METEO_QC is a professional software platform designed to perform automated Quality Control (QC) of historical and operational aeronautical meteorological observations in accordance with the recommendations of:
-
-- World Meteorological Organization (WMO)
-- International Civil Aviation Organization (ICAO)
-
-The platform has been designed for long-term maintenance, scalability, reproducibility and institutional deployment.
+**Versión:** 0.1.0  
+**Estado:** Alpha  
+**Autor:** Roberto Carlos Arqqui Poma  
+**Institución:** Dirección de Meteorología Aeronáutica y Espacial  
+**Organización:** Fuerza Aérea del Perú  
+**Lenguaje:** Python 3.12+
 
 ---
 
-# 2. Design Philosophy
+# 1. Propósito
 
-The architecture follows the following software engineering principles.
+QC_DATAMET es una plataforma modular para la ingestión, normalización,
+consolidación, control de calidad, análisis y publicación de observaciones
+meteorológicas aeronáuticas históricas y operacionales.
 
-- Separation of Responsibilities (SRP)
-- Open / Closed Principle
-- DRY (Don't Repeat Yourself)
-- High Cohesion
-- Low Coupling
-- Configuration over Code
-- Modular Design
-- Pipeline Processing
-- Reproducible Processing
-- Data Traceability
-- Testability
-
-Every module has one responsibility only.
-
-Business logic must never be located in **main.py**.
+El sistema está diseñado para preservar la trazabilidad completa de cada
+registro y permitir una evolución progresiva desde archivos Excel históricos
+hasta productos institucionales, bases de datos, servicios web y procesos de
+control de calidad avanzados.
 
 ---
 
-# 3. High-Level Architecture
+# 2. Principios de diseño
 
+QC_DATAMET sigue los siguientes principios:
+
+1. Los datos originales son inmutables.
+2. Ninguna observación se elimina durante el control de calidad.
+3. Toda modificación o corrección debe ser trazable.
+4. La configuración se mantiene fuera del código mediante archivos YAML.
+5. Cada etapa del pipeline tiene una única responsabilidad.
+6. Cada control de calidad debe ser independiente y comprobable.
+7. Las etapas pueden generar checkpoints y reanudar ejecuciones.
+8. Las dependencias entre etapas deben validarse antes de ejecutar.
+9. El código debe permanecer desacoplado de los formatos de entrada.
+10. Las funciones implementadas deben disponer de pruebas automatizadas.
+
+---
+
+# 3. Arquitectura general
+
+```text
+Fuentes de datos
+    │
+    ├── Excel
+    ├── CSV
+    ├── METAR / SPECI
+    ├── TAF
+    └── BUFR (futuro)
+    │
+    ▼
+Stage01 Discovery
+    │
+    ▼
+Stage02 Ingestion
+    │
+    ▼
+Stage03 Structure Validation
+    │
+    ▼
+Stage04 Consolidation
+    │
+    ▼
+Stage05 Preprocessing
+    │
+    ▼
+Stage06 Prepared Data Export
+    │
+    ▼
+Stages 07–12 Quality Control
+    │
+    ▼
+Stages 13–16 Reporting, Export and Publication
 ```
-                  +----------------+
-                  |   main.py      |
-                  +-------+--------+
-                          |
-                          |
-                 Pipeline Orchestrator
-                          |
-     --------------------------------------------------
-     |          |           |          |              |
- Import   Preprocessing      QC     Reports      Export
-     |          |           |          |              |
-     -----------------------------------------------
-                     Shared DataFrame
-```
 
-Each stage receives a DataFrame and returns a DataFrame.
+La arquitectura combina:
+
+- una capa de configuración;
+- una capa de acceso a datos;
+- una capa de pipeline;
+- una capa de control de calidad;
+- una capa de reportes y visualización;
+- una capa de exportación y publicación.
 
 ---
 
-# 4. Project Structure
+# 4. Estructura del proyecto
 
+```text
+qc_datamet/
+│
+├── qc_datamet/                  # Paquete Python importable
+│   ├── __init__.py
+│   ├── __main__.py
+│   ├── cli.py
+│   ├── version.py
+│   │
+│   ├── config/                  # Código para cargar y validar YAML
+│   ├── pipeline/                # Orquestador, estado y etapas
+│   ├── io/                      # Lectores y escritores
+│   ├── qc/                      # Controles de calidad
+│   ├── reports/                 # Generadores de reportes
+│   ├── visualization/           # Gráficos y visualizaciones
+│   └── utils/                   # Utilidades comunes
+│
+├── config/                      # Configuración operativa YAML
+├── data/                        # Datos de entrada, proceso y salida
+├── docs/                        # Documentación técnica
+├── tests/                       # Pruebas automatizadas
+├── assets/                      # Recursos gráficos y plantillas
+├── reports/                     # Productos generados
+├── logs/                        # Registros de ejecución
+│
+├── main.py                      # Punto de entrada de compatibilidad
+├── pyproject.toml               # Configuración del paquete
+├── requirements.txt
+├── README.md
+└── LICENSE
 ```
-meteo_qc/
 
-config/
+La carpeta externa `qc_datamet/` corresponde al repositorio. La carpeta
+interna `qc_datamet/` corresponde al paquete Python importable.
+
+---
+
+# 5. Paquete Python
+
+Todos los módulos deben importarse desde el paquete `qc_datamet`.
+
+Ejemplo correcto:
+
+```python
+from qc_datamet.pipeline.orchestrator import PipelineOrchestrator
+```
+
+Ejemplo incorrecto:
+
+```python
+from src.pipeline.orchestrator import PipelineOrchestrator
+```
+
+La carpeta `src` no forma parte de la arquitectura oficial adoptada para el
+proyecto.
+
+---
+
+# 6. Puntos de entrada
+
+QC_DATAMET debe poder ejecutarse de tres formas:
+
+```bash
+qc-datamet
+```
+
+```bash
+python -m qc_datamet
+```
+
+```bash
+python main.py
+```
+
+El archivo `main.py` debe contener únicamente el puente hacia la interfaz de
+línea de comandos. La lógica del negocio nunca debe implementarse allí.
+
+---
+
+# 7. Configuración
+
+Toda la configuración operativa reside en `config/`.
+
+| Archivo | Responsabilidad |
+|---|---|
+| `settings.yaml` | Configuración global del sistema |
+| `pipeline.yaml` | Orden, activación y dependencias de las etapas |
+| `excel_schema.yaml` | Contrato físico de los archivos Excel |
+| `data_dictionary.yaml` | Significado, tipos, unidades y mapeos semánticos |
+| `canonical_schema.yaml` | Estructura y orden del dataset final |
+| `stations.yaml` | Catálogo maestro de estaciones |
+| `variables.yaml` | Catálogo de variables meteorológicas |
+| `units.yaml` | Catálogo y conversiones de unidades |
+| `qc_rules.yaml` | Reglas de control de calidad |
+| `reports.yaml` | Configuración de reportes |
+| `descriptors/` | Catálogos de códigos y descriptores |
+
+Las reglas meteorológicas no deben codificarse directamente en los módulos
+Python cuando puedan representarse mediante configuración.
+
+---
+
+# 8. Pipeline oficial
+
+El flujo oficial consta de dieciséis etapas:
+
+| Etapa | Nombre | Estado inicial |
+|---:|---|---|
+| 01 | Discovery | En desarrollo |
+| 02 | Ingestion | Pendiente |
+| 03 | Structure Validation | Pendiente |
+| 04 | Consolidation | Pendiente |
+| 05 | Preprocessing | Pendiente |
+| 06 | Prepared Data Export | Pendiente |
+| 07 | Basic Quality Control | Pendiente |
+| 08 | Basic QC Summary | Pendiente |
+| 09 | Meteorological Quality Control | Pendiente |
+| 10 | Meteorological QC Summary | Pendiente |
+| 11 | Advanced Quality Control | Pendiente |
+| 12 | Final Quality Assessment | Pendiente |
+| 13 | Reporting | Pendiente |
+| 14 | Graphics | Pendiente |
+| 15 | Final Export | Pendiente |
+| 16 | Publication | Pendiente |
+
+Solo deben mantenerse habilitadas las etapas que dispongan de implementación
+y pruebas suficientes.
+
+---
+
+# 9. Contrato de una etapa
+
+Cada etapa debe implementar un contrato común mediante `BaseStage`.
+
+Métodos mínimos:
+
+```python
+validate_inputs()
+execute()
+validate_outputs()
+save_checkpoint()
+```
+
+Cada etapa debe:
+
+- recibir un contexto de ejecución;
+- validar sus entradas;
+- ejecutar una sola responsabilidad;
+- generar metadata;
+- registrar errores y advertencias;
+- validar sus salidas;
+- devolver el contexto actualizado;
+- guardar un checkpoint cuando corresponda.
+
+---
+
+# 10. Estado del pipeline
+
+`PipelineState` debe registrar, como mínimo:
+
+- `run_id`;
+- etapa actual;
+- etapas completadas;
+- fecha y hora de inicio;
+- fecha y hora de finalización;
+- archivos encontrados;
+- registros procesados;
+- advertencias;
+- errores;
+- rutas de checkpoints;
+- versión del sistema.
+
+El estado debe ser serializable para permitir reanudación y auditoría.
+
+---
+
+# 11. Checkpoints
+
+Los checkpoints se dividen en dos componentes:
+
+```text
+metadata → JSON
+dataset  → Parquet
+```
+
+JSON se utiliza para estado, estadísticas y trazabilidad. Parquet se utiliza
+para DataFrames y datasets intermedios de gran volumen.
+
+Los checkpoints deben permitir:
+
+- reanudar una ejecución interrumpida;
+- evitar repetir etapas ya completadas;
+- reproducir el procesamiento;
+- comparar resultados entre ejecuciones.
+
+---
+
+# 12. Flujo de datos
+
+```text
+Archivo original
+    │
+    ▼
+Inventario y hash
+    │
+    ▼
+Lectura
+    │
+    ▼
+Validación estructural
+    │
+    ▼
+Consolidación
+    │
+    ▼
+Normalización semántica
+    │
+    ▼
+Dataset preparado
+    │
+    ▼
+Controles de calidad
+    │
+    ▼
+Flags y evaluación final
+    │
+    ▼
+Reportes y exportaciones
+```
+
+Cada registro debe conservar información de procedencia, como:
+
+- archivo de origen;
+- hoja de origen;
+- fila de origen;
+- hash del archivo;
+- fecha de procesamiento;
+- versión del pipeline.
+
+---
+
+# 13. Datos y almacenamiento
+
+La estructura de datos recomendada es:
+
+```text
 data/
-reports/
-logs/
-src/
-tests/
-docs/
-assets/
+├── raw/
+│   ├── excel/
+│   ├── csv/
+│   ├── metar/
+│   └── bufr/
+├── staging/
+├── processed/
+├── consolidated/
+├── parquet/
+│   ├── cache/
+│   ├── daily/
+│   ├── monthly/
+│   └── yearly/
+├── quarantine/
+│   ├── files/
+│   └── records/
+└── final/
 ```
 
-Each directory has a well-defined responsibility.
+Los archivos originales permanecen en `raw/` y no deben modificarse.
 
 ---
 
-# 5. Layered Architecture
+# 14. Control de calidad
 
-The project follows a layered architecture.
+El sistema de QC se organiza en tres niveles:
 
-```
-Presentation Layer
+## 14.1 Control básico
 
-main.py
+- estructura;
+- tipos de datos;
+- valores faltantes;
+- duplicados;
+- rangos físicos básicos;
+- fechas inválidas;
+- identificación de estación.
 
-↓
+## 14.2 Control meteorológico
 
-Pipeline Layer
+- temperatura de rocío menor o igual a temperatura del aire;
+- consistencia entre viento medio y ráfaga;
+- consistencia entre visibilidad y fenómenos;
+- coherencia entre nubosidad y techo;
+- relaciones entre presión, temperatura y humedad.
 
-stage01_import.py
-stage02_preprocessing.py
-stage03_qc.py
-stage04_reports.py
-stage05_export.py
+## 14.3 Control avanzado
 
-↓
+- persistencia temporal;
+- saltos abruptos;
+- climatología;
+- estadística robusta;
+- comparación espacial;
+- detección de anomalías.
 
-Business Layer
-
-QC Modules
-Normalization
-Metadata
-
-↓
-
-Data Layer
-
-Excel
-CSV
-Parquet
-BUFR
-METAR
-Database
-
-↓
-
-Configuration Layer
-
-YAML Files
-```
+Las observaciones no se eliminan. Los problemas se representan mediante
+banderas de calidad.
 
 ---
 
-# 6. Pipeline Architecture
+# 15. Banderas de calidad
 
-The execution flow is composed of independent stages.
+Una observación puede contener múltiples flags.
 
-```
-Import
-    ↓
-Preprocessing
-    ↓
-Quality Control
-    ↓
-Reports
-    ↓
-Export
-```
+Ejemplos:
 
-Every stage:
-
-- receives a DataFrame
-- performs one responsibility
-- returns a DataFrame
-- produces logs
-- generates metadata
-- records execution time
-
----
-
-# 7. Data Flow
-
-```
-Excel Files
-
-      ↓
-
-Import
-
-      ↓
-
-Merged DataFrame
-
-      ↓
-
-Normalization
-
-      ↓
-
-Quality Control
-
-      ↓
-
-Flags
-
-      ↓
-
-Reports
-
-      ↓
-
-Final Dataset
-
-      ↓
-
-CSV
-Excel
-Parquet
-```
-
----
-
-# 8. Configuration
-
-All configuration is externalized.
-
-```
-config/
-
-settings.yaml
-excel_schema.yaml
-variables.yaml
-stations.yaml
-units.yaml
-qc_rules.yaml
-data_dictionary.yaml
-descriptors/
-```
-
-No meteorological rules shall be hardcoded.
-
----
-
-# 9. Quality Control Modules
-
-Each QC module is completely independent.
-
-```
-Schema Check
-
-Datetime Check
-
-Duplicate Check
-
-Missing Check
-
-Range Check
-
-Consistency Check
-
-Temporal Check
-
-Metadata Check
-
-Station Check
-
-Spatial Check
-
-Climatology Check
-
-Statistical Check
-```
-
-Each module returns
-
-- Updated DataFrame
-- Flags
-- Statistics
-- Report
-- Execution Time
-
----
-
-# 10. Flags System
-
-Observations are never deleted.
-
-Problems are indicated through flags.
-
-Example
-
-```
-Temperature = 72 °C
-
-↓
-
-Observation remains
-
-↓
-
-Flag = OUT_OF_RANGE
-```
-
-Multiple flags are allowed.
-
-```
-OUT_OF_RANGE
-
-TEMPORAL
-
+```text
 MISSING
+OUT_OF_RANGE
+DUPLICATE
+TEMPORAL_INCONSISTENCY
+METEOROLOGICAL_INCONSISTENCY
+CLIMATOLOGICAL_OUTLIER
+MANUALLY_REVIEWED
+```
 
-CLIMATOLOGY
+Cada flag debe incluir:
+
+- código;
+- severidad;
+- variable afectada;
+- regla aplicada;
+- valor observado;
+- mensaje descriptivo;
+- fecha de evaluación.
+
+---
+
+# 16. Logging
+
+El logging debe estar separado de la lógica del negocio.
+
+Cada registro debe incluir:
+
+- timestamp;
+- nivel;
+- módulo;
+- función;
+- etapa;
+- estación;
+- archivo;
+- mensaje;
+- duración cuando corresponda.
+
+Niveles utilizados:
+
+```text
+DEBUG
+INFO
+WARNING
+ERROR
+CRITICAL
 ```
 
 ---
 
-# 11. Metadata
+# 17. Reportes y visualización
 
-Every processing stage generates metadata.
+Los módulos de reportes y gráficos deben consumir únicamente resultados ya
+procesados y no modificar los datos meteorológicos.
 
-Example
+Productos previstos:
 
+- reporte de importación;
+- reporte estructural;
+- resumen de datos faltantes;
+- resumen de duplicados;
+- reporte QC;
+- estadísticas por estación;
+- climatología mensual;
+- series temporales;
+- histogramas;
+- mapas de calor;
+- rosas de viento;
+- reportes ejecutivos.
+
+---
+
+# 18. Exportación
+
+Formatos previstos:
+
+- CSV;
+- Excel;
+- Parquet;
+- PDF;
+- PNG;
+- PostgreSQL;
+- API REST;
+- BUFR y NetCDF en versiones futuras.
+
+El esquema canónico debe definir el orden y la estructura de las salidas.
+
+---
+
+# 19. Estrategia de pruebas
+
+El proyecto debe incluir:
+
+- pruebas unitarias;
+- pruebas de configuración;
+- pruebas de integración;
+- pruebas de pipeline;
+- pruebas de regresión;
+- validación con datasets controlados.
+
+Objetivo de cobertura:
+
+```text
+>= 90 % para módulos críticos
 ```
-Processing Time
 
-Processed Records
+Las pruebas deben ejecutarse automáticamente mediante GitHub Actions.
 
-Errors
+---
 
-Warnings
+# 20. Estándares de desarrollo
 
-Corrected Values
+QC_DATAMET adopta:
 
-Version
+- PEP 8;
+- type hints;
+- docstrings;
+- Ruff;
+- Black;
+- Pytest;
+- Conventional Commits;
+- revisión mediante pull requests para cambios estructurales.
 
-Execution Date
+Ejemplos de commits:
 
-Hash
-
-Station
+```text
+feat(config): add units catalog
+refactor(core): adopt standard Python package structure
+docs: update architecture documentation
+fix(pipeline): validate stage dependencies
 ```
 
 ---
 
-# 12. Logging
+# 21. Escalabilidad
 
-Logging is completely separated.
+La arquitectura debe permitir incorporar nuevas fuentes y controles sin
+modificar los módulos existentes.
 
-```
-pipeline.log
+Ejemplos futuros:
 
-import.log
-
-qc.log
-
-errors.log
-```
-
-Each record contains
-
-- Timestamp
-- Module
-- Function
-- File
-- Line
-- Station
-- Pipeline Stage
-- Message
-- Duration
+- PostgreSQL;
+- dashboard web;
+- API REST;
+- ejecución en contenedores;
+- procesamiento incremental;
+- control de calidad en tiempo real;
+- parser METAR/SPECI/TAF;
+- decodificador BUFR;
+- integración GOES y WRF;
+- detección de anomalías mediante IA.
 
 ---
 
-# 13. Reports
+# 22. Estado actual
 
-Reports are generated automatically.
+QC_DATAMET se encuentra en versión `0.1.0` y estado Alpha.
 
-```
-Import Report
+Prioridades inmediatas:
 
-Schema Report
+1. consolidar la estructura del paquete Python;
+2. validar automáticamente los YAML;
+3. implementar `PipelineState`;
+4. implementar `BaseStage`;
+5. implementar el orquestador;
+6. completar y probar `Stage01Discovery`;
+7. configurar integración continua.
 
-Datetime Report
-
-Duplicate Report
-
-Missing Report
-
-QC Report
-
-Statistics Report
-
-Climatology Report
-
-Metadata Report
-
-Executive Report
-```
-
-Output formats
-
-- PDF
-- CSV
-- Excel
+Las etapas futuras deben permanecer deshabilitadas hasta disponer de código y
+pruebas automatizadas.
 
 ---
 
-# 14. Graphics
+# 23. Resumen
 
-Automatic graphics generation.
-
-```
-Histograms
-
-Heatmaps
-
-Wind Roses
-
-Time Series
-
-Boxplots
-
-Monthly Climatology
-
-Dashboard
-```
-
----
-
-# 15. Export
-
-Supported formats
-
-```
-CSV
-
-Excel
-
-Parquet
-```
-
-Future versions
-
-```
-PostgreSQL
-
-NetCDF
-
-BUFR
-
-SQLite
-
-REST API
-```
-
----
-
-# 16. Performance
-
-Designed for
-
-- 30+ years of observations
-- Millions of records
-- Hundreds of Excel files
-- Low memory consumption
-- Parallel processing (future)
-- Incremental execution
-
----
-
-# 17. Scalability
-
-The architecture allows adding new modules without modifying existing ones.
-
-Example
-
-```
-src/qc/
-
-solar_check.py
-
-↓
-
-No changes required in
-duplicate_check.py
-range_check.py
-temporal_check.py
-```
-
-Only the pipeline registers the new module.
-
----
-
-# 18. Error Handling
-
-Errors never stop the pipeline unless critical.
-
-Levels
-
-- INFO
-- WARNING
-- ERROR
-- CRITICAL
-
-Every exception is logged.
-
----
-
-# 19. Testing Strategy
-
-The project includes automated tests.
-
-```
-Unit Tests
-
-Integration Tests
-
-Pipeline Tests
-
-Regression Tests
-```
-
-Coverage should remain above 90%.
-
----
-
-# 20. Coding Standards
-
-The project follows
-
-- PEP 8
-- Type Hints
-- NumPy Docstrings
-- Ruff
-- Black
-- Pytest
-
----
-
-# 21. Future Roadmap
-
-Planned features include
-
-- PostgreSQL backend
-- Web Dashboard
-- REST API
-- Docker deployment
-- Cloud execution
-- Real-time QC
-- METAR parser
-- BUFR decoder
-- NetCDF support
-- GOES satellite integration
-- WRF integration
-- AI anomaly detection
-- Automatic TAF generation
-- Machine Learning models
-- Statistical forecasting
-
----
-
-# 22. Summary
-
-METEO_QC is conceived as an institutional-grade software platform rather than a collection of scripts.
-
-Its modular architecture, pipeline-oriented processing, external configuration, comprehensive logging, automated reporting, and extensibility make it suitable for long-term operational use within aeronautical meteorological services while remaining aligned with WMO and ICAO recommendations.
-
----
-**End of Document**
+QC_DATAMET se concibe como una plataforma institucional y mantenible, no como
+una colección de scripts aislados. Su arquitectura modular, el pipeline de
+etapas independientes, la configuración externa, la trazabilidad, los
+checkpoints y el sistema de banderas permiten desarrollar una solución sólida
+para el control de calidad de datos meteorológicos aeronáuticos.
