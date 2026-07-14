@@ -2,8 +2,6 @@ name: Fix canonical schema indentation
 
 on:
   push:
-    paths:
-      - ".github/workflows/fix_canonical_schema.yml"
   workflow_dispatch:
 
 permissions:
@@ -37,22 +35,24 @@ jobs:
               name: "minimum_temperature_c"
           '''
 
-          if old not in text:
-              raise SystemExit("No se encontró el bloque esperado para corregir.")
-
-          text = text.replace(old, new, 1)
-          path.write_text(text, encoding="utf-8", newline="\n")
+          if old in text:
+              text = text.replace(old, new, 1)
+              path.write_text(text, encoding="utf-8", newline="\n")
 
           with path.open("r", encoding="utf-8") as stream:
               yaml.safe_load(stream)
 
-          print("canonical_schema.yaml corregido y validado.")
+          print("canonical_schema.yaml válido.")
           PY
 
-      - name: Commit fix
+      - name: Commit fix when required
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add config/canonical_schema.yaml
-          git commit -m "fix(config): correct canonical schema indentation [skip ci]"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes required."
+          else
+            git commit -m "fix(config): correct canonical schema indentation [skip ci]"
+            git push
+          fi
