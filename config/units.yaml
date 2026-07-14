@@ -1,339 +1,311 @@
 # =============================================================================
-# qc_datamet
-# CATÁLOGO DE UNIDADES Y CONVERSIONES
+# QC_DATAMET v1.0
+# units.yaml
 #
-# Define unidades estándar utilizadas internamente por qc_datamet.
-# Las variables meteorológicas están descritas en data_dictionary.yaml
+# Catálogo maestro de unidades físicas.
+#
+# Responsabilidades:
+#   - definir identificadores oficiales de unidad;
+#   - centralizar símbolos, aliases y conversiones;
+#   - permitir que variables.yaml y data_dictionary.yaml referencien unidades;
+#   - evitar definiciones duplicadas en otros archivos de configuración.
+#
+# No contiene:
+#   - límites físicos;
+#   - reglas de control de calidad;
+#   - descripciones de variables meteorológicas.
 # =============================================================================
 
-
-units
-
-
-  # ===========================================================================
-  # TEMPERATURA
-  # ===========================================================================
-
-  temperature
-
-
-    celsius
-
-      name Grados Celsius
-
-      symbol °C
-
-      standard true
-
-      dimension temperature
-
-
-
-    kelvin
-
-      name Kelvin
-
-      symbol K
-
-      standard false
-
-      conversion
-
-        formula x - 273.15
-
-
-
-    fahrenheit
-
-      name Grados Fahrenheit
-
-      symbol °F
-
-      standard false
-
-      conversion
-
-        formula (x - 32)  59
-
-
-
-  # ===========================================================================
-  # PRESIÓN ATMOSFÉRICA
-  # ===========================================================================
-
-  pressure
-
-
-    hpa
-
-      name Hectopascal
-
-      symbol hPa
-
-      standard true
-
-
-
-    pa
-
-      name Pascal
-
-      symbol Pa
-
-      standard false
-
-      conversion
-
-        formula x  100
-
-
-
-    mmhg
-
-      name Milímetros de mercurio
-
-      symbol mmHg
-
-      standard false
-
-      conversion
-
-        formula x  0.750061
-
-
-
-  # ===========================================================================
-  # VIENTO
-  # ===========================================================================
-
-  wind_speed
-
-
-    knot
-
-      name Nudo
-
-      symbol kt
-
-      standard true
-
-
-
-    meter_per_second
-
-      name Metro por segundo
-
-      symbol ms
-
-      standard false
-
-      conversion
-
-        formula x  1.94384
-
-
-
-    kilometer_per_hour
-
-      name Kilómetro por hora
-
-      symbol kmh
-
-      standard false
-
-      conversion
-
-        formula x  1.852
-
-
-
-  # ===========================================================================
-  # DIRECCIÓN
-  # ===========================================================================
-
-  direction
-
-
-    degree
-
-      name Grado angular
-
-      symbol °
-
-      standard true
-
-      range
-
-        min 0
-
-        max 360
-
-
-
-  # ===========================================================================
-  # DISTANCIA  VISIBILIDAD
-  # ===========================================================================
-
-  distance
-
-
-    meter
-
-      name Metro
-
-      symbol m
-
-      standard true
-
-
-
-    kilometer
-
-      name Kilómetro
-
-      symbol km
-
-      conversion
-
-        formula x  1000
-
-
-
-    nautical_mile
-
-      name Milla náutica
-
-      symbol NM
-
-      conversion
-
-        formula x  1852
-
-
-
-  # ===========================================================================
-  # ALTURA
-  # ===========================================================================
-
-  height
-
-
-    feet
-
-      name Pie
-
-      symbol ft
-
-      standard true
-
-
-
-    meter
-
-      name Metro
-
-      symbol m
-
-      conversion
-
-        formula x  0.3048
-
-
-
-  # ===========================================================================
-  # PRECIPITACIÓN
-  # ===========================================================================
-
-  precipitation
-
-
-    millimeter
-
-      name Milímetro
-
-      symbol mm
-
-      standard true
-
-
-
-  # ===========================================================================
-  # HUMEDAD
-  # ===========================================================================
-
-  humidity
-
-
-    percent
-
-      name Porcentaje
-
-      symbol %
-
-      standard true
-
-
-
-  # ===========================================================================
-  # COBERTURA NUBOSA
-  # ===========================================================================
-
-  cloud_cover
-
-
-    okta
-
-      name Octa
-
-      symbol okta
-
-      range
-
-        min 0
-
-        max 8
-
-
-
-  # ===========================================================================
-  # TIEMPO
-  # ===========================================================================
-
-  datetime
-
-
-    utc
-
-      name Tiempo Universal Coordinado
-
-      symbol UTC
-
-
-
-    year
-
-      symbol year
-
-
-
-    month
-
-      symbol month
-
-
-
-    day
-
-      symbol day
-
-
-
-    hour
-
-      symbol hour
-
-
-
-    minute
-
-      symbol minute
+catalog:
+  name: qc_datamet_units_catalog
+  version: 1.0.0
+  project: QC_DATAMET
+  description: Catálogo maestro de unidades físicas utilizadas por QC_DATAMET para METAR, SPECI, TAF y observaciones
+    meteorológicas históricas.
+  references:
+    variables: variables.yaml
+    data_dictionary: data_dictionary.yaml
+    qc_rules: qc_rules.yaml
+  conventions:
+    unit_ids: snake_case
+    canonical_token_usage: Las variables pueden seguir usando el token corto actual; unit_alias_map permite resolverlo
+      al identificador oficial.
+    conversion_direction: conversion_to_base
+    null_unit: null
+quantities:
+- temperature
+- pressure
+- speed
+- length
+- plane_angle
+- dimensionless_ratio
+- precipitation_depth
+- time
+unit_alias_map:
+  celsius: temperature_celsius
+  kelvin: temperature_kelvin
+  hPa: pressure_hectopascal
+  pascal: pressure_pascal
+  knot: speed_knot
+  meter_per_second: speed_meter_per_second
+  kilometer_per_hour: speed_kilometer_per_hour
+  meter: length_meter
+  kilometer: length_kilometer
+  foot: length_foot
+  degree: angle_degree
+  percent: ratio_percent
+  fraction: ratio_fraction
+  millimeter: precipitation_millimeter
+  second: time_second
+  minute: time_minute
+  hour: time_hour
+  day: time_day
+  year: null
+  month: null
+units:
+- id: temperature_celsius
+  symbol: °C
+  quantity: temperature
+  system: SI_accepted
+  canonical_token: celsius
+  aliases:
+  - C
+  - degC
+  - degree_celsius
+  - degrees_celsius
+  base_unit: temperature_kelvin
+  conversion_to_base:
+    formula: K = °C + 273.15
+  precision: 1
+- id: temperature_kelvin
+  symbol: K
+  quantity: temperature
+  system: SI
+  canonical_token: kelvin
+  aliases:
+  - K
+  base_unit: temperature_kelvin
+  conversion_to_base:
+    factor: 1.0
+    offset: 0.0
+  precision: 2
+- id: pressure_hectopascal
+  symbol: hPa
+  quantity: pressure
+  system: SI_derived
+  canonical_token: hPa
+  aliases:
+  - HPA
+  - hectopascal
+  - mb
+  - mbar
+  base_unit: pressure_pascal
+  conversion_to_base:
+    factor: 100.0
+    offset: 0.0
+  precision: 1
+- id: pressure_pascal
+  symbol: Pa
+  quantity: pressure
+  system: SI
+  canonical_token: pascal
+  aliases:
+  - PA
+  - pascal
+  base_unit: pressure_pascal
+  conversion_to_base:
+    factor: 1.0
+    offset: 0.0
+  precision: 0
+- id: speed_knot
+  symbol: kt
+  quantity: speed
+  system: ICAO
+  canonical_token: knot
+  aliases:
+  - KT
+  - KTS
+  - knot
+  - knots
+  base_unit: speed_meter_per_second
+  conversion_to_base:
+    factor: 0.5144444444
+    offset: 0.0
+  precision: 1
+- id: speed_meter_per_second
+  symbol: m/s
+  quantity: speed
+  system: SI
+  canonical_token: meter_per_second
+  aliases:
+  - mps
+  - ms-1
+  - m s-1
+  base_unit: speed_meter_per_second
+  conversion_to_base:
+    factor: 1.0
+    offset: 0.0
+  precision: 1
+- id: speed_kilometer_per_hour
+  symbol: km/h
+  quantity: speed
+  system: SI_accepted
+  canonical_token: kilometer_per_hour
+  aliases:
+  - kmh
+  - kph
+  - km h-1
+  base_unit: speed_meter_per_second
+  conversion_to_base:
+    factor: 0.2777777778
+    offset: 0.0
+  precision: 1
+- id: length_meter
+  symbol: m
+  quantity: length
+  system: SI
+  canonical_token: meter
+  aliases:
+  - metre
+  - meters
+  - metres
+  base_unit: length_meter
+  conversion_to_base:
+    factor: 1.0
+    offset: 0.0
+  precision: 0
+- id: length_kilometer
+  symbol: km
+  quantity: length
+  system: SI
+  canonical_token: kilometer
+  aliases:
+  - kilometre
+  - kilometers
+  - kilometres
+  base_unit: length_meter
+  conversion_to_base:
+    factor: 1000.0
+    offset: 0.0
+  precision: 1
+- id: length_foot
+  symbol: ft
+  quantity: length
+  system: ICAO
+  canonical_token: foot
+  aliases:
+  - FT
+  - feet
+  - foot
+  base_unit: length_meter
+  conversion_to_base:
+    factor: 0.3048
+    offset: 0.0
+  precision: 0
+- id: angle_degree
+  symbol: °
+  quantity: plane_angle
+  system: SI_accepted
+  canonical_token: degree
+  aliases:
+  - deg
+  - degrees
+  base_unit: angle_degree
+  conversion_to_base:
+    factor: 1.0
+    offset: 0.0
+  precision: 0
+  normalization:
+    minimum: 0.0
+    maximum: 360.0
+    wrap: true
+- id: ratio_percent
+  symbol: '%'
+  quantity: dimensionless_ratio
+  system: dimensionless
+  canonical_token: percent
+  aliases:
+  - pct
+  - percentage
+  base_unit: ratio_fraction
+  conversion_to_base:
+    factor: 0.01
+    offset: 0.0
+  precision: 1
+- id: ratio_fraction
+  symbol: '1'
+  quantity: dimensionless_ratio
+  system: SI
+  canonical_token: fraction
+  aliases:
+  - dimensionless
+  - unitless
+  base_unit: ratio_fraction
+  conversion_to_base:
+    factor: 1.0
+    offset: 0.0
+  precision: 4
+- id: precipitation_millimeter
+  symbol: mm
+  quantity: precipitation_depth
+  system: SI
+  canonical_token: millimeter
+  aliases:
+  - millimetre
+  - millimeters
+  - millimetres
+  base_unit: length_meter
+  conversion_to_base:
+    factor: 0.001
+    offset: 0.0
+  precision: 1
+- id: time_second
+  symbol: s
+  quantity: time
+  system: SI
+  canonical_token: second
+  aliases:
+  - sec
+  - seconds
+  base_unit: time_second
+  conversion_to_base:
+    factor: 1.0
+    offset: 0.0
+  precision: 0
+- id: time_minute
+  symbol: min
+  quantity: time
+  system: SI_accepted
+  canonical_token: minute
+  aliases:
+  - minutes
+  base_unit: time_second
+  conversion_to_base:
+    factor: 60.0
+    offset: 0.0
+  precision: 0
+- id: time_hour
+  symbol: h
+  quantity: time
+  system: SI_accepted
+  canonical_token: hour
+  aliases:
+  - hr
+  - hours
+  base_unit: time_second
+  conversion_to_base:
+    factor: 3600.0
+    offset: 0.0
+  precision: 0
+- id: time_day
+  symbol: d
+  quantity: time
+  system: SI_accepted
+  canonical_token: day
+  aliases:
+  - days
+  base_unit: time_second
+  conversion_to_base:
+    factor: 86400.0
+    offset: 0.0
+  precision: 0
