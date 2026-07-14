@@ -1,17 +1,67 @@
 # =============================================================================
-# qc_datamet
-# REGLAS DE CONTROL DE CALIDAD METEOROLÓGICO
+# QC_DataMet v0.1.0
+# qc_rules.yaml
 #
-# Basado en criterios:
-# - OMM/WMO Quality Control
-# - OACI Anexo 3
-# - Manual de procedimientos meteorológicos aeronáuticos
+# Reglas configurables para el control de calidad de observaciones
+# meteorológicas aeronáuticas.
 #
-# Los rangos físicos están en data_dictionary.yaml
+# Alcance inicial:
+#   - observaciones históricas;
+#   - METAR;
+#   - SPECI;
+#   - variables auxiliares almacenadas por la institución.
+#
+# Principios:
+#   - ninguna observación original se elimina;
+#   - ningún valor meteorológico se modifica silenciosamente;
+#   - toda anomalía genera una bandera trazable;
+#   - toda corrección técnica conserva el valor original;
+#   - los rangos físicos se obtienen de data_dictionary.yaml;
+#   - las variables y unidades se resuelven desde sus catálogos oficiales.
+#
+# Referencias:
+#   - config/settings.yaml
+#   - config/pipeline.yaml
+#   - config/data_dictionary.yaml
+#   - config/canonical_schema.yaml
+#   - config/stations.yaml
+#   - config/variables.yaml
+#   - config/units.yaml
 # =============================================================================
 
 
-qc:
+qc_rules:
+
+  # ===========================================================================
+  # METADATA
+  # ===========================================================================
+
+  metadata:
+    name: "qc_datamet_quality_control_rules"
+    project: "QC_DataMet"
+    version: "0.1.0"
+    language: "es"
+
+    description: >
+      Reglas configurables para detectar errores estructurales, valores
+      faltantes, inconsistencias meteorológicas, anomalías temporales,
+      valores climatológicamente inusuales y problemas de trazabilidad.
+
+    references:
+      settings: "settings.yaml"
+      pipeline: "pipeline.yaml"
+      data_dictionary: "data_dictionary.yaml"
+      canonical_schema: "canonical_schema.yaml"
+      stations: "stations.yaml"
+      variables: "variables.yaml"
+      units: "units.yaml"
+
+    conventions:
+      rule_ids: "snake_case"
+      datetime_reference: "UTC"
+      station_schedule_reference: "local_time"
+      preserve_original_observation: true
+      destructive_corrections_allowed: false
 
 
   # ===========================================================================
@@ -19,32 +69,152 @@ qc:
   # ===========================================================================
 
   general:
+    enabled: true
 
+    generate_flags: true
+    generate_messages: true
+    generate_rule_statistics: true
+    preserve_original_values: true
+    create_qc_columns: true
+    keep_all_observations: true
+
+    stop_on_configuration_error: true
+    stop_on_critical_rule_error: false
+    continue_after_observation_error: true
+
+    missing_rule_policy: "warning"
+    unknown_variable_policy: "warning"
+    unknown_station_policy: "error"
+    unknown_unit_policy: "error"
+
+    physical_ranges_source: "data_dictionary.yaml"
+    station_schedule_source: "stations.yaml"
+    variable_catalog_source: "variables.yaml"
+    unit_catalog_source: "units.yaml"
+
+
+  # ===========================================================================
+  # SISTEMA DE BANDERAS
+  # ===========================================================================
+
+  flag_system:
+
+    PASS:
+      code: 0
+      severity: "info"
+      description: "La observación superó satisfactoriamente la regla."
+
+    SUSPECT:
+      code: 1
+      severity: "warning"
+      description: >
+        La observación es posible, pero requiere revisión o análisis adicional.
+
+    ERROR:
+      code: 2
+      severity: "error"
+      description: >
+        La observación incumple una regla estructural, física o meteorológica.
+
+    MISSING:
+      code: 3
+      severity: "warning"
+      description: "El valor esperado está ausente."
+
+    NOT_CHECKED:
+      code: 8
+      severity: "info"
+      description: >
+        La regla no pudo ejecutarse por falta de información o configuración.
+
+    NOT_APPLICABLE:
+      code: 9
+      severity: "info"
+      description: "La regla no aplica a esta observación o variable."
+
+
+  # ===========================================================================
+  # RESULTADOS QC
+  # ===========================================================================
+
+  output:
+    observation_flag_column: "qc_flag"
+    observation_score_column: "qc_score"
+    rule_count_column: "qc_rule_count"
+    failed_rule_count_column: "qc_failed_rule_count"
+    message_column: "qc_messages"
+
+    preserve_rule_details: true
+
+    rule_detail_fields:
+      - "rule_id"
+      - "variable"
+      - "flag"
+      - "severity"
+      - "observed_value"
+      - "expected_value"
+      - "message"
+
+    score:
+      enabled: true
+      initial_value: 100
+
+      penalties:
+        SUSPECT: 10
+        ERROR: 30
+        MISSING: 15
+
+      minimum_value: 0
+      maximum_value: 100
+
+
+  # ===========================================================================
+  # CONTROL DE IDENTIFICACIÓN Y TRAZABILIDAD
+  # ===========================================================================
+
+  identity:
 
     enabled: true
 
+    checks:
 
-    generate_flags: true
+      missing_station_id:
+        enabled: true
+        rule_id: "identity_missing_station_id"
+        flag: "ERROR"
+        required: true
 
+      invalid_station_id:
+        enabled: true
+        rule_id: "identity_invalid_station_id"
+        reference: "stations.yaml"
+        flag: "ERROR"
 
-    preserve_original_value: true
+      missing_source_file:
+        enabled: true
+        rule_id: "identity_missing_source_file"
+        flag: "SUSPECT"
 
+      missing_source_row:
+        enabled: true
+        rule_id: "identity_missing_source_row"
+        flag: "SUSPECT"
 
-    create_qc_columns: true
+      missing_report_type:
+        enabled: true
+        rule_id: "identity_missing_report_type"
+        flag: "SUSPECT"
 
-
-
-    qc_flag_system:
-
-
-      GOOD: 0
-
-      SUSPECT: 1
-
-      ERROR: 2
-
-      MISSING: 9
-
+      invalid_report_type:
+        enabled: true
+        rule_id: "identity_invalid_report_type"
+        allowed_values:
+          - "METAR"
+          - "SPECI"
+          - "TAF"
+          - "LOCAL_OBSERVATION"
+          - "HISTORICAL_OBSERVATION"
+        flag: "ERROR"
 
 
   # ===========================================================================
@@ -53,148 +223,228 @@ qc:
 
   datetime:
 
-
     enabled: true
-
 
     checks:
 
+      missing_datetime:
+        enabled: true
+        rule_id: "datetime_missing"
+        flag: "ERROR"
 
       invalid_date:
-
-
         enabled: true
-
-        flag: ERROR
-
-
+        rule_id: "datetime_invalid_date"
+        flag: "ERROR"
 
       invalid_time:
-
-
         enabled: true
+        rule_id: "datetime_invalid_time"
+        flag: "ERROR"
 
-        flag: ERROR
-
-
+      invalid_timezone:
+        enabled: true
+        rule_id: "datetime_invalid_timezone"
+        expected_timezone: "UTC"
+        flag: "ERROR"
 
       future_datetime:
-
-
         enabled: true
+        rule_id: "datetime_future"
+        allowed_tolerance_minutes: 10
+        flag: "ERROR"
 
-        allowed: false
-
-        flag: ERROR
-
-
-
-      duplicated_datetime:
-
-
+      implausible_historical_datetime:
         enabled: true
+        rule_id: "datetime_implausible_historical"
+        earliest_allowed_date: "1900-01-01"
+        flag: "ERROR"
+
+      duplicate_observation:
+        enabled: true
+        rule_id: "datetime_duplicate_observation"
 
         key:
+          - "station_id"
+          - "datetime_utc"
+          - "report_type"
+          - "report_status"
 
+        exact_duplicate_fields:
+          - "station_id"
+          - "datetime_utc"
+          - "report_type"
+          - "report_status"
+          - "source_file"
+          - "source_row"
 
-          - station_id
+        flag: "ERROR"
 
-          - datetime_utc
-
-
-        flag: ERROR
-
+      non_chronological_records:
+        enabled: true
+        rule_id: "datetime_non_chronological"
+        group_by:
+          - "station_id"
+        sort_by:
+          - "datetime_utc"
+        flag: "SUSPECT"
 
 
   # ===========================================================================
-  # DATOS FALTANTES
+  # CONTROL DE OBSERVACIONES ESPERADAS
   # ===========================================================================
 
-  missing:
-
+  completeness:
 
     enabled: true
 
+    checks:
+
+      null_values:
+        enabled: true
+        rule_id: "completeness_null_value"
+        flag: "MISSING"
+
+      required_variables:
+        enabled: true
+        rule_id: "completeness_required_variable"
+        required_source: "variables.yaml"
+        flag: "MISSING"
+
+      expected_observations:
+        enabled: true
+        rule_id: "completeness_expected_observations"
+
+        schedule_source: "stations.yaml"
+        schedule_reference: "local_time"
+        timezone_source: "stations.yaml"
+
+        fallback_schedule:
+          enabled: true
+          timezone: "America/Lima"
+
+          local_hours:
+            start: 6
+            end: 19
+            inclusive: true
+
+          expected_observations_per_day: 14
+          expected_minute: 0
+
+        evaluate_by:
+          - "station_id"
+          - "local_date"
+
+        allowed_report_types:
+          - "LOCAL_OBSERVATION"
+          - "HISTORICAL_OBSERVATION"
+          - "METAR"
+
+        treat_speci_as_additional: true
+        flag: "MISSING"
+
+      missing_consecutive_observations:
+        enabled: true
+        rule_id: "completeness_consecutive_missing"
+        minimum_missing_count: 2
+        flag: "SUSPECT"
+
+
+  # ===========================================================================
+  # TIPOS DE DATOS
+  # ===========================================================================
+
+  datatype:
+
+    enabled: true
 
     checks:
 
-
-      null_values:
-
-
+      invalid_dtype:
         enabled: true
+        rule_id: "datatype_invalid"
+        expected_dtype_source: "data_dictionary.yaml"
+        flag: "ERROR"
 
-
-        flag: MISSING
-
-
-
-      expected_observations:
-
-
+      invalid_numeric_value:
         enabled: true
+        rule_id: "datatype_invalid_numeric"
+        flag: "ERROR"
+
+      invalid_boolean_value:
+        enabled: true
+        rule_id: "datatype_invalid_boolean"
+        flag: "ERROR"
+
+      invalid_categorical_value:
+        enabled: true
+        rule_id: "datatype_invalid_category"
+        reference_source: "variables.yaml"
+        flag: "ERROR"
 
 
-        observations_per_day: 14
+  # ===========================================================================
+  # CONTROL DE UNIDADES
+  # ===========================================================================
 
+  units:
 
-        expected_hours_utc:
+    enabled: true
 
+    checks:
 
-          - 0
+      unknown_unit:
+        enabled: true
+        rule_id: "unit_unknown"
+        reference: "units.yaml"
+        flag: "ERROR"
 
-          - 11
+      incompatible_unit:
+        enabled: true
+        rule_id: "unit_incompatible"
+        variable_reference: "variables.yaml"
+        unit_reference: "units.yaml"
+        flag: "ERROR"
 
-          - 12
-
-          - 13
-
-          - 14
-
-          - 15
-
-          - 16
-
-          - 17
-
-          - 18
-
-          - 19
-
-          - 20
-
-          - 21
-
-          - 22
-
-          - 23
-
+      non_canonical_unit:
+        enabled: true
+        rule_id: "unit_non_canonical"
+        allow_conversion: true
+        preserve_original_unit: true
+        flag: "SUSPECT"
 
 
   # ===========================================================================
   # RANGOS FÍSICOS
-  #
-  # Complementa data_dictionary.yaml
   # ===========================================================================
 
-  range:
-
+  physical_range:
 
     enabled: true
 
+    limits_source: "data_dictionary.yaml"
 
-    action:
+    checks:
 
+      below_physical_minimum:
+        enabled: true
+        rule_id: "range_below_physical_minimum"
+        flag: "ERROR"
 
-      below_minimum:
+      above_physical_maximum:
+        enabled: true
+        rule_id: "range_above_physical_maximum"
+        flag: "ERROR"
 
-        flag: ERROR
+      below_operational_minimum:
+        enabled: true
+        rule_id: "range_below_operational_minimum"
+        flag: "SUSPECT"
 
-
-      above_maximum:
-
-        flag: ERROR
-
+      above_operational_maximum:
+        enabled: true
+        rule_id: "range_above_operational_maximum"
+        flag: "SUSPECT"
 
 
   # ===========================================================================
@@ -203,55 +453,122 @@ qc:
 
   temperature:
 
-
     enabled: true
 
-
     variables:
+      air_temperature:
+        aliases:
+          - "air_temp_c"
+          - "air_temperature_c"
 
+      dew_point_temperature:
+        aliases:
+          - "dewpoint_temp_c"
+          - "dew_point_temperature_c"
 
-      - air_temp_c
+      wet_bulb_temperature:
+        aliases:
+          - "wet_bulb_temp_c"
+          - "wet_bulb_temperature_c"
 
-      - dewpoint_temp_c
+      maximum_daily_temperature:
+        aliases:
+          - "maximum_temperature_c"
+          - "maximum_daily_temperature_c"
 
-      - wet_bulb_temp_c
-
-
+      minimum_daily_temperature:
+        aliases:
+          - "minimum_temperature_c"
+          - "minimum_daily_temperature_c"
 
     checks:
 
-
       range:
-
         enabled: true
+        limits_source: "data_dictionary.yaml"
 
+      dew_point_not_above_air_temperature:
+        enabled: true
+        rule_id: "temperature_dew_point_above_air"
+        tolerance_c: 0.2
+        flag: "ERROR"
 
+      wet_bulb_consistency:
+        enabled: true
+        rule_id: "temperature_wet_bulb_inconsistent"
+
+        expected_relationship:
+          - "dew_point_temperature <= wet_bulb_temperature"
+          - "wet_bulb_temperature <= air_temperature"
+
+        tolerance_c: 0.5
+        flag: "SUSPECT"
+
+      daily_extremes_consistency:
+        enabled: true
+        rule_id: "temperature_daily_extremes_inconsistent"
+        rule: "minimum_daily_temperature <= maximum_daily_temperature"
+        flag: "ERROR"
+
+      current_temperature_vs_daily_extremes:
+        enabled: true
+        rule_id: "temperature_outside_daily_extremes"
+        tolerance_c: 0.5
+        flag: "SUSPECT"
 
       persistence:
-
-
         enabled: true
+        rule_id: "temperature_persistence"
 
+        consecutive_observations: 6
+        maximum_variation_c: 0.1
 
-        consecutive_values: 6
+        minimum_data_coverage_percent: 80
+        flag: "SUSPECT"
 
-
-        flag: SUSPECT
-
-
-
-      climatology:
-
-
+      temporal_step:
         enabled: true
+        rule_id: "temperature_temporal_step"
+
+        maximum_change_c_per_hour: 12.0
+        minimum_time_difference_minutes: 30
+        maximum_time_difference_minutes: 90
+
+        flag: "SUSPECT"
 
 
-        method:
+  # ===========================================================================
+  # HUMEDAD
+  # ===========================================================================
 
-          - percentile
+  humidity:
 
-          - standard_deviation
+    enabled: true
 
+    variables:
+      - "relative_humidity"
+
+    checks:
+
+      valid_range:
+        enabled: true
+        rule_id: "humidity_invalid_range"
+        minimum: 0
+        maximum: 100
+        flag: "ERROR"
+
+      dew_point_consistency:
+        enabled: true
+        rule_id: "humidity_dew_point_inconsistent"
+        tolerance_percent: 5
+        flag: "SUSPECT"
+
+      persistence:
+        enabled: true
+        rule_id: "humidity_persistence"
+        consecutive_observations: 8
+        maximum_variation_percent: 1
+        flag: "SUSPECT"
 
 
   # ===========================================================================
@@ -260,36 +577,45 @@ qc:
 
   pressure:
 
-
     enabled: true
 
-
     variables:
+      qnh:
+        aliases:
+          - "qnh_hpa"
 
-
-      - qnh_hpa
-
-      - qfe_hpa
-
-
+      qfe:
+        aliases:
+          - "qfe_hpa"
 
     checks:
 
-
       range:
-
         enabled: true
-
-
+        limits_source: "data_dictionary.yaml"
 
       temporal_change:
-
-
         enabled: true
+        rule_id: "pressure_temporal_change"
 
+        maximum_change_hpa_per_hour: 10.0
+        flag: "SUSPECT"
 
-        max_change_hpa_hour: 10
+      qnh_qfe_relationship:
+        enabled: true
+        rule_id: "pressure_qnh_qfe_relationship"
 
+        rule: "qnh_hpa >= qfe_hpa"
+        tolerance_hpa: 1.0
+        flag: "SUSPECT"
+
+      station_elevation_consistency:
+        enabled: false
+        rule_id: "pressure_elevation_consistency"
+
+        elevation_source: "stations.yaml"
+        maximum_difference_hpa: 20
+        flag: "SUSPECT"
 
 
   # ===========================================================================
@@ -298,71 +624,93 @@ qc:
 
   wind:
 
-
     enabled: true
 
-
     variables:
+      direction:
+        aliases:
+          - "wind_dir"
+          - "wind_direction_deg"
 
+      direction_extreme_counterclockwise:
+        aliases:
+          - "wind_direction_ccw_deg"
 
-      - wind_dir
+      direction_extreme_clockwise:
+        aliases:
+          - "wind_direction_cw_deg"
 
-      - wind_speed_kt
+      speed:
+        aliases:
+          - "wind_speed_kt"
 
-      - wind_gust_kt
-
-
+      gust:
+        aliases:
+          - "wind_gust_kt"
 
     checks:
 
-
-      direction:
-
-
-        range:
-
-          enabled: true
-
-
-
-        allowed_range:
-
-          min: 0
-
-          max: 360
-
-
-
-      speed:
-
-
-        range:
-
-          enabled: true
-
-
-
-      gust:
-
-
+      direction_range:
         enabled: true
+        rule_id: "wind_direction_range"
+        minimum: 0
+        maximum: 360
+        flag: "ERROR"
 
+      variable_direction_code:
+        enabled: true
+        rule_id: "wind_variable_direction"
+        allowed_tokens:
+          - "VRB"
+        flag: "NOT_APPLICABLE"
 
+      calm_wind_consistency:
+        enabled: true
+        rule_id: "wind_calm_consistency"
 
-      consistency:
+        calm_speed_maximum_kt: 0
+        expected_direction_when_calm:
+          - 0
+          - null
 
+        flag: "SUSPECT"
 
-        gust_greater_than_speed:
+      gust_not_below_mean_speed:
+        enabled: true
+        rule_id: "wind_gust_below_mean_speed"
 
+        minimum_difference_kt: 0
+        flag: "ERROR"
 
-          enabled: true
+      gust_significance:
+        enabled: true
+        rule_id: "wind_gust_significance"
 
+        minimum_difference_kt: 10
+        below_threshold_flag: "SUSPECT"
 
-          minimum_difference: 0
+      directional_extremes_consistency:
+        enabled: true
+        rule_id: "wind_directional_extremes_inconsistent"
+        flag: "SUSPECT"
 
+      persistence:
+        enabled: true
+        rule_id: "wind_persistence"
 
-          flag: ERROR
+        consecutive_observations: 8
+        speed_maximum_variation_kt: 0
+        direction_maximum_variation_deg: 0
 
+        minimum_speed_for_direction_check_kt: 3
+        flag: "SUSPECT"
+
+      temporal_speed_change:
+        enabled: true
+        rule_id: "wind_temporal_speed_change"
+
+        maximum_change_kt_per_hour: 40
+        flag: "SUSPECT"
 
 
   # ===========================================================================
@@ -371,30 +719,104 @@ qc:
 
   visibility:
 
-
     enabled: true
 
-
     variables:
+      prevailing_visibility:
+        aliases:
+          - "visibility_m"
 
+      minimum_visibility_1:
+        aliases:
+          - "visibility_min_1_m"
 
-      - visibility_m
-
-
-      - visibility_min_1_m
-
-
-      - visibility_min_2_m
-
-
+      minimum_visibility_2:
+        aliases:
+          - "visibility_min_2_m"
 
     checks:
 
-
       range:
-
         enabled: true
+        limits_source: "data_dictionary.yaml"
 
+      minimum_not_above_prevailing:
+        enabled: true
+        rule_id: "visibility_minimum_above_prevailing"
+        tolerance_m: 0
+        flag: "ERROR"
+
+      second_minimum_without_first:
+        enabled: true
+        rule_id: "visibility_second_minimum_without_first"
+        flag: "ERROR"
+
+      minimum_direction_required:
+        enabled: true
+        rule_id: "visibility_minimum_direction_missing"
+        flag: "SUSPECT"
+
+      cavok_consistency:
+        enabled: true
+        rule_id: "visibility_cavok_inconsistent"
+
+        minimum_visibility_m: 10000
+        incompatible_weather: true
+        incompatible_significant_cloud: true
+
+        flag: "ERROR"
+
+      temporal_change:
+        enabled: true
+        rule_id: "visibility_temporal_change"
+
+        maximum_change_m_per_hour: 9000
+        flag: "SUSPECT"
+
+
+  # ===========================================================================
+  # TIEMPO PRESENTE
+  # ===========================================================================
+
+  present_weather:
+
+    enabled: true
+
+    variables:
+      - "present_weather_1"
+      - "present_weather_2"
+      - "present_weather_3"
+
+    checks:
+
+      valid_code:
+        enabled: true
+        rule_id: "weather_invalid_code"
+        descriptor_source: "descriptors/weather_codes.yaml"
+        flag: "ERROR"
+
+      duplicate_codes:
+        enabled: true
+        rule_id: "weather_duplicate_code"
+        flag: "SUSPECT"
+
+      visibility_consistency:
+        enabled: true
+        rule_id: "weather_visibility_inconsistent"
+        flag: "SUSPECT"
+
+      precipitation_cloud_consistency:
+        enabled: true
+        rule_id: "weather_precipitation_cloud_inconsistent"
+        flag: "SUSPECT"
+
+      thunderstorm_consistency:
+        enabled: true
+        rule_id: "weather_thunderstorm_inconsistent"
+        expected_cloud_types:
+          - "CB"
+          - "TCU"
+        flag: "SUSPECT"
 
 
   # ===========================================================================
@@ -403,108 +825,331 @@ qc:
 
   clouds:
 
-
     enabled: true
 
+    layers:
+      - 1
+      - 2
+      - 3
 
     checks:
 
+      valid_amount_code:
+        enabled: true
+        rule_id: "cloud_invalid_amount"
+        descriptor_source: "descriptors/cloud_codes.yaml"
+        flag: "ERROR"
 
-      amount:
+      valid_cloud_type:
+        enabled: true
+        rule_id: "cloud_invalid_type"
+        descriptor_source: "descriptors/cloud_types.yaml"
+        flag: "ERROR"
 
-        valid_range:
+      height_non_negative:
+        enabled: true
+        rule_id: "cloud_negative_height"
+        minimum_ft: 0
+        flag: "ERROR"
 
-          min: 0
+      amount_requires_height:
+        enabled: true
+        rule_id: "cloud_amount_without_height"
 
-          max: 8
+        exempt_codes:
+          - "NSC"
+          - "NCD"
+          - "SKC"
+          - "VV"
 
+        flag: "ERROR"
 
+      height_requires_amount:
+        enabled: true
+        rule_id: "cloud_height_without_amount"
+        flag: "ERROR"
 
-      height:
+      ordered_layers:
+        enabled: true
+        rule_id: "cloud_layers_not_ordered"
+        order_by: "height_ascending"
+        flag: "SUSPECT"
 
-        minimum:
+      obscured_sky_consistency:
+        enabled: true
+        rule_id: "cloud_vertical_visibility_inconsistent"
+        vertical_visibility_code: "VV"
+        flag: "ERROR"
 
-          value: 0
+      no_significant_cloud_consistency:
+        enabled: true
+        rule_id: "cloud_nsc_inconsistent"
 
+        no_significant_cloud_codes:
+          - "NSC"
+          - "NCD"
+          - "SKC"
+
+        incompatible_with_other_layers: true
+        flag: "ERROR"
 
 
   # ===========================================================================
-  # CONSISTENCIA ENTRE VARIABLES
+  # PRECIPITACIÓN
   # ===========================================================================
 
-  consistency:
-
+  precipitation:
 
     enabled: true
 
+    variables:
+      - "accumulated_precipitation_mm"
+      - "hourly_precipitation_mm"
+      - "daily_precipitation_mm"
 
     checks:
 
+      non_negative:
+        enabled: true
+        rule_id: "precipitation_negative"
+        minimum_mm: 0
+        flag: "ERROR"
 
-      dewpoint_temperature:
+      accumulation_period_required:
+        enabled: true
+        rule_id: "precipitation_period_missing"
+        flag: "SUSPECT"
+
+      present_weather_consistency:
+        enabled: true
+        rule_id: "precipitation_weather_inconsistent"
+        tolerance_mm: 0.1
+        flag: "SUSPECT"
+
+      temporal_accumulation_consistency:
+        enabled: true
+        rule_id: "precipitation_accumulation_inconsistent"
+        flag: "SUSPECT"
 
 
-        rule:
+  # ===========================================================================
+  # CONSISTENCIA GENERAL ENTRE VARIABLES
+  # ===========================================================================
 
-          "dewpoint_temp_c <= air_temp_c"
+  cross_variable_consistency:
 
+    enabled: true
 
-        flag: ERROR
+    checks:
 
-
+      dew_point_temperature:
+        enabled: true
+        rule_id: "consistency_dew_point_temperature"
+        expression: "dewpoint_temp_c <= air_temp_c + 0.2"
+        flag: "ERROR"
 
       gust_speed:
-
-
-        rule:
-
-          "wind_gust_kt >= wind_speed_kt"
-
-
-        flag: ERROR
-
-
+        enabled: true
+        rule_id: "consistency_gust_speed"
+        expression: "wind_gust_kt >= wind_speed_kt"
+        flag: "ERROR"
 
       qnh_qfe:
-
-
         enabled: true
+        rule_id: "consistency_qnh_qfe"
+        expression: "qnh_hpa >= qfe_hpa - 1.0"
+        flag: "SUSPECT"
+
+      maximum_minimum_temperature:
+        enabled: true
+        rule_id: "consistency_temperature_extremes"
+        expression: >
+          minimum_daily_temperature_c <= maximum_daily_temperature_c
+        flag: "ERROR"
+
+      relative_humidity_dew_point:
+        enabled: true
+        rule_id: "consistency_humidity_dew_point"
+        flag: "SUSPECT"
+
+      cavok:
+        enabled: true
+        rule_id: "consistency_cavok"
+        flag: "ERROR"
 
 
   # ===========================================================================
-  # CLIMATOLOGÍA
+  # CONTROL TEMPORAL
+  # ===========================================================================
+
+  temporal:
+
+    enabled: true
+
+    minimum_group_size: 3
+
+    group_by:
+      - "station_id"
+      - "variable"
+
+    order_by:
+      - "datetime_utc"
+
+    checks:
+
+      step:
+        enabled: true
+        rule_id: "temporal_step"
+        thresholds_source: "variables.yaml"
+        flag: "SUSPECT"
+
+      spike:
+        enabled: true
+        rule_id: "temporal_spike"
+
+        method: "three_point"
+        minimum_neighbors: 2
+        thresholds_source: "variables.yaml"
+
+        flag: "SUSPECT"
+
+      persistence:
+        enabled: true
+        rule_id: "temporal_persistence"
+
+        thresholds_source: "variables.yaml"
+        minimum_consecutive_values: 6
+
+        flag: "SUSPECT"
+
+      repeated_pattern:
+        enabled: true
+        rule_id: "temporal_repeated_pattern"
+
+        minimum_pattern_length: 3
+        minimum_repetitions: 3
+
+        flag: "SUSPECT"
+
+      non_monotonic_accumulation:
+        enabled: true
+        rule_id: "temporal_non_monotonic_accumulation"
+        variables:
+          - "accumulated_precipitation_mm"
+        flag: "SUSPECT"
+
+
+  # ===========================================================================
+  # CONTROL CLIMATOLÓGICO
   # ===========================================================================
 
   climatology:
 
+    enabled: false
 
-    enabled: true
+    reason_disabled: >
+      Debe habilitarse cuando exista una climatología de referencia validada,
+      con suficiente cobertura temporal por estación, mes, hora y variable.
 
+    reference_dataset: null
+
+    minimum_reference_years: 10
+    minimum_samples_per_group: 30
+
+    group_by:
+      - "station_id"
+      - "month"
+      - "hour"
+      - "variable"
 
     methods:
 
-
       percentile:
-
-
-        lower: 1
-
-        upper: 99
-
-
+        enabled: true
+        lower_percentile: 1
+        upper_percentile: 99
+        flag: "SUSPECT"
 
       z_score:
+        enabled: true
+        threshold: 4.0
+        flag: "SUSPECT"
+
+      robust_z_score:
+        enabled: true
+        threshold: 4.5
+        flag: "SUSPECT"
+
+      interquartile_range:
+        enabled: true
+        multiplier: 3.0
+        flag: "SUSPECT"
+
+      median_absolute_deviation:
+        enabled: true
+        threshold: 6.0
+        flag: "SUSPECT"
 
 
-        threshold: 4
+  # ===========================================================================
+  # CONTROL ESPACIAL
+  # ===========================================================================
+
+  spatial:
+
+    enabled: false
+
+    reason_disabled: >
+      Requiere una red de estaciones de referencia, distancias calculadas,
+      sincronización temporal y criterios específicos por variable.
+
+    station_reference: "stations.yaml"
+
+    maximum_neighbor_distance_km: 300
+    minimum_neighbors: 2
+    maximum_time_difference_minutes: 30
+
+    checks:
+
+      neighbor_difference:
+        enabled: true
+        rule_id: "spatial_neighbor_difference"
+        thresholds_source: "variables.yaml"
+        flag: "SUSPECT"
+
+      isolated_extreme:
+        enabled: true
+        rule_id: "spatial_isolated_extreme"
+        flag: "SUSPECT"
 
 
+  # ===========================================================================
+  # CONTROL ESTADÍSTICO
+  # ===========================================================================
 
-      rolling_statistics:
+  statistical:
 
+    enabled: false
 
-        window_days: 30
+    minimum_sample_size: 30
 
+    methods:
+
+      interquartile_range:
+        enabled: true
+        multiplier: 3.0
+        flag: "SUSPECT"
+
+      median_absolute_deviation:
+        enabled: true
+        threshold: 6.0
+        flag: "SUSPECT"
+
+      rolling_z_score:
+        enabled: true
+        window_observations: 30
+        threshold: 4.0
+        flag: "SUSPECT"
 
 
   # ===========================================================================
@@ -513,30 +1158,148 @@ qc:
 
   auto_correction:
 
-
     enabled: true
 
+    preserve_original_value: true
+    record_correction_reason: true
+    record_correction_timestamp: true
 
     allowed:
 
+      trim_spaces:
+        enabled: true
 
-      trim_spaces: true
+      normalize_repeated_spaces:
+        enabled: true
 
+      normalize_case:
+        enabled: true
+        fields:
+          - "station_id"
+          - "report_type"
+          - "report_status"
+          - "present_weather_1"
+          - "present_weather_2"
+          - "present_weather_3"
 
-      normalize_decimal_separator: true
+      normalize_decimal_separator:
+        enabled: true
+        from:
+          - ","
+        to: "."
 
+      convert_units:
+        enabled: true
+        reference: "units.yaml"
 
-      convert_units: true
+      normalize_missing_tokens:
+        enabled: true
+        reference: "descriptors/missing_values.yaml"
 
+      fix_known_header_aliases:
+        enabled: true
+        reference: "excel_schema.yaml"
 
-      fix_known_typing_errors: true
-
-
+      fix_known_typing_errors:
+        enabled: true
+        reference: "data_dictionary.yaml"
 
     forbidden:
 
-
-      modify_extreme_values: true
-
-
+      modify_valid_meteorological_value: true
+      clamp_extreme_values: true
       invent_missing_values: true
+      interpolate_missing_values: true
+      delete_observations: true
+      replace_suspect_values: true
+      modify_original_source_file: true
+      modify_report_text_without_traceability: true
+
+
+  # ===========================================================================
+  # EJECUCIÓN POR ETAPA
+  # ===========================================================================
+
+  execution:
+
+    stage07_basic_quality_control:
+
+      enabled_modules:
+        - "identity"
+        - "datetime"
+        - "completeness"
+        - "datatype"
+        - "units"
+        - "physical_range"
+
+    stage09_meteorological_quality_control:
+
+      enabled_modules:
+        - "temperature"
+        - "humidity"
+        - "pressure"
+        - "wind"
+        - "visibility"
+        - "present_weather"
+        - "clouds"
+        - "precipitation"
+        - "cross_variable_consistency"
+
+    stage11_advanced_quality_control:
+
+      enabled_modules:
+        - "temporal"
+        - "climatology"
+        - "spatial"
+        - "statistical"
+
+
+  # ===========================================================================
+  # REPORTES QC
+  # ===========================================================================
+
+  reports:
+
+    enabled: true
+
+    generate_summary_by:
+      - "station_id"
+      - "year"
+      - "month"
+      - "variable"
+      - "rule_id"
+      - "flag"
+
+    include:
+      total_observations: true
+      passed_observations: true
+      suspect_observations: true
+      erroneous_observations: true
+      missing_observations: true
+      not_checked_observations: true
+      rule_failure_percentages: true
+      most_frequent_errors: true
+
+    formats:
+      csv: true
+      parquet: true
+      excel: true
+      json: true
+      pdf: false
+
+
+  # ===========================================================================
+  # VALIDACIÓN DEL ARCHIVO
+  # ===========================================================================
+
+  validation:
+
+    require_unique_rule_ids: true
+    require_known_flags: true
+    require_known_variables: true
+    require_known_units: true
+    require_existing_references: true
+
+    unresolved_reference_policy: "error"
+    duplicate_rule_id_policy: "error"
+    invalid_expression_policy: "error"
