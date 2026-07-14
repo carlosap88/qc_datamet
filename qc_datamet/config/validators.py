@@ -16,16 +16,16 @@ class ConfigValidator:
     """Valida la estructura básica y coherencia de los archivos YAML."""
 
     REQUIRED_ROOT_KEYS = {
-        "settings.yaml": "settings",
-        "pipeline.yaml": "pipeline",
-        "excel_schema.yaml": "excel_schema",
-        "data_dictionary.yaml": "data_dictionary",
-        "canonical_schema.yaml": "canonical_schema",
-        "stations.yaml": "stations",
-        "variables.yaml": "variables",
-        "units.yaml": "units",
-        "qc_rules.yaml": "qc_rules",
-        "reports.yaml": "reports",
+        "settings.yaml": ("project", "system", "paths", "data"),
+        "pipeline.yaml": ("pipeline", "stages"),
+        "excel_schema.yaml": ("schema", "columns"),
+        "data_dictionary.yaml": ("dictionary", "fields"),
+        "canonical_schema.yaml": ("canonical_schema", "columns"),
+        "stations.yaml": ("stations",),
+        "variables.yaml": ("variables",),
+        "units.yaml": ("units",),
+        "qc_rules.yaml": ("qc_rules",),
+        "reports.yaml": ("reports",),
     }
 
     def __init__(self, config: Mapping[str, Mapping[str, Any]]) -> None:
@@ -48,19 +48,29 @@ class ConfigValidator:
             )
 
     def _validate_required_files(self) -> None:
+        """Comprueba que todos los archivos obligatorios estén cargados."""
+
         for filename in ConfigLoader.REQUIRED_FILES:
             if filename not in self.config:
                 self.errors.append(f"Falta el archivo obligatorio: {filename}")
 
     def _validate_root_keys(self) -> None:
-        for filename, root_key in self.REQUIRED_ROOT_KEYS.items():
+        """Comprueba las claves principales reales de cada archivo YAML."""
+
+        for filename, required_keys in self.REQUIRED_ROOT_KEYS.items():
             data = self.config.get(filename)
-            if data is not None and root_key not in data:
-                self.errors.append(
-                    f"{filename}: falta la clave raíz obligatoria '{root_key}'"
-                )
+            if data is None:
+                continue
+
+            for root_key in required_keys:
+                if root_key not in data:
+                    self.errors.append(
+                        f"{filename}: falta la clave raíz obligatoria '{root_key}'"
+                    )
 
     def _validate_canonical_schema(self) -> None:
+        """Valida nombres y posiciones del esquema del dataset final."""
+
         data = self.config.get("canonical_schema.yaml", {})
         columns = data.get("columns", [])
 
@@ -106,6 +116,8 @@ class ConfigValidator:
             )
 
     def _validate_pipeline(self) -> None:
+        """Valida órdenes y dependencias declaradas en el pipeline."""
+
         data = self.config.get("pipeline.yaml", {})
         stages = data.get("stages", {})
 
@@ -153,6 +165,8 @@ class ConfigValidator:
         label: str,
         filename: str,
     ) -> None:
+        """Registra valores duplicados dentro de una colección."""
+
         duplicates = sorted({value for value in values if values.count(value) > 1})
         if duplicates:
             self.errors.append(
