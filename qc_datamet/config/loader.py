@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-QC_DataMet v0.1.0
-
-loader.py
-
-Carga centralizada de archivos YAML de configuración.
-"""
+"""Carga centralizada de archivos YAML de configuración."""
 
 from __future__ import annotations
 
@@ -23,7 +17,7 @@ from qc_datamet.config.exceptions import (
 
 
 class ConfigLoader:
-    """Carga archivos YAML desde el directorio config del proyecto."""
+    """Carga los archivos YAML de configuración de QC_DataMet."""
 
     REQUIRED_FILES = (
         "settings.yaml",
@@ -38,15 +32,21 @@ class ConfigLoader:
         "reports.yaml",
     )
 
-    def __init__(self, config_dir: str | Path = "config") -> None:
-        self.config_dir = Path(config_dir)
+    PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+    def __init__(self, config_dir: str | Path | None = None) -> None:
+        self.config_dir = (
+            Path(config_dir).resolve()
+            if config_dir is not None
+            else self.PROJECT_ROOT / "config"
+        )
 
     def load(self, filename: str) -> dict[str, Any]:
         """Carga un archivo YAML y devuelve su contenido."""
 
         path = self.config_dir / filename
 
-        if not path.exists():
+        if not path.is_file():
             raise ConfigFileNotFoundError(
                 f"No existe el archivo de configuración: {path}"
             )
@@ -54,6 +54,11 @@ class ConfigLoader:
         try:
             with path.open("r", encoding="utf-8") as file:
                 data = yaml.safe_load(file)
+
+        except (OSError, UnicodeError) as error:
+            raise ConfigYAMLError(
+                f"No se pudo leer el archivo YAML {path}: {error}"
+            ) from error
 
         except yaml.YAMLError as error:
             raise ConfigYAMLError(
