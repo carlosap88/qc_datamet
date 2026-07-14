@@ -161,3 +161,7 @@ qc_datamet_source_dump.txt
 
 *.sqlite
 *.db
+
+# Notebooks locales
+test.ipynb
+*.ipynb
