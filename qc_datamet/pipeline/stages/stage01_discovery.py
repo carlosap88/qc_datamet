@@ -11,6 +11,7 @@ import logging
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
+from time import perf_counter
 from typing import Any
 
 from qc_datamet.pipeline.base_stage import BaseStage
@@ -22,9 +23,10 @@ class Stage01Discovery(BaseStage):
 
     name = "stage01_discovery"
 
-    # qc_datamet/pipeline/stages/stage01_discovery.py
-    # parents[3] corresponde a la raíz del repositorio.
     PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
+    INVENTORY_FILENAME = "01_File_Inventory.json"
+    REPORT_FILENAME = "01_Discovery_Report.txt"
 
     # =========================================================================
     # EJECUCIÓN
@@ -41,6 +43,8 @@ class Stage01Discovery(BaseStage):
     def execute(self, data: Any = None) -> list[dict[str, Any]]:
         """Prepara directorios y genera el inventario técnico."""
 
+        started = perf_counter()
+
         settings = self.config.get("settings.yaml", {})
         reports_config = (
             self.config
@@ -54,6 +58,7 @@ class Stage01Discovery(BaseStage):
             project_root=self.PROJECT_ROOT,
         )
 
+        # El Run ID se conserva únicamente en el log y en el estado interno.
         logger.info(
             "Inicio de Stage01 Discovery | run_id=%s",
             self.state.run_id,
@@ -91,10 +96,19 @@ class Stage01Discovery(BaseStage):
             settings=settings,
         )
 
+        elapsed_seconds = round(
+            perf_counter() - started,
+            3,
+        )
+
+        statistics["elapsed_seconds"] = elapsed_seconds
+
         report_path = self._save_report(
             inventory=inventory,
             statistics=statistics,
+            settings=settings,
             reports_config=reports_config,
+            inventory_path=inventory_path,
         )
 
         if inventory_path is not None:
@@ -114,20 +128,28 @@ class Stage01Discovery(BaseStage):
                 str(report_path),
             )
 
+        self.state.set_statistic(
+            "stage01_elapsed_seconds",
+            elapsed_seconds,
+        )
+
         self._print_summary(
             inventory=inventory,
             statistics=statistics,
             inventory_path=inventory_path,
             report_path=report_path,
+            settings=settings,
         )
 
         logger.info(
             "Fin de Stage01 Discovery | archivos=%d | "
-            "duplicados=%d | advertencias=%d | errores=%d",
+            "duplicados=%d | advertencias=%d | errores=%d | "
+            "duracion=%.3f s",
             len(inventory),
             duplicate_count,
             len(self.state.warnings),
             len(self.state.errors),
+            elapsed_seconds,
         )
 
         return inventory
@@ -161,7 +183,9 @@ class Stage01Discovery(BaseStage):
             missing_fields = required_fields - set(item)
 
             if missing_fields:
-                missing = ", ".join(sorted(missing_fields))
+                missing = ", ".join(
+                    sorted(missing_fields)
+                )
 
                 raise ValueError(
                     f"El elemento {position} no contiene: {missing}"
@@ -184,19 +208,48 @@ class Stage01Discovery(BaseStage):
             "create_missing_directories",
             True,
         ):
+            self.state.set_statistic(
+                "stage01_directories_created",
+                0,
+            )
             return
 
-        configured_paths = self._collect_directory_paths(settings)
+        configured_paths = self._collect_directory_paths(
+            settings
+        )
 
         created_count = 0
 
         for configured_path in configured_paths:
-            directory = self._resolve_path(configured_path)
+            directory = self._resolve_path(
+                configured_path
+            )
 
             if directory.exists():
+                if not directory.is_dir():
+                    raise NotADirectoryError(
+                        f"La ruta configurada no es un directorio: "
+                        f"{directory}"
+                    )
+
                 continue
 
-            directory.mkdir(parents=True, exist_ok=True)
+            try:
+                directory.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+
+            except OSError as error:
+                message = (
+                    f"No se pudo crear el directorio "
+                    f"{directory}: {error}"
+                )
+
+                self.state.add_error(message)
+                logger.error(message)
+                raise
+
             created_count += 1
 
             logger.info(
@@ -231,7 +284,7 @@ class Stage01Discovery(BaseStage):
         ):
             value = project_paths.get(key)
 
-            if isinstance(value, str):
+            if isinstance(value, str) and value.strip():
                 paths.append(value)
 
         paths.extend(
@@ -246,19 +299,25 @@ class Stage01Discovery(BaseStage):
             .get("directory")
         )
 
-        if isinstance(logging_directory, str):
+        if (
+            isinstance(logging_directory, str)
+            and logging_directory.strip()
+        ):
             paths.append(logging_directory)
 
-        # Elimina duplicados conservando el orden.
         return list(dict.fromkeys(paths))
 
-    def _extract_paths(self, value: Any) -> list[str]:
+    def _extract_paths(
+        self,
+        value: Any,
+    ) -> list[str]:
         """Extrae recursivamente rutas almacenadas en diccionarios."""
 
         paths: list[str] = []
 
         if isinstance(value, str):
-            paths.append(value)
+            if value.strip():
+                paths.append(value)
 
         elif isinstance(value, dict):
             for nested_value in value.values():
@@ -294,9 +353,26 @@ class Stage01Discovery(BaseStage):
 
         inventory: list[dict[str, Any]] = []
 
-        data_config = settings.get("data", {})
-        raw_config = data_config.get("raw", {})
-        input_config = settings.get("input", {})
+        raw_config = (
+            settings
+            .get("data", {})
+            .get("raw", {})
+        )
+
+        input_config = settings.get(
+            "input",
+            {},
+        )
+
+        if not isinstance(raw_config, dict):
+            raise TypeError(
+                "settings.yaml: 'data.raw' debe ser un diccionario."
+            )
+
+        if not isinstance(input_config, dict):
+            raise TypeError(
+                "settings.yaml: 'input' debe ser un diccionario."
+            )
 
         for source_type, source_settings in input_config.items():
             if not isinstance(source_settings, dict):
@@ -309,11 +385,13 @@ class Stage01Discovery(BaseStage):
                 )
                 continue
 
-            configured_directory = raw_config.get(source_type)
+            configured_directory = raw_config.get(
+                source_type
+            )
 
             if not configured_directory:
                 message = (
-                    f"No existe una ruta raw configurada para "
+                    "No existe una ruta raw configurada para "
                     f"'{source_type}'."
                 )
 
@@ -325,11 +403,13 @@ class Stage01Discovery(BaseStage):
                 configured_directory
             )
 
-            extensions = self._get_extensions(source_settings)
+            extensions = self._get_extensions(
+                source_settings
+            )
 
             if not extensions:
                 message = (
-                    f"No existen extensiones configuradas para "
+                    "No existen extensiones configuradas para "
                     f"'{source_type}'."
                 )
 
@@ -341,7 +421,10 @@ class Stage01Discovery(BaseStage):
                 directory=source_directory,
                 extensions=extensions,
                 recursive=bool(
-                    source_settings.get("recursive", True)
+                    source_settings.get(
+                        "recursive",
+                        True,
+                    )
                 ),
                 logger=logger,
             )
@@ -354,13 +437,25 @@ class Stage01Discovery(BaseStage):
             )
 
             for file_path in discovered_files:
-                inventory.append(
-                    self._build_inventory_item(
-                        file_path=file_path,
-                        source_type=source_type,
+                try:
+                    inventory_item = (
+                        self._build_inventory_item(
+                            file_path=file_path,
+                            source_type=source_type,
+                        )
                     )
-                )
 
+                except OSError as error:
+                    message = (
+                        f"No se pudo inventariar "
+                        f"{file_path}: {error}"
+                    )
+
+                    self.state.add_warning(message)
+                    logger.warning(message)
+                    continue
+
+                inventory.append(inventory_item)
                 self.state.add_discovered_file(file_path)
 
         return inventory
@@ -373,8 +468,21 @@ class Stage01Discovery(BaseStage):
 
         extensions: set[str] = set()
 
-        for extension in source_settings.get("extensions", []):
-            normalized = str(extension).strip().lower()
+        configured_extensions = source_settings.get(
+            "extensions",
+            [],
+        )
+
+        if not isinstance(
+            configured_extensions,
+            (list, tuple, set),
+        ):
+            return extensions
+
+        for extension in configured_extensions:
+            normalized = str(
+                extension
+            ).strip().lower()
 
             if not normalized:
                 continue
@@ -393,11 +501,12 @@ class Stage01Discovery(BaseStage):
         recursive: bool,
         logger: logging.Logger,
     ) -> list[Path]:
-        """Descubre archivos válidos sin abrir su contenido."""
+        """Descubre archivos válidos sin abrir su contenido tabular."""
 
         if not directory.is_dir():
             message = (
-                f"El directorio de entrada no existe: {directory}"
+                f"El directorio de entrada no existe: "
+                f"{directory}"
             )
 
             self.state.add_warning(message)
@@ -440,13 +549,17 @@ class Stage01Discovery(BaseStage):
                 continue
 
             if size_bytes == 0:
-                message = f"Archivo vacío ignorado: {path}"
+                message = (
+                    f"Archivo vacío ignorado: {path}"
+                )
 
                 self.state.add_warning(message)
                 logger.warning(message)
                 continue
 
-            discovered.append(path.resolve())
+            discovered.append(
+                path.resolve()
+            )
 
         return sorted(
             discovered,
@@ -511,11 +624,15 @@ class Stage01Discovery(BaseStage):
                 stat.st_mtime,
                 tz=timezone.utc,
             ).isoformat(),
-            "sha256": self._calculate_sha256(file_path),
+            "sha256": self._calculate_sha256(
+                file_path
+            ),
         }
 
     @staticmethod
-    def _calculate_sha256(file_path: Path) -> str:
+    def _calculate_sha256(
+        file_path: Path,
+    ) -> str:
         """Calcula el hash SHA-256 por bloques."""
 
         digest = hashlib.sha256()
@@ -556,7 +673,10 @@ class Stage01Discovery(BaseStage):
                 logger.warning(message)
                 continue
 
-            known_hashes[file_hash] = item["relative_path"]
+            known_hashes[file_hash] = (
+                item["relative_path"]
+            )
+
             unique_items.append(item)
 
         return unique_items, duplicate_count
@@ -593,9 +713,9 @@ class Stage01Discovery(BaseStage):
             "duplicates_ignored": duplicate_count,
         }
 
-        for name, value in statistics.items():
+        for statistic_name, value in statistics.items():
             self.state.set_statistic(
-                f"stage01_{name}",
+                f"stage01_{statistic_name}",
                 value,
             )
 
@@ -620,7 +740,10 @@ class Stage01Discovery(BaseStage):
         )
 
         if isinstance(staging, dict):
-            configured_path = staging.get(key, default)
+            configured_path = staging.get(
+                key,
+                default,
+            )
 
         elif isinstance(staging, str):
             configured_path = str(
@@ -630,7 +753,36 @@ class Stage01Discovery(BaseStage):
         else:
             configured_path = default
 
-        return self._resolve_path(configured_path)
+        return self._resolve_path(
+            configured_path
+        )
+
+    def _prepare_output_path(
+        self,
+        path: Path,
+        settings: dict[str, Any],
+    ) -> Path:
+        """Valida si un archivo existente puede reemplazarse."""
+
+        overwrite = (
+            settings
+            .get("execution", {})
+            .get("overwrite_outputs", True)
+        )
+
+        if path.exists() and not overwrite:
+            raise FileExistsError(
+                "El archivo de salida ya existe y "
+                "overwrite_outputs está deshabilitado: "
+                f"{path}"
+            )
+
+        path.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        return path
 
     def _save_inventory(
         self,
@@ -639,7 +791,10 @@ class Stage01Discovery(BaseStage):
     ) -> Path | None:
         """Guarda el inventario técnico como JSON."""
 
-        execution = settings.get("execution", {})
+        execution = settings.get(
+            "execution",
+            {},
+        )
 
         if not execution.get(
             "save_intermediate_files",
@@ -653,14 +808,10 @@ class Stage01Discovery(BaseStage):
             default="./data/staging/inventory",
         )
 
-        inventory_directory.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
-        output_path = (
+        output_path = self._prepare_output_path(
             inventory_directory
-            / f"{self.state.run_id}_file_inventory.json"
+            / self.INVENTORY_FILENAME,
+            settings,
         )
 
         output_path.write_text(
@@ -678,17 +829,50 @@ class Stage01Discovery(BaseStage):
         self,
         inventory: list[dict[str, Any]],
         statistics: dict[str, Any],
+        settings: dict[str, Any],
         reports_config: dict[str, Any],
+        inventory_path: Path | None,
     ) -> Path | None:
         """Genera el reporte técnico TXT de Stage01."""
 
-        general = reports_config.get("general", {})
+        general = reports_config.get(
+            "general",
+            {},
+        )
 
         if not general.get("enabled", True):
             return None
 
-        if not general.get("generate_reports", True):
+        if not general.get(
+            "generate_reports",
+            True,
+        ):
             return None
+
+        project = settings.get(
+            "project",
+            {},
+        )
+
+        project_name = project.get(
+            "name",
+            "QC_DataMet",
+        )
+
+        project_version = project.get(
+            "version",
+            "0.1.0",
+        )
+
+        organization = project.get(
+            "organization",
+            "Dirección de Meteorología Aeronáutica y Espacial",
+        )
+
+        institution = project.get(
+            "institution",
+            "Fuerza Aérea del Perú",
+        )
 
         configured_directory = (
             reports_config
@@ -700,91 +884,207 @@ class Stage01Discovery(BaseStage):
             configured_directory
         )
 
-        report_directory.mkdir(
-            parents=True,
-            exist_ok=True,
+        report_path = self._prepare_output_path(
+            report_directory / self.REPORT_FILENAME,
+            settings,
         )
 
-        report_path = (
-            report_directory
-            / f"{self.state.run_id}_stage01_discovery_report.txt"
+        files_by_source = statistics.get(
+            "files_by_source_type",
+            {},
         )
 
-        total_size = self._format_size(
-            statistics["total_size_bytes"]
+        files_by_extension = statistics.get(
+            "files_by_extension",
+            {},
         )
 
-        lines = [
-            "=" * 88,
-            "QC_DataMet v0.1.0 — STAGE 01: DESCUBRIMIENTO DE ARCHIVOS",
-            "=" * 88,
-            f"Run ID                 : {self.state.run_id}",
-            (
-                "Fecha UTC              : "
-                f"{datetime.now(timezone.utc).isoformat()}"
-            ),
-            (
-                "Archivos encontrados   : "
-                f"{statistics['files_found']}"
-            ),
-            f"Tamaño total           : {total_size}",
-            (
-                "Duplicados ignorados   : "
-                f"{statistics['duplicates_ignored']}"
-            ),
-            f"Advertencias           : {len(self.state.warnings)}",
-            f"Errores                 : {len(self.state.errors)}",
+        execution_date = datetime.now(
+            timezone.utc
+        ).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+        elapsed_seconds = statistics.get(
+            "elapsed_seconds",
+            0.0,
+        )
+
+        width = 100
+
+        lines: list[str] = [
+            "=" * width,
+            f"{project_name} v{project_version}",
+            "STAGE 01 - DESCUBRIMIENTO E INVENTARIO DE ARCHIVOS",
+            "=" * width,
             "",
-            "RESUMEN POR TIPO DE FUENTE",
-            "-" * 88,
+            "INFORMACIÓN GENERAL",
+            "-" * width,
+            f"Proyecto             : {project_name}",
+            f"Versión              : {project_version}",
+            f"Organización         : {organization}",
+            f"Institución          : {institution}",
+            "Etapa                : Stage01 Discovery",
+            f"Fecha de ejecución   : {execution_date}",
+            "Estado               : COMPLETADO",
+            f"Tiempo de ejecución  : {elapsed_seconds:.3f} s",
+            "",
+            "=" * width,
+            "RESUMEN GENERAL",
+            "=" * width,
+            "",
+            (
+                "Archivos encontrados : "
+                f"{statistics.get('files_found', 0)}"
+            ),
+            (
+                "Tamaño total         : "
+                f"{self._format_size(
+                    statistics.get(
+                        'total_size_bytes',
+                        0,
+                    )
+                )}"
+            ),
+            (
+                "Duplicados ignorados : "
+                f"{statistics.get(
+                    'duplicates_ignored',
+                    0,
+                )}"
+            ),
+            (
+                "Directorios creados  : "
+                f"{self.state.statistics.get(
+                    'stage01_directories_created',
+                    0,
+                )}"
+            ),
+            (
+                "Advertencias         : "
+                f"{len(self.state.warnings)}"
+            ),
+            (
+                "Errores              : "
+                f"{len(self.state.errors)}"
+            ),
+            "",
+            "=" * width,
+            "ARCHIVOS POR TIPO DE FUENTE",
+            "=" * width,
+            "",
         ]
 
-        for source_type, count in sorted(
-            statistics["files_by_source_type"].items()
-        ):
+        input_config = settings.get(
+            "input",
+            {},
+        )
+
+        for source_type, source_config in input_config.items():
+            if not isinstance(source_config, dict):
+                continue
+
+            enabled = bool(
+                source_config.get(
+                    "enabled",
+                    False,
+                )
+            )
+
+            quantity = files_by_source.get(
+                source_type,
+                0,
+            )
+
+            source_status = (
+                "HABILITADO"
+                if enabled
+                else "DESHABILITADO"
+            )
+
             lines.append(
-                f"{source_type.upper():<20}: {count}"
+                f"{source_type.upper():<15}: "
+                f"{quantity:<5} | {source_status}"
             )
 
         lines.extend([
             "",
-            "RESUMEN POR EXTENSIÓN",
-            "-" * 88,
+            "=" * width,
+            "ARCHIVOS POR EXTENSIÓN",
+            "=" * width,
+            "",
         ])
 
-        for extension, count in sorted(
-            statistics["files_by_extension"].items()
-        ):
+        if files_by_extension:
+            for extension, quantity in sorted(
+                files_by_extension.items()
+            ):
+                lines.append(
+                    f"{extension:<15}: {quantity}"
+                )
+
+        else:
             lines.append(
-                f"{extension:<20}: {count}"
+                "No se encontraron extensiones registradas."
             )
 
         lines.extend([
             "",
-            "ARCHIVOS INVENTARIADOS",
-            "-" * 88,
+            "=" * width,
+            "INVENTARIO DE ARCHIVOS",
+            "=" * width,
+            "",
+            (
+                f"{'N°':>3}  "
+                f"{'TIPO':<10} "
+                f"{'EXT.':<8} "
+                f"{'TAMAÑO':>12}  "
+                f"{'ESTADO':<8} "
+                "ARCHIVO"
+            ),
+            "-" * width,
         ])
 
-        for index, item in enumerate(inventory, start=1):
-            lines.extend([
-                f"Número         : {index}",
-                f"Archivo        : {item['relative_path']}",
-                f"Tipo de fuente : {item['source_type'].upper()}",
-                f"Extensión      : {item['extension']}",
-                (
-                    "Tamaño         : "
-                    f"{self._format_size(item['size_bytes'])}"
-                ),
-                f"Modificado UTC : {item['modified_utc']}",
-                f"SHA-256        : {item['sha256']}",
-                "-" * 88,
-            ])
+        if inventory:
+            for index, item in enumerate(
+                inventory,
+                start=1,
+            ):
+                item_size = self._format_size(
+                    item["size_bytes"]
+                )
+
+                lines.append(
+                    f"{index:>3}  "
+                    f"{item['source_type'].upper():<10} "
+                    f"{item['extension']:<8} "
+                    f"{item_size:>12}  "
+                    f"{'OK':<8} "
+                    f"{item['relative_path']}"
+                )
+
+                lines.append(
+                    "     Modificado UTC : "
+                    f"{item['modified_utc']}"
+                )
+
+                lines.append(
+                    "     SHA-256        : "
+                    f"{item['sha256']}"
+                )
+
+                lines.append("-" * width)
+
+        else:
+            lines.append(
+                "No se encontraron archivos válidos para procesar."
+            )
 
         if self.state.warnings:
             lines.extend([
                 "",
+                "=" * width,
                 "ADVERTENCIAS",
-                "-" * 88,
+                "=" * width,
+                "",
             ])
 
             lines.extend(
@@ -795,8 +1095,10 @@ class Stage01Discovery(BaseStage):
         if self.state.errors:
             lines.extend([
                 "",
+                "=" * width,
                 "ERRORES",
-                "-" * 88,
+                "=" * width,
+                "",
             ])
 
             lines.extend(
@@ -806,9 +1108,39 @@ class Stage01Discovery(BaseStage):
 
         lines.extend([
             "",
-            "=" * 88,
+            "=" * width,
+            "SALIDAS GENERADAS",
+            "=" * width,
+            "",
+            (
+                "Inventario JSON      : "
+                f"{inventory_path or 'No generado'}"
+            ),
+            f"Reporte técnico      : {report_path}",
+            "",
+            "=" * width,
+            "PRÓXIMA ETAPA",
+            "=" * width,
+            "",
+            "Stage02 - Ingesta de archivos",
+            "",
+            "Objetivo:",
+            (
+                "    Abrir los archivos descubiertos y "
+                "verificar que puedan leerse correctamente."
+            ),
+            "",
+            "Stage02 obtendrá:",
+            "    - Número de hojas.",
+            "    - Número de filas.",
+            "    - Número de columnas.",
+            "    - Motor de lectura utilizado.",
+            "    - Tiempo de lectura.",
+            "    - Estado de lectura de cada archivo.",
+            "",
+            "=" * width,
             "FIN DEL REPORTE",
-            "=" * 88,
+            "=" * width,
         ])
 
         report_path.write_text(
@@ -828,79 +1160,174 @@ class Stage01Discovery(BaseStage):
         statistics: dict[str, Any],
         inventory_path: Path | None,
         report_path: Path | None,
+        settings: dict[str, Any],
     ) -> None:
         """Muestra un resumen profesional de Stage01 en consola."""
+
+        project = settings.get(
+            "project",
+            {},
+        )
+
+        project_name = project.get(
+            "name",
+            "QC_DataMet",
+        )
+
+        project_version = project.get(
+            "version",
+            "0.1.0",
+        )
 
         width = 100
 
         print()
         print("=" * width)
+
         print(
-            "QC_DataMet v0.1.0 — "
+            f"{project_name} v{project_version} — "
             "STAGE 01: DESCUBRIMIENTO E INVENTARIO"
         )
-        print("=" * width)
 
-        print(f"Estado              : COMPLETED")
-        print(f"Run ID              : {self.state.run_id}")
+        print("=" * width)
+        print("Estado              : COMPLETADO")
+
         print(
             "Archivos encontrados: "
-            f"{statistics['files_found']}"
+            f"{statistics.get('files_found', 0)}"
         )
+
         print(
             "Tamaño total        : "
-            f"{self._format_size(statistics['total_size_bytes'])}"
+            f"{self._format_size(
+                statistics.get(
+                    'total_size_bytes',
+                    0,
+                )
+            )}"
         )
+
         print(
             "Duplicados ignorados: "
-            f"{statistics['duplicates_ignored']}"
+            f"{statistics.get(
+                'duplicates_ignored',
+                0,
+            )}"
         )
-        print(f"Advertencias        : {len(self.state.warnings)}")
-        print(f"Errores              : {len(self.state.errors)}")
+
+        print(
+            "Directorios creados : "
+            f"{self.state.statistics.get(
+                'stage01_directories_created',
+                0,
+            )}"
+        )
+
+        print(
+            "Advertencias        : "
+            f"{len(self.state.warnings)}"
+        )
+
+        print(
+            "Errores              : "
+            f"{len(self.state.errors)}"
+        )
+
+        print(
+            "Duración            : "
+            f"{statistics.get('elapsed_seconds', 0.0):.3f} s"
+        )
 
         print("-" * width)
+
         print(
             f"{'N°':>3}  "
             f"{'TIPO':<10} "
             f"{'EXT.':<8} "
             f"{'TAMAÑO':>12}  "
-            f"ARCHIVO"
+            "ARCHIVO"
         )
+
         print("-" * width)
 
-        for index, item in enumerate(inventory, start=1):
-            print(
-                f"{index:>3}  "
-                f"{item['source_type'].upper():<10} "
-                f"{item['extension']:<8} "
-                f"{self._format_size(item['size_bytes']):>12}  "
-                f"{item['relative_path']}"
-            )
+        if inventory:
+            for index, item in enumerate(
+                inventory,
+                start=1,
+            ):
+                item_size = self._format_size(
+                    item["size_bytes"]
+                )
 
-        if not inventory:
-            print("No se encontraron archivos de entrada.")
+                print(
+                    f"{index:>3}  "
+                    f"{item['source_type'].upper():<10} "
+                    f"{item['extension']:<8} "
+                    f"{item_size:>12}  "
+                    f"{item['relative_path']}"
+                )
+
+        else:
+            print(
+                "No se encontraron archivos de entrada."
+            )
 
         print("-" * width)
         print("RESUMEN POR TIPO DE FUENTE")
 
-        if statistics["files_by_source_type"]:
-            for source_type, count in sorted(
-                statistics["files_by_source_type"].items()
-            ):
-                print(
-                    f"  {source_type.upper():<12}: {count}"
+        files_by_source = statistics.get(
+            "files_by_source_type",
+            {},
+        )
+
+        input_config = settings.get(
+            "input",
+            {},
+        )
+
+        for source_type, source_config in input_config.items():
+            if not isinstance(source_config, dict):
+                continue
+
+            enabled = bool(
+                source_config.get(
+                    "enabled",
+                    False,
                 )
-        else:
-            print("  Sin archivos.")
+            )
+
+            quantity = files_by_source.get(
+                source_type,
+                0,
+            )
+
+            source_status = (
+                "habilitado"
+                if enabled
+                else "deshabilitado"
+            )
+
+            print(
+                f"  {source_type.upper():<12}: "
+                f"{quantity:<5} ({source_status})"
+            )
 
         print()
         print("RESUMEN POR EXTENSIÓN")
 
-        if statistics["files_by_extension"]:
+        files_by_extension = statistics.get(
+            "files_by_extension",
+            {},
+        )
+
+        if files_by_extension:
             for extension, count in sorted(
-                statistics["files_by_extension"].items()
+                files_by_extension.items()
             ):
-                print(f"  {extension:<12}: {count}")
+                print(
+                    f"  {extension:<12}: {count}"
+                )
+
         else:
             print("  Sin extensiones.")
 
@@ -910,6 +1337,7 @@ class Stage01Discovery(BaseStage):
             "Inventario JSON : "
             f"{inventory_path or 'No generado'}"
         )
+
         print(
             "Reporte técnico : "
             f"{report_path or 'No generado'}"
@@ -919,12 +1347,20 @@ class Stage01Discovery(BaseStage):
         print()
 
     @staticmethod
-    def _format_size(size_bytes: int) -> str:
+    def _format_size(
+        size_bytes: int,
+    ) -> str:
         """Convierte bytes a una unidad legible."""
 
         size = float(size_bytes)
 
-        for unit in ("B", "KB", "MB", "GB", "TB"):
+        for unit in (
+            "B",
+            "KB",
+            "MB",
+            "GB",
+            "TB",
+        ):
             if size < 1024 or unit == "TB":
                 return f"{size:,.2f} {unit}"
 
