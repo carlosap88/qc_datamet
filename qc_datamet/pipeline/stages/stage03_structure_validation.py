@@ -664,19 +664,52 @@ class Stage03StructureValidation(BaseStage):
         )
 
         project = settings.get("project", {})
-        project_name = project.get("name", "QC_DataMet")
-        project_version = project.get("version", "0.1.0")
+        project_name = project.get(
+            "name",
+            "QC_DataMet",
+        )
+        project_version = project.get(
+            "version",
+            "0.1.0",
+        )
 
         execution_date = datetime.now(
             timezone.utc
         ).strftime("%Y-%m-%d %H:%M:%S UTC")
 
         width = 100
+        metric_width = 36
 
-        def metric(label: str, value: Any) -> str:
+        def metric(
+            label: str,
+            value: Any,
+        ) -> str:
             """Genera una línea alineada mediante puntos."""
-            dots = "." * max(1, 31 - len(label))
+
+            dots = "." * max(
+                1,
+                metric_width - len(label),
+            )
+
             return f"{label} {dots} {value}"
+
+        def status_text(
+            condition: bool,
+        ) -> str:
+            """Devuelve OK o ERROR según el resultado."""
+
+            return "OK" if condition else "ERROR"
+
+        def count_text(
+            values: list[Any],
+            empty_text: str,
+        ) -> str:
+            """Devuelve un texto descriptivo para una colección."""
+
+            if not values:
+                return empty_text
+
+            return str(len(values))
 
         lines: list[str] = [
             "=" * width,
@@ -684,181 +717,293 @@ class Stage03StructureValidation(BaseStage):
             "STAGE 03 - VALIDACIÓN ESTRUCTURAL",
             "=" * width,
             "",
-            f"Fecha de ejecución : {execution_date}",
+            metric(
+                "Fecha de ejecución",
+                execution_date,
+            ),
             "",
             "RESUMEN GENERAL",
             "-" * width,
             metric(
                 "Archivos procesados",
-                statistics["files_validated"],
+                statistics.get(
+                    "files_validated",
+                    0,
+                ),
             ),
             metric(
                 "Archivos válidos",
-                statistics["files_valid"],
+                statistics.get(
+                    "files_valid",
+                    0,
+                ),
             ),
             metric(
                 "Archivos inválidos",
-                statistics["files_invalid"],
+                statistics.get(
+                    "files_invalid",
+                    0,
+                ),
             ),
             "",
             metric(
                 "Hojas procesadas",
-                statistics["sheets_validated"],
+                statistics.get(
+                    "sheets_validated",
+                    0,
+                ),
             ),
             metric(
                 "Hojas válidas",
-                statistics["sheets_valid"],
+                statistics.get(
+                    "sheets_valid",
+                    0,
+                ),
             ),
             metric(
                 "Hojas inválidas",
-                statistics["sheets_invalid"],
+                statistics.get(
+                    "sheets_invalid",
+                    0,
+                ),
             ),
             "",
             metric(
-                "Validaciones realizadas",
-                statistics["validation_checks"],
+                "Validaciones ejecutadas",
+                statistics.get(
+                    "validation_checks",
+                    0,
+                ),
             ),
             metric(
                 "Validaciones superadas",
-                statistics["validation_passed"],
+                statistics.get(
+                    "validation_passed",
+                    0,
+                ),
             ),
             metric(
                 "Validaciones fallidas",
-                statistics["validation_failed"],
+                statistics.get(
+                    "validation_failed",
+                    0,
+                ),
             ),
             "",
             metric(
                 "Integridad promedio",
-                f"{statistics['integrity']:.2f} %",
+                (
+                    f"{statistics.get('integrity', 0.0):.2f} %"
+                ),
             ),
             metric(
                 "Tiempo total Stage03",
-                f"{statistics['elapsed_seconds']:.3f} s",
+                (
+                    f"{statistics.get('elapsed_seconds', 0.0):.3f} s"
+                ),
             ),
             "",
-            metric("Esquema validado", schema_name),
-            metric("Versión esquema", schema_version),
-            "",
             "DETALLE POR ARCHIVO Y HOJA",
-            "-" * width,
+            "=" * width,
         ]
 
         for file_result in results:
+            station_id = file_result.get(
+                "station_id",
+                "UNKNOWN",
+            )
+
+            filename = file_result.get(
+                "relative_path",
+                file_result.get(
+                    "filename",
+                    "Sin nombre",
+                ),
+            )
+
             lines.extend(
                 [
                     "",
+                    "ARCHIVO",
+                    "-" * width,
                     metric(
                         "Estación",
-                        file_result.get(
-                            "station_id",
-                            "UNKNOWN",
-                        ),
+                        station_id,
                     ),
                     metric(
                         "Archivo",
-                        file_result.get(
-                            "relative_path",
-                            file_result.get(
-                                "filename",
-                                "Sin nombre",
-                            ),
-                        ),
+                        filename,
                     ),
                 ]
             )
 
-            for sheet in file_result.get("sheets", []):
-                status = (
+            for sheet in file_result.get(
+                "sheets",
+                [],
+            ):
+                sheet_name = sheet.get(
+                    "sheet_name",
+                    "Sin nombre",
+                )
+
+                structure_valid = sheet.get(
+                    "structure_valid",
+                    False,
+                )
+
+                result_status = (
                     "VÁLIDA"
-                    if sheet.get("structure_valid")
+                    if structure_valid
                     else "INVÁLIDA"
+                )
+
+                integrity = float(
+                    sheet.get(
+                        "integrity",
+                        0.0,
+                    )
+                )
+
+                duplicate_headers = sheet.get(
+                    "duplicate_headers",
+                    [],
+                ) or []
+
+                missing_columns = sheet.get(
+                    "missing_columns",
+                    [],
+                ) or []
+
+                extra_columns = sheet.get(
+                    "extra_columns",
+                    [],
+                ) or []
+
+                empty_header_positions = sheet.get(
+                    "empty_header_positions",
+                    [],
+                ) or []
+
+                validation_errors = sheet.get(
+                    "validation_errors",
+                    [],
+                ) or []
+
+                expected_columns = sheet.get(
+                    "columns_expected",
+                    sheet.get(
+                        "expected_columns",
+                        0,
+                    ),
+                )
+
+                found_columns = sheet.get(
+                    "columns_found",
+                    sheet.get(
+                        "actual_columns",
+                        0,
+                    ),
                 )
 
                 lines.extend(
                     [
                         "",
+                        "=" * width,
+                        f"HOJA: {sheet_name}",
+                        "=" * width,
+                        "",
+                        "ESTADO GENERAL",
+                        "-" * width,
                         metric(
-                            "Hoja",
-                            sheet.get(
-                                "sheet_name",
-                                "Sin nombre",
-                            ),
+                            "Resultado estructural",
+                            result_status,
+                        ),
+                        metric(
+                            "Integridad estructural",
+                            f"{integrity:.2f} %",
                         ),
                         "",
-                        "VALIDACIÓN ESTRUCTURAL",
+                        "ESQUEMA DE VALIDACIÓN",
+                        "-" * width,
+                        metric(
+                            "Esquema utilizado",
+                            schema_name,
+                        ),
+                        metric(
+                            "Versión del esquema",
+                            schema_version,
+                        ),
+                        metric(
+                            "Columnas esperadas",
+                            expected_columns,
+                        ),
+                        metric(
+                            "Columnas encontradas",
+                            found_columns,
+                        ),
+                        "",
+                        "VALIDACIONES REALIZADAS",
                         "-" * width,
                         metric(
                             "Cantidad de columnas",
-                            (
-                                "OK"
-                                if sheet.get(
+                            status_text(
+                                sheet.get(
                                     "column_count_valid",
                                     False,
                                 )
-                                else "ERROR"
                             ),
                         ),
                         metric(
                             "Orden de columnas",
-                            (
-                                "OK"
-                                if sheet.get(
+                            status_text(
+                                sheet.get(
                                     "header_order_valid",
                                     False,
                                 )
-                                else "ERROR"
                             ),
                         ),
                         metric(
                             "Encabezados",
-                            (
-                                "OK"
-                                if sheet.get(
+                            status_text(
+                                sheet.get(
                                     "headers_valid",
                                     False,
                                 )
-                                else "ERROR"
                             ),
                         ),
                         metric(
-                            "Columnas duplicadas",
-                            len(
-                                sheet.get(
-                                    "duplicate_headers",
-                                    [],
-                                )
+                            "Encabezados duplicados",
+                            count_text(
+                                duplicate_headers,
+                                "Ninguno",
                             ),
                         ),
                         metric(
                             "Columnas faltantes",
-                            len(
-                                sheet.get(
-                                    "missing_columns",
-                                    [],
-                                )
+                            count_text(
+                                missing_columns,
+                                "Ninguna",
                             ),
                         ),
                         metric(
                             "Columnas adicionales",
-                            len(
-                                sheet.get(
-                                    "extra_columns",
-                                    [],
-                                )
+                            count_text(
+                                extra_columns,
+                                "Ninguna",
                             ),
                         ),
                         metric(
                             "Encabezados vacíos",
-                            len(
-                                sheet.get(
-                                    "empty_header_positions",
-                                    [],
-                                )
+                            count_text(
+                                empty_header_positions,
+                                "Ninguno",
                             ),
                         ),
                         "",
+                        "MÉTRICAS DE VALIDACIÓN",
+                        "-" * width,
                         metric(
-                            "Validaciones realizadas",
+                            "Validaciones ejecutadas",
                             sheet.get(
                                 "validation_checks",
                                 0,
@@ -878,49 +1023,100 @@ class Stage03StructureValidation(BaseStage):
                                 0,
                             ),
                         ),
-                        "",
                         metric(
-                            "Integridad estructural",
-                            (
-                                f"{sheet.get('integrity', 0.0):.2f} %"
-                            ),
+                            "Porcentaje de cumplimiento",
+                            f"{integrity:.2f} %",
                         ),
                         "",
-                        metric("Esquema validado", schema_name),
-                        metric(
-                            "Versión esquema",
-                            schema_version,
-                        ),
-                        "",
-                        metric(
-                            "Resultado estructural",
-                            status,
-                        ),
+                        "OBSERVACIONES",
+                        "-" * width,
                     ]
                 )
 
-                errors = sheet.get(
-                    "validation_errors",
-                    [],
-                )
+                if structure_valid and not validation_errors:
+                    lines.append(
+                        "No se detectaron inconsistencias estructurales."
+                    )
 
-                if errors:
-                    lines.extend(
-                        [
-                            "",
-                            "ERRORES DETECTADOS",
-                            "-" * width,
-                        ]
+                else:
+                    lines.append(
+                        "Se detectaron inconsistencias estructurales."
                     )
-                    lines.extend(
-                        f"• {error}"
-                        for error in errors
-                    )
+
+                    if validation_errors:
+                        lines.extend(
+                            [
+                                "",
+                                "ERRORES DETECTADOS",
+                                "-" * width,
+                            ]
+                        )
+
+                        for error in validation_errors:
+                            lines.append(
+                                f"• {error}"
+                            )
+
+                    if missing_columns:
+                        lines.extend(
+                            [
+                                "",
+                                "COLUMNAS FALTANTES",
+                                "-" * width,
+                            ]
+                        )
+
+                        for column in missing_columns:
+                            lines.append(
+                                f"• {column}"
+                            )
+
+                    if extra_columns:
+                        lines.extend(
+                            [
+                                "",
+                                "COLUMNAS ADICIONALES",
+                                "-" * width,
+                            ]
+                        )
+
+                        for column in extra_columns:
+                            lines.append(
+                                f"• {column}"
+                            )
+
+                    if duplicate_headers:
+                        lines.extend(
+                            [
+                                "",
+                                "ENCABEZADOS DUPLICADOS",
+                                "-" * width,
+                            ]
+                        )
+
+                        for header in duplicate_headers:
+                            lines.append(
+                                f"• {header}"
+                            )
+
+                    if empty_header_positions:
+                        lines.extend(
+                            [
+                                "",
+                                "ENCABEZADOS VACÍOS",
+                                "-" * width,
+                            ]
+                        )
+
+                        for position in empty_header_positions:
+                            lines.append(
+                                f"• Posición {position}"
+                            )
 
                 lines.extend(
                     [
                         "",
-                        "-" * width,
+                        "=" * width,
                     ]
                 )
 
